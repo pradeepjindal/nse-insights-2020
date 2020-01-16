@@ -1,0 +1,8 @@
+rsiDataCountForDateSql: >
+  SELECT count(*)
+  FROM calc_rsi_tab t
+  WHERE t.trade_date = to_date(?,'yyyy-mm-dd')
+
+rsiSql: >
+  SELECT *
+  FROM calc_rsi_tab

@@ -1,0 +1,8 @@
+mfiDataCountForDateSql: >
+  SELECT count(*)
+  FROM calc_mfi_tab t
+  WHERE t.trade_date = to_date(?,'yyyy-mm-dd')
+
+mfiSql: >
+  SELECT *
+  FROM calc_mfi_tab
