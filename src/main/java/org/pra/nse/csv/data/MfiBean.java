@@ -17,10 +17,12 @@ public class MfiBean {
     @JsonDeserialize(using = LocalDateDeserializer.class)
     @JsonSerialize(using = LocalDateSerializer.class)
     private LocalDate tradeDate;
+
     private BigDecimal volumeAtpMfi05;
     private BigDecimal volumeAtpMfi10;
     private BigDecimal volumeAtpMfi15;
     private BigDecimal volumeAtpMfi20;
+
     private BigDecimal deliveryAtpMfi05;
     private BigDecimal deliveryAtpMfi10;
     private BigDecimal deliveryAtpMfi15;
@@ -31,10 +33,12 @@ public class MfiBean {
     public String toString() {
         return symbol +
                 "," + tradeDate +
+
                 "," + volumeAtpMfi05 +
                 "," + volumeAtpMfi10 +
                 "," + volumeAtpMfi15 +
                 "," + volumeAtpMfi20 +
+
                 "," + deliveryAtpMfi05 +
                 "," + deliveryAtpMfi10 +
                 "," + deliveryAtpMfi15 +

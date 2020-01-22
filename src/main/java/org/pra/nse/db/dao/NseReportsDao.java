@@ -58,6 +58,7 @@ public class NseReportsDao {
         return result;
     }
 
+
     public List<DeliverySpikeDto> getPpfData() {
         List<DeliverySpikeDto> result = jdbcTemplate.query(pastPresentFutureSql, new BeanPropertyRowMapper<DeliverySpikeDto>(DeliverySpikeDto.class));
         return result;

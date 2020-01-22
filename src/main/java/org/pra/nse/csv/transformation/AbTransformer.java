@@ -1,4 +1,4 @@
-package org.pra.nse.csv.transform;
+package org.pra.nse.csv.transformation;
 
 import org.pra.nse.ApCo;
 import org.pra.nse.email.EmailService;
@@ -34,14 +34,14 @@ public class AbTransformer extends BaseTransformer {
 
     private final EmailService emailService;
 
-    public AbTransformer(TransformHelper transformHelper, NseFileUtils nseFileUtils, PraFileUtils praFileUtils,
+    public AbTransformer(TransformationHelper transformationHelper, NseFileUtils nseFileUtils, PraFileUtils praFileUtils,
                          EmailService emailService) {
-        super(transformHelper, nseFileUtils, praFileUtils);
+        super(transformationHelper, nseFileUtils, praFileUtils);
         this.emailService = emailService;
     }
 
 
-    public void transformFromDate() {
+    public void transformFromDefaultDate() {
         transformFromDate(ApCo.DOWNLOAD_FROM_DATE);
     }
     public void transformFromDate(LocalDate fromDate) {

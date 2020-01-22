@@ -1,6 +1,6 @@
 package org.pra.nse.db.upload.calc;
 
-import org.pra.nse.db.dao.CalcRsiDao;
+import org.pra.nse.db.dao.calc.RsiCalculationDao;
 import org.pra.nse.db.model.CalcRsiTab;
 import org.pra.nse.db.repository.CalcRsiRepository;
 import org.slf4j.Logger;
@@ -17,10 +17,10 @@ public class CalcRsiUploader {
     private static final Logger LOGGER = LoggerFactory.getLogger(CalcRsiUploader.class);
 
     private final CalcRsiRepository repository;
-    private final CalcRsiDao dao;
+    private final RsiCalculationDao dao;
 
     public CalcRsiUploader(CalcRsiRepository nseCashMarketRepository,
-                           CalcRsiDao nseCashMarketDao) {
+                           RsiCalculationDao nseCashMarketDao) {
         this.repository = nseCashMarketRepository;
         this.dao = nseCashMarketDao;
 

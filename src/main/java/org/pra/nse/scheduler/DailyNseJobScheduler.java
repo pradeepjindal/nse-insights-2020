@@ -1,9 +1,11 @@
 package org.pra.nse.scheduler;
 
+import org.pra.nse.calculation.CalculationManager;
 import org.pra.nse.csv.download.DownloadManager;
-import org.pra.nse.csv.transform.TransformManager;
+import org.pra.nse.csv.transformation.TransformationManager;
 import org.pra.nse.db.upload.UploadManager;
-import org.pra.nse.processor.ReportManager;
+import org.pra.nse.processor.ProcessManager;
+import org.pra.nse.report.ReportManager;
 import org.pra.nse.util.PraFileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,25 +31,31 @@ public class DailyNseJobScheduler implements SchedulingConfigurer {
 
     private final int POOL_SIZE = 4;
 
-    private final PraFileUtils praFileUtils;
-
-    private final DownloadManager downloadManager;
-    private final TransformManager transformManager;
-    private final UploadManager uploadManager;
-    private final ReportManager reportManager;
-
     private TaskScheduler taskScheduler;
     private ScheduledFuture<?> dailyJob;
 
+
+    private final PraFileUtils praFileUtils;
+    private final DownloadManager downloadManager;
+    private final TransformationManager transformationManager;
+    private final UploadManager uploadManager;
+    private final CalculationManager calculationManager;
+    private final ProcessManager processManager;
+    private final ReportManager reportManager;
+
     public DailyNseJobScheduler(PraFileUtils praFileUtils,
                                 DownloadManager downloadManager,
-                                TransformManager transformManager,
+                                TransformationManager transformationManager,
                                 UploadManager uploadManager,
+                                CalculationManager calculationManager,
+                                ProcessManager processManager,
                                 ReportManager reportManager) {
         this.praFileUtils = praFileUtils;
         this.downloadManager = downloadManager;
-        this.transformManager = transformManager;
+        this.transformationManager = transformationManager;
         this.uploadManager = uploadManager;
+        this.calculationManager = calculationManager;
+        this.processManager = processManager;
         this.reportManager = reportManager;
     }
 
@@ -76,10 +84,12 @@ public class DailyNseJobScheduler implements SchedulingConfigurer {
                         LOGGER.info("cron executed at "+ new Date());
                         try {
                             downloadManager.download();
-                            transformManager.transform();
+                            transformationManager.transform();
                             uploadManager.upload();
                             if(praFileUtils.validateDownload() != null) {
-                                reportManager.report();
+                                calculationManager.execute();
+                                processManager.process();
+                                reportManager.execute();
                             }
                         } catch(Exception e) {
                             LOGGER.error("ERROR: {}", e);

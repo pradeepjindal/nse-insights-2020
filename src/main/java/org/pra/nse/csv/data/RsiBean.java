@@ -17,6 +17,7 @@ public class RsiBean {
     @JsonDeserialize(using = LocalDateDeserializer.class)
     @JsonSerialize(using = LocalDateSerializer.class)
     private LocalDate tradeDate;
+
     private BigDecimal openRsi10Ema;
     private BigDecimal highRsi10Ema;
     private BigDecimal lowRsi10Ema;
@@ -30,6 +31,7 @@ public class RsiBean {
     public String toString() {
         return symbol +
                 "," + tradeDate +
+
                 "," + openRsi10Ema +
                 "," + highRsi10Ema +
                 "," + lowRsi10Ema +

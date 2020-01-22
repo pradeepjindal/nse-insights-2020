@@ -1,4 +1,4 @@
-package org.pra.nse.processor;
+package org.pra.nse.report;
 
 import org.pra.nse.ApCo;
 import org.pra.nse.db.dao.NseReportsDao;
@@ -19,8 +19,8 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Component
-public class DeliverySpikeReport {
-    private static final Logger LOGGER = LoggerFactory.getLogger(DeliverySpikeReport.class);
+public class DeliverySpikeReporter {
+    private static final Logger LOGGER = LoggerFactory.getLogger(DeliverySpikeReporter.class);
 
     private final String DSR = "DeliverySpikeReport";
     private final String DSRF = "DeliverySpikeReportFull";
@@ -30,25 +30,25 @@ public class DeliverySpikeReport {
     private final NseFileUtils nseFileUtils;
     private final PraFileUtils praFileUtils;
 
-    DeliverySpikeReport(NseReportsDao nseReportsDao,
-                            EmailService emailService,
-                            NseFileUtils nseFileUtils,
-                            PraFileUtils praFileUtils) {
+    DeliverySpikeReporter(NseReportsDao nseReportsDao,
+                          EmailService emailService,
+                          NseFileUtils nseFileUtils,
+                          PraFileUtils praFileUtils) {
         this.nseReportsDao = nseReportsDao;
         this.emailService = emailService;
         this.nseFileUtils = nseFileUtils;
         this.praFileUtils = praFileUtils;
     }
 
-    public void process() {
+    public void reportFromLast() {
         String str = praFileUtils.validateDownload();
         if(str == null) return;
 
         LocalDate forDate = DateUtils.toLocalDate(str);
         //LocalDate forDate = LocalDate.of(2020,1,2);
-        process(forDate);
+        reportForDate(forDate);
     }
-    public void process(LocalDate forDate) {
+    public void reportForDate(LocalDate forDate) {
         String fileName = DSR + "-" + forDate.toString() + ApCo.REPORTS_FILE_EXT;
         //String toDir = ApCo.ROOT_DIR +File.separator+ ApCo.REPORTS_DIR_NAME +File.separator+ fileName;
         String toDir = ApCo.ROOT_DIR +File.separator+ ApCo.REPORTS_DIR_NAME_MANISH +File.separator+ fileName;
@@ -81,7 +81,8 @@ public class DeliverySpikeReport {
 
         //
         produceOneDayReport(dbResults, toDir, latestTenDates);
-        email(null, fileName, fileName, toDir);
+        //
+        //email(null, fileName, fileName, toDir);
     }
 
     private void produceOneDayReport(List<DeliverySpikeDto> dbResults, String toDir, List<LocalDate> latestTenDates) {

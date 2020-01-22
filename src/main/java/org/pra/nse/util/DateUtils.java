@@ -4,6 +4,7 @@ import org.pra.nse.ApCo;
 
 import java.time.Instant;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
@@ -13,6 +14,10 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class DateUtils {
+
+    public static boolean timeFilter(LocalDate forDate) {
+        return forDate.isBefore(LocalDate.now()) || LocalTime.now().isAfter(ApCo.DAILY_DOWNLOAD_TIME);
+    }
 
     public static LocalDate toLocalDate(Date utilDate) {
         //new java.sql.Date(date.getTime()).toLocalDate();

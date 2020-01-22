@@ -24,23 +24,22 @@ public abstract class BaseUploader {
     }
 
 
-    public void uploadFromDate() {
+    public void uploadFromDefaultDate() {
         uploadFromDate(ApCo.DOWNLOAD_FROM_DATE);
     }
     public void uploadFromDate(LocalDate fromDate) {
         looper(fromDate);
     }
 
-    public void uploadFromLast() {
+    public void uploadFromLastDate() {
         String dataDir = ApCo.ROOT_DIR + File.separator + fileDirName;
         String str = praFileUtils.getLatestFileNameFor(dataDir, filePrefix, ApCo.REPORTS_FILE_EXT, 1);
         LocalDate dt = str == null ? LocalDate.now() : DateUtils.getLocalDateFromPath(str);
-
         looper(dt);
     }
 
 
-    abstract void upload(LocalDate forDate);
+    abstract void uploadForDate(LocalDate forDate);
 
 
     private void looper(LocalDate fromDate) {
@@ -53,7 +52,7 @@ public abstract class BaseUploader {
                 // TODO | Deepawali, sunday trading - logic to be incorporated
                 continue;
             } else {
-                upload(processingDate);
+                uploadForDate(processingDate);
             }
         } while(today.compareTo(processingDate) > 0);
     }

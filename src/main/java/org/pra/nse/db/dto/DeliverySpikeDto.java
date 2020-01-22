@@ -26,8 +26,11 @@ public class DeliverySpikeDto {
     private BigDecimal lastChgPrcnt;
     private BigDecimal atpChgPrcnt;
 
+    private BigDecimal volumeGrowth10;
     private BigDecimal tradedChgPrcnt;
+    private BigDecimal deliveryGrowth10;
     private BigDecimal deliveredChgPrcnt;
+    private BigDecimal oiGrowth10;
     private BigDecimal oiChgPrcnt;
     private BigDecimal premium;
 
@@ -46,6 +49,7 @@ public class DeliverySpikeDto {
 
     private BigDecimal volume;
     private BigDecimal delivery;
+    private BigDecimal oi;
 
     private BigDecimal volumeAtpMfi10;
     private BigDecimal deliveryAtpMfi10;
@@ -54,12 +58,20 @@ public class DeliverySpikeDto {
     private BigDecimal tdyLastRsi10Ema;
     private BigDecimal tdyAtpRsi10Ema;
 
+    private BigDecimal nxtCloseToOpenPercent;
+    private BigDecimal nxtOptoHighPrcnt;
+    private BigDecimal nxtOptoLowPrcnt;
+    private BigDecimal nxtOptoAtpPrcnt;
 
+    private BigDecimal volumeAvg10;
+    private BigDecimal deliveryAvg10;
+    private BigDecimal oiAvg10;
 
 
     public String toCsvString() {
         return  symbol + ","
                 + tradeDate + ","
+
                 + open + ","
                 + high + ","
                 + low + ","
@@ -132,6 +144,41 @@ public class DeliverySpikeDto {
                 + othighPrcnt + ","
                 + otlowPrcnt + ","
                 + otatpPrcnt + ","
+
+                + volumeAtpMfi10 + ","
+                + deliveryAtpMfi10 + ","
+                + tdyCloseRsi10Ema + ","
+                + tdyLastRsi10Ema + ","
+                + tdyAtpRsi10Ema;
+    }
+
+    public String toPpfString2() {
+        return  symbol + ","
+                + tradeDate + ","
+
+                + open + ","
+                + high + ","
+                + low + ","
+                + close + ","
+                + last + ","
+                + closingBell + ","
+                + closeToLastPercent + ","
+                + atp + ","
+                + highLowMid + ","
+
+                + volumeGrowth10 + ","
+                + tradedChgPrcnt + ","
+                + deliveryGrowth10 + ","
+                + deliveredChgPrcnt + ","
+                + oiGrowth10 + ","
+                + oiChgPrcnt + ","
+                + premium + ","
+                + openingBell + ","
+
+                + nxtCloseToOpenPercent + ","
+                + nxtOptoHighPrcnt + ","
+                + nxtOptoLowPrcnt + ","
+                + nxtOptoAtpPrcnt + ","
 
                 + volumeAtpMfi10 + ","
                 + deliveryAtpMfi10 + ","
@@ -452,4 +499,91 @@ public class DeliverySpikeDto {
         this.closeToOpenPercent = closeToOpenPercent;
     }
 
+    public BigDecimal getNxtCloseToOpenPercent() {
+        return nxtCloseToOpenPercent;
+    }
+
+    public void setNxtCloseToOpenPercent(BigDecimal nxtCloseToOpenPercent) {
+        this.nxtCloseToOpenPercent = nxtCloseToOpenPercent;
+    }
+
+    public BigDecimal getNxtOptoHighPrcnt() {
+        return nxtOptoHighPrcnt;
+    }
+
+    public void setNxtOptoHighPrcnt(BigDecimal nxtOptoHighPrcnt) {
+        this.nxtOptoHighPrcnt = nxtOptoHighPrcnt;
+    }
+
+    public BigDecimal getNxtOptoLowPrcnt() {
+        return nxtOptoLowPrcnt;
+    }
+
+    public void setNxtOptoLowPrcnt(BigDecimal nxtOptoLowPrcnt) {
+        this.nxtOptoLowPrcnt = nxtOptoLowPrcnt;
+    }
+
+    public BigDecimal getNxtOptoAtpPrcnt() {
+        return nxtOptoAtpPrcnt;
+    }
+
+    public void setNxtOptoAtpPrcnt(BigDecimal nxtOptoAtpPrcnt) {
+        this.nxtOptoAtpPrcnt = nxtOptoAtpPrcnt;
+    }
+
+    public BigDecimal getVolumeAvg10() {
+        return volumeAvg10;
+    }
+
+    public void setVolumeAvg10(BigDecimal volumeAvg10) {
+        this.volumeAvg10 = volumeAvg10;
+    }
+
+    public BigDecimal getDeliveryAvg10() {
+        return deliveryAvg10;
+    }
+
+    public void setDeliveryAvg10(BigDecimal deliveryAvg10) {
+        this.deliveryAvg10 = deliveryAvg10;
+    }
+
+    public BigDecimal getOiAvg10() {
+        return oiAvg10;
+    }
+
+    public void setOiAvg10(BigDecimal oiAvg10) {
+        this.oiAvg10 = oiAvg10;
+    }
+
+    public BigDecimal getVolumeGrowth10() {
+        return volumeGrowth10;
+    }
+
+    public void setVolumeGrowth10(BigDecimal volumeGrowth10) {
+        this.volumeGrowth10 = volumeGrowth10;
+    }
+
+    public BigDecimal getDeliveryGrowth10() {
+        return deliveryGrowth10;
+    }
+
+    public void setDeliveryGrowth10(BigDecimal deliveryGrowth10) {
+        this.deliveryGrowth10 = deliveryGrowth10;
+    }
+
+    public BigDecimal getOiGrowth10() {
+        return oiGrowth10;
+    }
+
+    public void setOiGrowth10(BigDecimal oiGrowth10) {
+        this.oiGrowth10 = oiGrowth10;
+    }
+
+    public BigDecimal getOi() {
+        return oi;
+    }
+
+    public void setOi(BigDecimal oi) {
+        this.oi = oi;
+    }
 }

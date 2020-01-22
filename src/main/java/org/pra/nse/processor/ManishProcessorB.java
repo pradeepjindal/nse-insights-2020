@@ -49,9 +49,12 @@ public class ManishProcessorB {
         this.emailService = emailService;
     }
 
-    public void process(String outputFileName, LocalDate processForDate) throws IOException {
+    public void process(String outputFileName, LocalDate forDate) throws IOException {
+        LocalDate latestNseDate = praFileUtils.getLatestNseDate();
+        if(forDate.isAfter(latestNseDate)) return;
+
         String outputPathAndFileNameForFixFile = ProCo.outputPathAndFileNameForFixFile(outputFileName);
-        String foLatestFileName = praFileUtils.getLatestFileNameFor(ApCo.FM_FILES_PATH, ApCo.PRA_FM_FILE_PREFIX, ApCo.REPORTS_FILE_EXT, 1, processForDate);
+        String foLatestFileName = praFileUtils.getLatestFileNameFor(ApCo.FM_FILES_PATH, ApCo.PRA_FM_FILE_PREFIX, ApCo.REPORTS_FILE_EXT, 1, forDate);
         String outputPathAndFileNameForDynamicFile = ProCo.outputPathAndFileNameForDynamicFile(outputFileName, foLatestFileName);
 
         if(nseFileUtils.isFileExist(outputPathAndFileNameForDynamicFile)) {
@@ -60,9 +63,9 @@ public class ManishProcessorB {
         }
 
         List<PraBean> praBeans = new ArrayList<>();
-        TreeSet<LocalDate> foMonthlyExpiryDates = fmMerger.merge(praBeans, processForDate);
-        dmMerger.merge(praBeans, processForDate);
-        cmMerger.merge(praBeans, processForDate);
+        TreeSet<LocalDate> foMonthlyExpiryDates = fmMerger.merge(praBeans, forDate);
+        dmMerger.merge(praBeans, forDate);
+        cmMerger.merge(praBeans, forDate);
 
         //-------------------------------------------------------
         LOGGER.info("Fix File:{}", outputPathAndFileNameForFixFile);
@@ -85,6 +88,7 @@ public class ManishProcessorB {
         if ( nseFileUtils.isFileExist(outputPathAndFileNameForDynamicFile) ) {
             String fileName = ApCo.MANISH_FILE_NAME_B +"-"+ ProCo.extractDate(foLatestFileName) + ApCo.REPORTS_FILE_EXT;
             emailService.sendAttachmentMessage("ca.manish.thakkar@gmail.com", fileName, fileName, outputPathAndFileNameForDynamicFile, ApCo.MANISH_FILE_NAME_B);
+            emailService.sendAttachmentMessage("pradeepjindal.mca@gmail.com", fileName, fileName, outputPathAndFileNameForDynamicFile, ApCo.MANISH_FILE_NAME_B);
         }
     }
 

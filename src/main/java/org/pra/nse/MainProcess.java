@@ -1,9 +1,11 @@
 package org.pra.nse;
 
+import org.pra.nse.calculation.CalculationManager;
 import org.pra.nse.csv.download.DownloadManager;
-import org.pra.nse.csv.transform.TransformManager;
+import org.pra.nse.csv.transformation.TransformationManager;
 import org.pra.nse.db.upload.UploadManager;
 import org.pra.nse.processor.*;
+import org.pra.nse.report.ReportManager;
 import org.pra.nse.util.PraFileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,38 +20,48 @@ public class MainProcess implements ApplicationRunner {
     private final PraFileUtils praFileUtils;
 
     private final DownloadManager downloadManager;
-    private final TransformManager transformManager;
+    private final TransformationManager transformationManager;
     private final UploadManager uploadManager;
+    private final CalculationManager calculationManager;
+    private final ProcessManager processManager;
     private final ReportManager reportManager;
 
     public MainProcess(PraFileUtils praFileUtils,
                        DownloadManager downloadManager,
-                       TransformManager transformManager,
+                       TransformationManager transformationManager,
                        UploadManager uploadManager,
-                       ReportManager reportManager
-    ) {
+                       CalculationManager calculationManager,
+                       ProcessManager processManager,
+                       ReportManager reportManager) {
         this.praFileUtils = praFileUtils;
         this.downloadManager = downloadManager;
-        this.transformManager = transformManager;
+        this.transformationManager = transformationManager;
         this.uploadManager = uploadManager;
+        this.calculationManager = calculationManager;
+        this.processManager = processManager;
         this.reportManager = reportManager;
     }
 
     @Override
     public void run(ApplicationArguments args) {
-        LOGGER.info("Main Process | ============================== | commencing");
-        try {
+        LOGGER.info("");
+        LOGGER.info("Main Process | ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ | commencing");
+        LOGGER.info("");
+        try{
             downloadManager.download();
-            transformManager.transform();
+            transformationManager.transform();
             uploadManager.upload();
             if(praFileUtils.validateDownload() != null) {
-                reportManager.report();
+                calculationManager.execute();
+                processManager.process();
+                reportManager.execute();
             }
         } catch(Exception e) {
             LOGGER.error("ERROR: {}", e);
         }
-        LOGGER.info(".");
-        LOGGER.info("Main Process | ============================== | finishing");
+        LOGGER.info("");
+        LOGGER.info("Main Process | ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ | finishing");
+        LOGGER.info("");
     }
 
 }

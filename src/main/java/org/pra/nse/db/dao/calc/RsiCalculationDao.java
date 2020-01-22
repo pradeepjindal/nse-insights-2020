@@ -1,4 +1,4 @@
-package org.pra.nse.db.dao;
+package org.pra.nse.db.dao.calc;
 
 import org.pra.nse.config.YamlPropertyLoaderFactory;
 import org.pra.nse.db.model.CalcRsiTab;
@@ -13,7 +13,7 @@ import java.util.List;
 
 @Component
 @PropertySource(value = "classpath:rsi-query.yaml", factory = YamlPropertyLoaderFactory.class)
-public class CalcRsiDao {
+public class RsiCalculationDao {
     private final JdbcTemplate jdbcTemplate;
 
     @Value("${rsiDataCountForDateSql}")
@@ -21,7 +21,7 @@ public class CalcRsiDao {
     @Value("${rsiSql}")
     private String rsiSql;
 
-    CalcRsiDao(JdbcTemplate jdbcTemplate) {
+    RsiCalculationDao(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
 

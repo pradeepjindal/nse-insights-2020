@@ -30,25 +30,25 @@ public class DownloadManager {
         LOGGER.info(".");
         LOGGER.info("____________________ Download Manager");
 
-        cmDownloader.downloadFromLast();
-        LOGGER.info("--------------------");
-        fmDownloader.downloadFromLast();
-        LOGGER.info("--------------------");
-        dmDownloader.downloadFromLast();
-        LOGGER.info("--------------------");
-        bpDownloader.downloadFromLast();
-        LOGGER.info("--------------------");
-        dbcDownloader.downloadFromLast();
+        cmDownloader.downloadFromLastDate();
+        LOGGER.info("----------");
+        fmDownloader.downloadFromLastDate();
+        LOGGER.info("----------");
+        dmDownloader.downloadFromLastDate();
+        LOGGER.info("----------");
+        bpDownloader.downloadFromLastDate();
+        LOGGER.info("----------");
+        dbcDownloader.downloadFromLastDate();
 
-//        cmDownloader.downloadFromDate();
-//        LOGGER.info("--------------------");
-//        fmDownloader.downloadFromDate();
-//        LOGGER.info("--------------------");
-//        dmDownloader.downloadFromDate();
-//        LOGGER.info("--------------------");
-//        bpDownloader.downloadFromDate();
+//        cmDownloader.downloadFromDefaultDate();
+//        LOGGER.info("----------");
+//        fmDownloader.downloadFromDefaultDate();
+//        LOGGER.info("----------");
+//        dmDownloader.downloadFromDefaultDate();
+//        LOGGER.info("----------");
+//        bpDownloader.downloadFromDefaultDate();
 
-        LOGGER.info("==================== Download Manager");
+        LOGGER.info("======================================== Download Manager");
     }
 
 }

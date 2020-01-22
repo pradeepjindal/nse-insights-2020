@@ -133,7 +133,7 @@ public class NseFileUtils {
             rollingDate = rollingDate.plusDays(1);
         }
         //fileNamesToBeDownloaded.forEach(fileName -> LOGGER.info(fileName));
-        LOGGER.info("Total File Count ({}): {}", filePrefix, fileNameList.size());
+        //LOGGER.info("Total File Count ({}): {}", filePrefix, fileNameList.size());
 //        fileNameList.forEach(name-> {
 //            String s = extractDate(name);
 //            System.out.println(s);
@@ -195,17 +195,20 @@ public class NseFileUtils {
         return destFile;
     }
 
-    public List<LocalDate> getFilesToBeComputed(LocalDate downloadFromDate, Supplier<String> filePrefixSupplier) {
-        return getFilesToBeComputed(ApCo.REPORTS_DIR_NAME, downloadFromDate, filePrefixSupplier);
+    public List<LocalDate> getDatesToBeComputed(Supplier<String> filePrefixSupplier) {
+        return getDatesToBeComputed(filePrefixSupplier, ApCo.REPORTS_DIR_NAME, ApCo.DOWNLOAD_FROM_DATE);
     }
-    public List<LocalDate> getFilesToBeComputed(String inDir, LocalDate downloadFromDate, Supplier<String> filePrefixSupplier) {
+    public List<LocalDate> getDatesToBeComputed(Supplier<String> filePrefixSupplier, LocalDate fromDate) {
+        return getDatesToBeComputed(filePrefixSupplier, ApCo.REPORTS_DIR_NAME, fromDate);
+    }
+    public List<LocalDate> getDatesToBeComputed(Supplier<String> filePrefixSupplier, String inDir) {
+        return getDatesToBeComputed(filePrefixSupplier, inDir, ApCo.DOWNLOAD_FROM_DATE);
+    }
+    public List<LocalDate> getDatesToBeComputed(Supplier<String> filePrefixSupplier, String inDir, LocalDate fromDate) {
         String dataDir = ApCo.ROOT_DIR + File.separator + inDir;
         String filePrefix = filePrefixSupplier.get();
-        List<String> filesToBeDownloaded = constructFileNames(
-                downloadFromDate,
-                ApCo.PRA_FILE_NAME_DATE_FORMAT,
-                filePrefix + "-",
-                ApCo.REPORTS_FILE_EXT);
+        String fileSuffix = ApCo.REPORTS_FILE_EXT;
+        List<String> filesToBeDownloaded = constructFileNames(fromDate, ApCo.PRA_FILE_NAME_DATE_FORMAT, filePrefix + "-", fileSuffix);
         filesToBeDownloaded.removeAll(fetchFileNames(dataDir, null, null));
         List<LocalDate> localDates = new ArrayList<>();
         TreeMap<LocalDate, LocalDate> localDateMap = new TreeMap<>();

@@ -16,12 +16,12 @@ public class MfiData {
 
 
     public static void saveOverWrite(String csvHeaderString,
-                                     List<DeliverySpikeDto> dtoHavingMfi,
+                                     List<DeliverySpikeDto> dtos,
                                      String toPath,
                                      Function<MfiBean, String> csvStringFunction) {
         //
         List<MfiBean> beans = new ArrayList<>();
-        dtoHavingMfi.stream().forEach( dto -> {
+        dtos.stream().forEach( dto -> {
             MfiBean bean = new MfiBean();
             bean.setSymbol(dto.getSymbol());
             //rsiBean.setTradeDate(DateUtils.toUtilDate(dto.getTradeDate()));
@@ -48,13 +48,13 @@ public class MfiData {
         }
     }
 
-    public static void saveAppend(List<DeliverySpikeDto> dtoHavingMfi) {
+    public static void saveAppend(List<DeliverySpikeDto> dtos) {
 
         //List<RsiEntity> rsiBeans0 = RsiData.load();
         String toPath = ApCo.ROOT_DIR + File.separator + ApCo.COMPUTE_DIR_NAME + File.separator + "mfi.csv";
         //
         List<RsiBean> beans = new ArrayList<>();
-        dtoHavingMfi.stream().forEach( dto -> {
+        dtos.stream().forEach( dto -> {
             RsiBean bean = new RsiBean();
             bean.setSymbol(dto.getSymbol());
             //rsiBean.setTradeDate(DateUtils.toUtilDate(dto.getTradeDate()));

@@ -39,7 +39,7 @@ public class DmDownloader {
         this.downloadHelper = downloadHelper;
     }
 
-    public void downloadFromDate() {
+    public void downloadFromDefaultDate() {
         downloadFromDate(ApCo.DOWNLOAD_FROM_DATE);
     }
     public void downloadFromDate(LocalDate fromDate) {
@@ -48,7 +48,7 @@ public class DmDownloader {
         looper(filesDownloadUrl);
     }
 
-    public void downloadFromLast() {
+    public void downloadFromLastDate() {
         String str = praFileUtils.getLatestFileNameFor(Data_Dir, ApCo.PRA_DM_FILE_PREFIX, ApCo.REPORTS_FILE_EXT, 1);
         LocalDate dateOfLatestFile = DateUtils.getLocalDateFromPath(str);
         List<String> filesDownloadUrls = prepareFileUrls(dateOfLatestFile.plusDays(1));
@@ -56,7 +56,7 @@ public class DmDownloader {
 
         LocalDate dateOfNextFile = DateUtils.getLocalDateFromPath(filesDownloadUrls.get(0), File_Date_Regex, File_Date_Format);
         if(filesDownloadUrls.size() == 1 && dateOfNextFile.isBefore(LocalDate.now())) {
-            download(filesDownloadUrls.get(0));
+            downloadFromUrl(filesDownloadUrls.get(0));
         } else {
             looper(filesDownloadUrls);
         }
@@ -82,11 +82,11 @@ public class DmDownloader {
             return downloadHelper.timeFilter(forDate);
         }).forEach( filteredFileUrl -> {
             LOGGER.info("download - forDate: {}", filteredFileUrl);
-            download(filteredFileUrl);
+            downloadFromUrl(filteredFileUrl);
         });
     }
 
-    private void download(String fromUrl) {
+    private void downloadFromUrl(String fromUrl) {
         downloadHelper.downloadFile(fromUrl, Data_Dir,
                 () -> (Data_Dir + File.separator + fromUrl.substring(Base_Url.length()+1, 64)),
                 downloadedFilePathAndName -> {

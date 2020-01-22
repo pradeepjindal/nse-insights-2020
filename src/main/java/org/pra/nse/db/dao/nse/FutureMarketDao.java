@@ -1,8 +1,6 @@
-package org.pra.nse.db.dao;
+package org.pra.nse.db.dao.nse;
 
 import org.pra.nse.config.YamlPropertyLoaderFactory;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -12,22 +10,20 @@ import java.time.LocalDate;
 
 @Component
 @PropertySource(value = "classpath:upload-queries.yaml", factory = YamlPropertyLoaderFactory.class)
-public class NseCashMarketDao {
-    private static final Logger LOGGER = LoggerFactory.getLogger(NseCashMarketDao.class);
-
+public class FutureMarketDao {
     private final JdbcTemplate jdbcTemplate;
 
-    @Value("${cmDataCountForDateSql}")
-    private String cmDataCountForDateSql;
+    @Value("${fmDataCountForDateSql}")
+    private String fmDataCountForDateSql;
 
-    NseCashMarketDao(JdbcTemplate jdbcTemplate) {
+    FutureMarketDao(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
 
 
     public int dataCount(LocalDate tradeDate) {
         Object[] args = new Object[] {tradeDate.toString()};
-        return jdbcTemplate.queryForObject(cmDataCountForDateSql, args, Integer.class);
+        return jdbcTemplate.queryForObject(fmDataCountForDateSql, args, Integer.class);
     }
 
 }

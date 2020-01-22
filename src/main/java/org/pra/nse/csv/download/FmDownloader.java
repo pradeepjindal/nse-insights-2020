@@ -40,7 +40,7 @@ public class FmDownloader {
         this.downloadHelper = downloadHelper;
     }
 
-    public void downloadFromDate() {
+    public void downloadFromDefaultDate() {
         downloadFromDate(ApCo.DOWNLOAD_FROM_DATE);
     }
     public void downloadFromDate(LocalDate fromDate) {
@@ -48,7 +48,7 @@ public class FmDownloader {
         looper(filesDownloadUrls);
     }
 
-    public void downloadFromLast() {
+    public void downloadFromLastDate() {
         String str = praFileUtils.getLatestFileNameFor(Data_Dir, ApCo.PRA_FM_FILE_PREFIX, ApCo.REPORTS_FILE_EXT, 1);
         LocalDate dateOfLatestFile = DateUtils.getLocalDateFromPath(str);
         List<String> filesDownloadUrls = prepareFileUrls(dateOfLatestFile.plusDays(1));

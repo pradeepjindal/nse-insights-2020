@@ -1,4 +1,4 @@
-package org.pra.nse.csv.transform;
+package org.pra.nse.csv.transformation;
 
 import org.pra.nse.util.NseFileUtils;
 import org.slf4j.Logger;
@@ -10,12 +10,12 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 
 @Component
-public class TransformHelper {
-    private static final Logger LOGGER = LoggerFactory.getLogger(TransformHelper .class);
+public class TransformationHelper {
+    private static final Logger LOGGER = LoggerFactory.getLogger(TransformationHelper.class);
 
     private final NseFileUtils nseFileUtils;
 
-    public TransformHelper(NseFileUtils nseFileUtils) {
+    public TransformationHelper(NseFileUtils nseFileUtils) {
         this.nseFileUtils = nseFileUtils;
     }
 

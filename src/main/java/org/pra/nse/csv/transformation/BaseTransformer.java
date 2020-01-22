@@ -1,22 +1,19 @@
-package org.pra.nse.csv.transform;
+package org.pra.nse.csv.transformation;
 
-import org.pra.nse.ApCo;
 import org.pra.nse.util.NseFileUtils;
 import org.pra.nse.util.PraFileUtils;
-
-import java.io.File;
 
 
 public class BaseTransformer {
 
-    protected final TransformHelper transformHelper;
+    protected final TransformationHelper transformationHelper;
     protected final NseFileUtils nseFileUtils;
     protected final PraFileUtils praFileUtils;
 
-    public BaseTransformer(TransformHelper transformHelper,
+    public BaseTransformer(TransformationHelper transformationHelper,
                            NseFileUtils nseFileUtils,
                            PraFileUtils praFileUtils) {
-        this.transformHelper = transformHelper;
+        this.transformationHelper = transformationHelper;
         this.nseFileUtils = nseFileUtils;
         this.praFileUtils = praFileUtils;
     }

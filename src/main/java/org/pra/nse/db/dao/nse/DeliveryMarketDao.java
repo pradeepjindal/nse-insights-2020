@@ -1,4 +1,4 @@
-package org.pra.nse.db.dao;
+package org.pra.nse.db.dao.nse;
 
 import org.pra.nse.config.YamlPropertyLoaderFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -10,13 +10,13 @@ import java.time.LocalDate;
 
 @Component
 @PropertySource(value = "classpath:upload-queries.yaml", factory = YamlPropertyLoaderFactory.class)
-public class NseDeliveryMarketDao {
+public class DeliveryMarketDao {
     private final JdbcTemplate jdbcTemplate;
 
     @Value("${dmDataCountForDateSql}")
     private String dmDataCountForDateSql;
 
-    NseDeliveryMarketDao(JdbcTemplate jdbcTemplate) {
+    DeliveryMarketDao(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
 

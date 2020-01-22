@@ -1,4 +1,4 @@
-package org.pra.nse.db.dao;
+package org.pra.nse.db.dao.calc;
 
 import org.pra.nse.config.YamlPropertyLoaderFactory;
 import org.pra.nse.db.model.CalcMfiTab;
@@ -13,7 +13,7 @@ import java.util.List;
 
 @Component
 @PropertySource(value = "classpath:mfi-query.yaml", factory = YamlPropertyLoaderFactory.class)
-public class CalcMfiDao {
+public class MfiCalculationDao {
     private final JdbcTemplate jdbcTemplate;
 
     @Value("${mfiDataCountForDateSql}")
@@ -21,7 +21,7 @@ public class CalcMfiDao {
     @Value("${mfiSql}")
     private String mfiSql;
 
-    CalcMfiDao(JdbcTemplate jdbcTemplate) {
+    MfiCalculationDao(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
 

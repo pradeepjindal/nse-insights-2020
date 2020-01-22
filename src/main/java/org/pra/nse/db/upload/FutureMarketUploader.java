@@ -3,7 +3,7 @@ package org.pra.nse.db.upload;
 import org.pra.nse.ApCo;
 import org.pra.nse.csv.bean.in.FmBean;
 import org.pra.nse.csv.read.FmCsvReader;
-import org.pra.nse.db.dao.NseFutureMarketDao;
+import org.pra.nse.db.dao.nse.FutureMarketDao;
 import org.pra.nse.db.model.NseFutureMarketTab;
 import org.pra.nse.db.model.NseOptionMarketTab;
 import org.pra.nse.db.repository.NseFutureMarketRepository;
@@ -28,28 +28,28 @@ public class FutureMarketUploader extends BaseUploader {
 
     private final NseFutureMarketRepository futureMarketRepository;
     private final NseOptionMarketRepository optionMarketRepository;
-    private final NseFutureMarketDao dao;
+    private final FutureMarketDao dao;
     private final NseFileUtils nseFileUtils;
     private final PraFileUtils praFileUtils;
     private final FmCsvReader csvReader;
 
     public FutureMarketUploader(NseFutureMarketRepository nseFutureMarketRepository,
                                 NseOptionMarketRepository nseOptionMarketRepository,
-                                NseFutureMarketDao nseFutureMarketDao,
+                                FutureMarketDao futureMarketDao,
                                 NseFileUtils nseFileUtils,
                                 PraFileUtils praFileUtils,
                                 FmCsvReader fmCsvReader) {
         super(praFileUtils, ApCo.FM_DIR_NAME, ApCo.PRA_FM_FILE_PREFIX);
         this.futureMarketRepository = nseFutureMarketRepository;
         this.optionMarketRepository = nseOptionMarketRepository;
-        this.dao = nseFutureMarketDao;
+        this.dao = futureMarketDao;
         this.nseFileUtils = nseFileUtils;
         this.praFileUtils = praFileUtils;
         this.csvReader = fmCsvReader;
     }
 
 
-    public void upload(LocalDate forDate) {
+    public void uploadForDate(LocalDate forDate) {
         if(dao.dataCount(forDate) > 0) {
             LOGGER.info("FM-upload | SKIPPING - already uploaded | for date:[{}]", forDate);
             return;

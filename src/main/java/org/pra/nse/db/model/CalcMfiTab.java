@@ -133,7 +133,6 @@ public class CalcMfiTab implements Serializable {
         this.deliveryAtpMfi05 = deliveryAtpMfi05;
     }
 
-    @Column(name = "delivery_atp_mfi_10")
     public BigDecimal getDeliveryAtpMfi10() {
         return deliveryAtpMfi10;
     }

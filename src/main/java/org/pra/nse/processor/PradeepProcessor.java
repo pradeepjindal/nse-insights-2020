@@ -44,9 +44,12 @@ public class PradeepProcessor {
         this.praFileUtils = praFileUtils;
     }
 
-    public void process(LocalDate processForDate) throws IOException {
+    public void process(LocalDate forDate) throws IOException {
+        LocalDate latestNseDate = praFileUtils.getLatestNseDate();
+        if(forDate.isAfter(latestNseDate)) return;
+
         String outputPathAndFileNameForFixFile = ProCo.outputPathAndFileNameForFixFile(ApCo.PRADEEP_FILE_NAME);
-        String foLatestFileName = praFileUtils.getLatestFileNameFor(ApCo.FM_FILES_PATH, ApCo.PRA_FM_FILE_PREFIX, ApCo.REPORTS_FILE_EXT, 1, processForDate);
+        String foLatestFileName = praFileUtils.getLatestFileNameFor(ApCo.FM_FILES_PATH, ApCo.PRA_FM_FILE_PREFIX, ApCo.REPORTS_FILE_EXT, 1, forDate);
         String outputPathAndFileNameForDynamicFile = ProCo.outputPathAndFileNameForDynamicFile(ApCo.PRADEEP_FILE_NAME, foLatestFileName);
 
         if(nseFileUtils.isFileExist(outputPathAndFileNameForDynamicFile)) {
@@ -55,9 +58,9 @@ public class PradeepProcessor {
         }
 
         List<PraBean> praBeans = new ArrayList<>();
-        TreeSet<LocalDate> foMonthlyExpiryDates = fmMerger.merge(praBeans, processForDate);
-        dmMerger.merge(praBeans, processForDate);
-        cmMerger.merge(praBeans, processForDate);
+        TreeSet<LocalDate> foMonthlyExpiryDates = fmMerger.merge(praBeans, forDate);
+        dmMerger.merge(praBeans, forDate);
+        cmMerger.merge(praBeans, forDate);
 
         //-------------------------------------------------------
         csvWriter.write(praBeans, outputPathAndFileNameForFixFile, foMonthlyExpiryDates);

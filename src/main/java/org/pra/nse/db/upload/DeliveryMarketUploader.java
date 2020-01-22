@@ -3,7 +3,7 @@ package org.pra.nse.db.upload;
 import org.pra.nse.ApCo;
 import org.pra.nse.csv.bean.in.DmBean;
 import org.pra.nse.csv.read.DmCsvReader;
-import org.pra.nse.db.dao.NseDeliveryMarketDao;
+import org.pra.nse.db.dao.nse.DeliveryMarketDao;
 import org.pra.nse.db.model.NseDeliveryMarketTab;
 import org.pra.nse.db.repository.NseDeliveryMarketRepository;
 import org.pra.nse.util.DateUtils;
@@ -24,26 +24,26 @@ public class DeliveryMarketUploader extends BaseUploader {
     private static final Logger LOGGER = LoggerFactory.getLogger(DeliveryMarketUploader.class);
 
     private final NseDeliveryMarketRepository repository;
-    private final NseDeliveryMarketDao dao;
+    private final DeliveryMarketDao dao;
     private final NseFileUtils nseFileUtils;
     private final PraFileUtils praFileUtils;
     private final DmCsvReader csvReader;
 
     public DeliveryMarketUploader(NseDeliveryMarketRepository nseDeliveryMarketRepository,
-                                  NseDeliveryMarketDao nseDeliveryMarketDao,
+                                  DeliveryMarketDao deliveryMarketDao,
                                   NseFileUtils nseFileUtils,
                                   PraFileUtils praFileUtils,
                                   DmCsvReader csvReader) {
         super(praFileUtils, ApCo.DM_DIR_NAME, ApCo.PRA_DM_FILE_PREFIX);
         this.repository = nseDeliveryMarketRepository;
-        this.dao = nseDeliveryMarketDao;
+        this.dao = deliveryMarketDao;
         this.nseFileUtils = nseFileUtils;
         this.praFileUtils = praFileUtils;
         this.csvReader = csvReader;
     }
 
 
-    public void upload(LocalDate forDate) {
+    public void uploadForDate(LocalDate forDate) {
         if(dao.dataCount(forDate) > 0) {
             LOGGER.info("DM-upload | SKIPPING - already uploaded | for date:[{}]", forDate);
             return;

@@ -11,6 +11,9 @@ import java.io.File;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Locale;
 
 @Component
@@ -81,6 +84,27 @@ public class PraFileUtils {
         return LocalDate.parse(localDate.toString(), dtf).toString();
     }
 
+    public LocalDate getLatestNseDate() {
+        String cmFileName = getLatestFileNameFor(ApCo.CM_FILES_PATH, ApCo.PRA_CM_FILE_PREFIX, ApCo.DATA_FILE_EXT, 1);
+        String cmDateStr = ProCo.extractDate(cmFileName);
+        LocalDate cmDate = DateUtils.toLocalDate(cmDateStr);
+
+        String fmFileName = getLatestFileNameFor(ApCo.FM_FILES_PATH, ApCo.PRA_FM_FILE_PREFIX, ApCo.DATA_FILE_EXT, 1);
+        String fmDateStr = ProCo.extractDate(fmFileName);
+        LocalDate fmDate = DateUtils.toLocalDate(fmDateStr);
+
+        String dmFileName = getLatestFileNameFor(ApCo.DM_FILES_PATH, ApCo.PRA_DM_FILE_PREFIX, ApCo.DATA_FILE_EXT, 1);
+        String dmDateStr = ProCo.extractDate(dmFileName);
+        LocalDate dmDate = DateUtils.toLocalDate(dmDateStr);
+
+        List<LocalDate> dates = new ArrayList<>();
+        dates.add(cmDate);
+        dates.add(fmDate);
+        dates.add(dmDate);
+        Collections.sort(dates);
+        return dates.get(0);
+    }
+
     public String validateDownload() {
         String cmDate = getLatestFileNameFor(ApCo.CM_FILES_PATH, ApCo.PRA_CM_FILE_PREFIX, ApCo.REPORTS_FILE_EXT, 1);
         cmDate = ProCo.extractDate(cmDate);
@@ -102,5 +126,7 @@ public class PraFileUtils {
             return null;
         }
     }
+
+
 
 }

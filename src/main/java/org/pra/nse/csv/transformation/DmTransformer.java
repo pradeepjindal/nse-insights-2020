@@ -1,4 +1,4 @@
-package org.pra.nse.csv.transform;
+package org.pra.nse.csv.transformation;
 
 import org.pra.nse.ApCo;
 import org.pra.nse.util.DateUtils;
@@ -28,12 +28,12 @@ public class DmTransformer extends BaseTransformer {
     private final String Data_Dir = ApCo.ROOT_DIR + File.separator + ApCo.DM_DIR_NAME;
 
 
-    public DmTransformer(TransformHelper transformHelper, NseFileUtils nseFileUtils, PraFileUtils praFileUtils) {
-        super(transformHelper, nseFileUtils, praFileUtils);
+    public DmTransformer(TransformationHelper transformationHelper, NseFileUtils nseFileUtils, PraFileUtils praFileUtils) {
+        super(transformationHelper, nseFileUtils, praFileUtils);
     }
 
 
-    public void transformFromDate() {
+    public void transformFromDefaultDate() {
         transformFromDate(ApCo.DOWNLOAD_FROM_DATE);
     }
     public void transformFromDate(LocalDate fromDate) {

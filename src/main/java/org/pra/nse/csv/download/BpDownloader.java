@@ -47,7 +47,7 @@ public class BpDownloader {
         this.downloadHelper = downloadHelper;
     }
 
-    public void downloadFromDate() {
+    public void downloadFromDefaultDate() {
         downloadFromDate(ApCo.DOWNLOAD_FROM_DATE);
     }
     public void downloadFromDate(LocalDate fromDate) {
@@ -55,7 +55,7 @@ public class BpDownloader {
         looper(filesDownloadUrl);
     }
 
-    public void downloadFromLast() {
+    public void downloadFromLastDate() {
         String str = praFileUtils.getLatestFileNameFor(Data_Dir, ApCo.PRA_BP_FILE_PREFIX, ApCo.REPORTS_FILE_EXT, 1);
         LocalDate dateOfLatestFile = DateUtils.getLocalDateFromPath(str);
         List<String> filesDownloadUrl = prepareFileUrls(dateOfLatestFile.plusDays(1));
@@ -94,11 +94,11 @@ public class BpDownloader {
             return downloadHelper.timeFilter(forDate);
         }).forEach( filteredFileUrl -> {
             LOGGER.info("download - forDate: {}", filteredFileUrl);
-            download(filteredFileUrl);
+            downloadFromUrl(filteredFileUrl);
         });
     }
 
-    private void download(String fileUrl) {
+    private void downloadFromUrl(String fileUrl) {
         downloadHelper.downloadFile(fileUrl, Data_Dir,
                 () -> (Data_Dir + File.separator + fileUrl.substring(Base_Url.length()+1)),
                 filePathAndName -> {

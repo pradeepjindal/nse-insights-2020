@@ -45,6 +45,7 @@ sqlDeliverySpike: >
       where v2.two_trade_date = d2.trade_Date
     ) yes
   WHERE tdy.one_trade_date = yes.one_trade_Date and tdy.symbol = yes.symbol
+  order by tdy.symbol, tdy.trade_date
 
 sqlPastPresentFuture: >
   SELECT

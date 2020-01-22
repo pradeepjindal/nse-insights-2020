@@ -42,7 +42,7 @@ public class DbcDownloader {
     }
 
 
-    public void downloadFromDate() {
+    public void downloadFromDefaultDate() {
         downloadFromDate(ApCo.DOWNLOAD_FROM_DATE);
     }
     public void downloadFromDate(LocalDate fromDate) {
@@ -50,7 +50,7 @@ public class DbcDownloader {
         looper(filesDownloadUrl);
     }
 
-    public void downloadFromLast() {
+    public void downloadFromLastDate() {
         //String str = praFileUtils.getLatestFileNameFor(Data_Dir, File_Prefix, File_Ext, 1);
         String str = praFileUtils.getLatestFileNameFor(Data_Dir, File_Prefix, File_Ext,  1, LocalDate.now(), ApCo.DOWNLOAD_FROM_DATE, File_Date_Dtf);
 
@@ -62,7 +62,7 @@ public class DbcDownloader {
 
         LocalDate dateOfNextFile = DateUtils.getLocalDateFromPath(filesDownloadUrls.get(0), File_Date_Regex, File_Date_Format);
         if(filesDownloadUrls.size() == 1 && dateOfNextFile.isBefore(LocalDate.now())) {
-            download(filesDownloadUrls.get(0));
+            downloadFromUrl(filesDownloadUrls.get(0));
         } else {
             looper(filesDownloadUrls);
         }
@@ -89,11 +89,11 @@ public class DbcDownloader {
             return downloadHelper.timeFilter(forDate);
         }).forEach( filteredFileUrl -> {
             LOGGER.info("download - forDate: {}", filteredFileUrl);
-                download(filteredFileUrl);
+            downloadFromUrl(filteredFileUrl);
         });
     }
 
-    private void download(String fileUrl) {
+    private void downloadFromUrl(String fileUrl) {
         downloadHelper.downloadFile(fileUrl, Data_Dir,
                 //() -> (Data_Dir + File.separator + fileUrl.substring(65)),
                 () -> (Data_Dir + File.separator + fileUrl.substring(Base_Url.length())),

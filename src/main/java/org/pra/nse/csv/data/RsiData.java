@@ -17,8 +17,7 @@ public class RsiData {
     public static void saveOverWrite(String csvHeaderString,
                                      List<DeliverySpikeDto> dtoHavingRsi,
                                      String toPath,
-                                     Function<RsiBean,
-                                     String> csvStringFunction) {
+                                     Function<RsiBean, String> csvStringFunction) {
         //
         List<RsiBean> beans = new ArrayList<>();
         dtoHavingRsi.stream().forEach( dto -> {

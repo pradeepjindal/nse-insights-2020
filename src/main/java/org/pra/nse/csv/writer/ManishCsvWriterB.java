@@ -121,8 +121,8 @@ public class ManishCsvWriterB {
     }
 
     private List<ManishBean> enrich(Map<String, ManishBean> manishBeanMap) {
-        List<PivotOiDto> result = nseViewDao.getPivotOi();
-        result.forEach( row -> {
+        List<PivotOiDto> dbResults = nseViewDao.getPivotOi();
+        dbResults.forEach( row -> {
             if(manishBeanMap.containsKey(row.getSymbol())) {
                 manishBeanMap.get(row.getSymbol()).setOiOne(row.getOiOne());
                 manishBeanMap.get(row.getSymbol()).setOiTwo(row.getOiTwo());

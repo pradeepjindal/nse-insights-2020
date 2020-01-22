@@ -1,0 +1,15 @@
+avgDataCountForDateSql: >
+  SELECT count(*)
+  FROM calc_avg_tab t
+  WHERE t.trade_date = to_date(?,'yyyy-mm-dd')
+
+avgSql: >
+  SELECT *
+  FROM calc_avg_tab
+
+oiSumSql: >
+  select symbol, trade_date, sum(open_int) sum_oi
+  from nse_future_market_tab
+  where trade_date = to_date(?,'yyyy-MM-dd')
+  group by symbol, trade_date
+  order by symbol

@@ -27,19 +27,19 @@ public class UploadManager {
         LOGGER.info(".");
         LOGGER.info("____________________ Upload Manager");
 
-        cashMarketUploader.uploadFromLast();
-        LOGGER.info("--------------------");
-        futureMarketUploader.uploadFromLast();
-        LOGGER.info("--------------------");
-        deliveryMarketUploader.uploadFromLast();
+        cashMarketUploader.uploadFromLastDate();
+        LOGGER.info("----------");
+        futureMarketUploader.uploadFromLastDate();
+        LOGGER.info("----------");
+        deliveryMarketUploader.uploadFromLastDate();
 
-//        cashMarketUploader.uploadFromDate();
-//        LOGGER.info("--------------------");
-//        futureMarketUploader.uploadFromDate();
-//        LOGGER.info("--------------------");
-//        deliveryMarketUploader.uploadFromDate();
+//        cashMarketUploader.uploadFromDefaultDate();
+//        LOGGER.info("----------");
+//        futureMarketUploader.uploadFromDefaultDate();
+//        LOGGER.info("----------");
+//        deliveryMarketUploader.uploadFromDefaultDate();
 
-        LOGGER.info("==================== Upload Manager");
+        LOGGER.info("======================================== Upload Manager");
     }
 
 
