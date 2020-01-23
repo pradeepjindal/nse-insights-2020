@@ -26,6 +26,7 @@ public class AvgData {
             //rsiBean.setTradeDate(DateUtils.toUtilDate(dto.getTradeDate()));
             bean.setTradeDate(dto.getTradeDate());
 
+            bean.setAtpAvg10(dto.getAtpAvg10());
             bean.setVolumeAvg10(dto.getVolumeAvg10());
             bean.setDeliveryAvg10(dto.getDeliveryAvg10());
             bean.setOiAvg10(dto.getOiAvg10());

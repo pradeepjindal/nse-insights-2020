@@ -11,6 +11,7 @@ public class CalcCons {
             "volumeAtpMfi05,volumeAtpMfi10,volumeAtpMfi15,volumeAtpMfi20," +
             "deliveryAtpMfi05,deliveryAtpMfi10,deliveryAtpMfi15,deliveryAtpMfi20";
     public static final String AVG_CSV_HEADER = "symbol,trade_date," +
+            "atpAvg05,atpAvg10,atpAvg15,atpAvg20," +
             "volumeAvg05,volumeAvg10,volumeAvg15,volumeAvg20," +
             "deliveryAvg05,deliveryAvg10,deliveryAvg15,deliveryAvg20," +
             "oiAvg05,oiAvg10,oiAvg15,oiAvg20";

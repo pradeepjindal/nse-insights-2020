@@ -69,6 +69,12 @@ public class AvgCalculator {
             calculate(forDate, symbol, list,
                     dto -> {
 //                        LOGGER.info("dt:{}, val:{}, del:{}, oi:{}", dto.getTradeDate(), dto.getVolume, dto.getDelivery, oiSumMap.get(dto.getSymbol());
+                        return dto.getAtp();
+                    },
+                    (dto, avg) -> dto.setAtpAvg10(avg)
+            );
+            calculate(forDate, symbol, list,
+                    dto -> {
                         return dto.getVolume();
                     },
                     (dto, avg) -> dto.setVolumeAvg10(avg)
@@ -189,6 +195,7 @@ public class AvgCalculator {
             tab.setSymbol(dto.getSymbol());
             tab.setTradeDate(dto.getTradeDate());
 
+            tab.setAtpAvg10(dto.getAtpAvg10());
             tab.setVolumeAvg10(dto.getVolumeAvg10());
             tab.setDeliveryAvg10(dto.getDeliveryAvg10());
             tab.setOiAvg10(dto.getOiAvg10());

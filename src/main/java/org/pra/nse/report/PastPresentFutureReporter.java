@@ -151,6 +151,9 @@ public class PastPresentFutureReporter {
             entry.getValue().forEach( dto -> {
                 if(previousDate.getValue() == null || previousDate.getValue().isBefore(dto.getTradeDate())) {
                     previousDate.setValue(dto.getTradeDate());
+                    BigDecimal atpOnePercent = calcAvgMap.get(dto.getSymbol()).getAtpAvg10().divide(hundred, 2, RoundingMode.HALF_UP);
+                    BigDecimal atpGrowth = dto.getAtp().divide(atpOnePercent, 2, RoundingMode.HALF_UP);
+                        dto.setAtpGrowth10(atpGrowth);
                     BigDecimal volumeOnePercent = calcAvgMap.get(dto.getSymbol()).getVolumeAvg10().divide(hundred, 2, RoundingMode.HALF_UP);
                     BigDecimal volumeGrowth = dto.getVolume().divide(volumeOnePercent, 2, RoundingMode.HALF_UP);
                         dto.setVolumeGrowth10(volumeGrowth);

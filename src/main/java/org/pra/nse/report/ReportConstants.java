@@ -1,5 +1,7 @@
 package org.pra.nse.report;
 
+import java.util.List;
+
 public class ReportConstants {
     public static final String DSRD = "DeliverySpikeReportDaily";
     public static final String DSRF = "DeliverySpikeReportFull";
@@ -19,11 +21,14 @@ public class ReportConstants {
     static final String PPF_CSV_HEADER =
             "symbol,trade_date," +
             "open,high,low,close,last,closingBell,closeToLastPrcnt,atp,hlm," +
-            "volumeGrowth10,tradedChgPrcnt," +
+            "atpGrowth10,volumeGrowth10,tradedChgPrcnt," +
             "deliveryGrowth10,deliveredChgPrcnt," +
             "oiGrowth10,oiChgPrcnt," +
             "premium,openingBell," +
             "nxtCloseToOpenPercent,nxtOptoHighPrcnt,nxtOptoLowPrcnt,nxtOptoAtpPrcnt," +
             "VolumeAtpMfi10,DeliveryAtpMfi10," +
             "AtpRsi10Ema,CloseRsi10Ema,LastRsi10Ema";
+
+    static final List<String> SHUVI_TICKERS =
+            List.of("ASIANPAINTS", "COLPAL", "DABUR", "ICICIPRULI", "JUBLIENTFOOD", "PIDILITE", "RELIANCE", "SBIN", "TITAN", "UBL");
 }

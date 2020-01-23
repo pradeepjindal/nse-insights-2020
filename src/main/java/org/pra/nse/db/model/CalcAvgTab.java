@@ -17,6 +17,15 @@ public class CalcAvgTab implements Serializable {
     private String symbol;
     private LocalDate tradeDate;
 
+    @Column(name = "atp_avg_05")
+    private BigDecimal atpAvg05;
+    @Column(name = "atp_avg_10")
+    private BigDecimal atpAvg10;
+    @Column(name = "atp_avg_15")
+    private BigDecimal atpAvg15;
+    @Column(name = "atp_avg_20")
+    private BigDecimal atpAvg20;
+
     @Column(name = "volume_avg_05")
     private BigDecimal volumeAvg05;
     @Column(name = "volume_avg_10")
@@ -49,6 +58,11 @@ public class CalcAvgTab implements Serializable {
         return symbol +
                 "," + tradeDate +
 
+                "," + atpAvg05 +
+                "," + atpAvg10 +
+                "," + atpAvg15 +
+                "," + atpAvg20 +
+
                 "," + volumeAvg05 +
                 "," + volumeAvg10 +
                 "," + volumeAvg15 +
@@ -69,6 +83,11 @@ public class CalcAvgTab implements Serializable {
         id = null;
         symbol = null;
         tradeDate = null;
+
+        atpAvg05 = null;
+        atpAvg10 = null;
+        atpAvg15 = null;
+        atpAvg20 = null;
 
         volumeAvg05 = null;
         volumeAvg10 = null;
@@ -112,6 +131,38 @@ public class CalcAvgTab implements Serializable {
 
     public static long getSerialVersionUID() {
         return serialVersionUID;
+    }
+
+    public BigDecimal getAtpAvg05() {
+        return atpAvg05;
+    }
+
+    public void setAtpAvg05(BigDecimal atpAvg05) {
+        this.atpAvg05 = atpAvg05;
+    }
+
+    public BigDecimal getAtpAvg10() {
+        return atpAvg10;
+    }
+
+    public void setAtpAvg10(BigDecimal atpAvg10) {
+        this.atpAvg10 = atpAvg10;
+    }
+
+    public BigDecimal getAtpAvg15() {
+        return atpAvg15;
+    }
+
+    public void setAtpAvg15(BigDecimal atpAvg15) {
+        this.atpAvg15 = atpAvg15;
+    }
+
+    public BigDecimal getAtpAvg20() {
+        return atpAvg20;
+    }
+
+    public void setAtpAvg20(BigDecimal atpAvg20) {
+        this.atpAvg20 = atpAvg20;
     }
 
     public BigDecimal getVolumeAvg05() {

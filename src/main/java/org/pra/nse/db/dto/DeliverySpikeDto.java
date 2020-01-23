@@ -15,7 +15,7 @@ public class DeliverySpikeDto {
     private BigDecimal last;
     private BigDecimal atp;
     private BigDecimal highLowMid;
-
+    private BigDecimal highLowPrcnt;
     private String closingBell;
     private BigDecimal closeToLastPercent;
 
@@ -26,6 +26,7 @@ public class DeliverySpikeDto {
     private BigDecimal lastChgPrcnt;
     private BigDecimal atpChgPrcnt;
 
+    private BigDecimal atpGrowth10;
     private BigDecimal volumeGrowth10;
     private BigDecimal tradedChgPrcnt;
     private BigDecimal deliveryGrowth10;
@@ -63,6 +64,7 @@ public class DeliverySpikeDto {
     private BigDecimal nxtOptoLowPrcnt;
     private BigDecimal nxtOptoAtpPrcnt;
 
+    private BigDecimal atpAvg10;
     private BigDecimal volumeAvg10;
     private BigDecimal deliveryAvg10;
     private BigDecimal oiAvg10;
@@ -166,6 +168,7 @@ public class DeliverySpikeDto {
                 + atp + ","
                 + highLowMid + ","
 
+                + atpGrowth10 + ","
                 + volumeGrowth10 + ","
                 + tradedChgPrcnt + ","
                 + deliveryGrowth10 + ","
@@ -267,6 +270,30 @@ public class DeliverySpikeDto {
         this.highLowMid = highLowMid;
     }
 
+    public BigDecimal getHighLowPrcnt() {
+        return highLowPrcnt;
+    }
+
+    public void setHighLowPrcnt(BigDecimal highLowPrcnt) {
+        this.highLowPrcnt = highLowPrcnt;
+    }
+
+    public String getClosingBell() {
+        return closingBell;
+    }
+
+    public void setClosingBell(String closingBell) {
+        this.closingBell = closingBell;
+    }
+
+    public BigDecimal getCloseToLastPercent() {
+        return closeToLastPercent;
+    }
+
+    public void setCloseToLastPercent(BigDecimal closeToLastPercent) {
+        this.closeToLastPercent = closeToLastPercent;
+    }
+
     public BigDecimal getOpenChgPrcnt() {
         return openChgPrcnt;
     }
@@ -315,6 +342,22 @@ public class DeliverySpikeDto {
         this.atpChgPrcnt = atpChgPrcnt;
     }
 
+    public BigDecimal getAtpGrowth10() {
+        return atpGrowth10;
+    }
+
+    public void setAtpGrowth10(BigDecimal atpGrowth10) {
+        this.atpGrowth10 = atpGrowth10;
+    }
+
+    public BigDecimal getVolumeGrowth10() {
+        return volumeGrowth10;
+    }
+
+    public void setVolumeGrowth10(BigDecimal volumeGrowth10) {
+        this.volumeGrowth10 = volumeGrowth10;
+    }
+
     public BigDecimal getTradedChgPrcnt() {
         return tradedChgPrcnt;
     }
@@ -323,12 +366,28 @@ public class DeliverySpikeDto {
         this.tradedChgPrcnt = tradedChgPrcnt;
     }
 
+    public BigDecimal getDeliveryGrowth10() {
+        return deliveryGrowth10;
+    }
+
+    public void setDeliveryGrowth10(BigDecimal deliveryGrowth10) {
+        this.deliveryGrowth10 = deliveryGrowth10;
+    }
+
     public BigDecimal getDeliveredChgPrcnt() {
         return deliveredChgPrcnt;
     }
 
     public void setDeliveredChgPrcnt(BigDecimal deliveredChgPrcnt) {
         this.deliveredChgPrcnt = deliveredChgPrcnt;
+    }
+
+    public BigDecimal getOiGrowth10() {
+        return oiGrowth10;
+    }
+
+    public void setOiGrowth10(BigDecimal oiGrowth10) {
+        this.oiGrowth10 = oiGrowth10;
     }
 
     public BigDecimal getOiChgPrcnt() {
@@ -345,6 +404,22 @@ public class DeliverySpikeDto {
 
     public void setPremium(BigDecimal premium) {
         this.premium = premium;
+    }
+
+    public String getOpeningBell() {
+        return openingBell;
+    }
+
+    public void setOpeningBell(String openingBell) {
+        this.openingBell = openingBell;
+    }
+
+    public BigDecimal getCloseToOpenPercent() {
+        return closeToOpenPercent;
+    }
+
+    public void setCloseToOpenPercent(BigDecimal closeToOpenPercent) {
+        this.closeToOpenPercent = closeToOpenPercent;
     }
 
     public BigDecimal getOthighPrcnt() {
@@ -411,6 +486,30 @@ public class DeliverySpikeDto {
         this.tdyatpMinusYesatp = tdyatpMinusYesatp;
     }
 
+    public BigDecimal getVolume() {
+        return volume;
+    }
+
+    public void setVolume(BigDecimal volume) {
+        this.volume = volume;
+    }
+
+    public BigDecimal getDelivery() {
+        return delivery;
+    }
+
+    public void setDelivery(BigDecimal delivery) {
+        this.delivery = delivery;
+    }
+
+    public BigDecimal getOi() {
+        return oi;
+    }
+
+    public void setOi(BigDecimal oi) {
+        this.oi = oi;
+    }
+
     public BigDecimal getVolumeAtpMfi10() {
         return volumeAtpMfi10;
     }
@@ -451,54 +550,6 @@ public class DeliverySpikeDto {
         this.tdyAtpRsi10Ema = tdyAtpRsi10Ema;
     }
 
-    public BigDecimal getVolume() {
-        return volume;
-    }
-
-    public void setVolume(BigDecimal volume) {
-        this.volume = volume;
-    }
-
-    public BigDecimal getDelivery() {
-        return delivery;
-    }
-
-    public void setDelivery(BigDecimal delivery) {
-        this.delivery = delivery;
-    }
-
-    public String getClosingBell() {
-        return closingBell;
-    }
-
-    public void setClosingBell(String closingBell) {
-        this.closingBell = closingBell;
-    }
-
-    public String getOpeningBell() {
-        return openingBell;
-    }
-
-    public void setOpeningBell(String openingBell) {
-        this.openingBell = openingBell;
-    }
-
-    public BigDecimal getCloseToLastPercent() {
-        return closeToLastPercent;
-    }
-
-    public void setCloseToLastPercent(BigDecimal closeToLastPercent) {
-        this.closeToLastPercent = closeToLastPercent;
-    }
-
-    public BigDecimal getCloseToOpenPercent() {
-        return closeToOpenPercent;
-    }
-
-    public void setCloseToOpenPercent(BigDecimal closeToOpenPercent) {
-        this.closeToOpenPercent = closeToOpenPercent;
-    }
-
     public BigDecimal getNxtCloseToOpenPercent() {
         return nxtCloseToOpenPercent;
     }
@@ -531,6 +582,14 @@ public class DeliverySpikeDto {
         this.nxtOptoAtpPrcnt = nxtOptoAtpPrcnt;
     }
 
+    public BigDecimal getAtpAvg10() {
+        return atpAvg10;
+    }
+
+    public void setAtpAvg10(BigDecimal atpAvg10) {
+        this.atpAvg10 = atpAvg10;
+    }
+
     public BigDecimal getVolumeAvg10() {
         return volumeAvg10;
     }
@@ -553,37 +612,5 @@ public class DeliverySpikeDto {
 
     public void setOiAvg10(BigDecimal oiAvg10) {
         this.oiAvg10 = oiAvg10;
-    }
-
-    public BigDecimal getVolumeGrowth10() {
-        return volumeGrowth10;
-    }
-
-    public void setVolumeGrowth10(BigDecimal volumeGrowth10) {
-        this.volumeGrowth10 = volumeGrowth10;
-    }
-
-    public BigDecimal getDeliveryGrowth10() {
-        return deliveryGrowth10;
-    }
-
-    public void setDeliveryGrowth10(BigDecimal deliveryGrowth10) {
-        this.deliveryGrowth10 = deliveryGrowth10;
-    }
-
-    public BigDecimal getOiGrowth10() {
-        return oiGrowth10;
-    }
-
-    public void setOiGrowth10(BigDecimal oiGrowth10) {
-        this.oiGrowth10 = oiGrowth10;
-    }
-
-    public BigDecimal getOi() {
-        return oi;
-    }
-
-    public void setOi(BigDecimal oi) {
-        this.oi = oi;
     }
 }

@@ -18,6 +18,11 @@ public class AvgBean {
     @JsonSerialize(using = LocalDateSerializer.class)
     private LocalDate tradeDate;
 
+    private BigDecimal atpAvg05;
+    private BigDecimal atpAvg10;
+    private BigDecimal atpAvg15;
+    private BigDecimal atpAvg20;
+
     private BigDecimal volumeAvg05;
     private BigDecimal volumeAvg10;
     private BigDecimal volumeAvg15;
@@ -38,6 +43,11 @@ public class AvgBean {
     public String toString() {
         return symbol +
                 "," + tradeDate +
+
+                "," + atpAvg05 +
+                "," + atpAvg10 +
+                "," + atpAvg15 +
+                "," + atpAvg20 +
 
                 "," + volumeAvg05 +
                 "," + volumeAvg10 +
@@ -69,6 +79,38 @@ public class AvgBean {
 
     public void setTradeDate(LocalDate tradeDate) {
         this.tradeDate = tradeDate;
+    }
+
+    public BigDecimal getAtpAvg05() {
+        return atpAvg05;
+    }
+
+    public void setAtpAvg05(BigDecimal atpAvg05) {
+        this.atpAvg05 = atpAvg05;
+    }
+
+    public BigDecimal getAtpAvg10() {
+        return atpAvg10;
+    }
+
+    public void setAtpAvg10(BigDecimal atpAvg10) {
+        this.atpAvg10 = atpAvg10;
+    }
+
+    public BigDecimal getAtpAvg15() {
+        return atpAvg15;
+    }
+
+    public void setAtpAvg15(BigDecimal atpAvg15) {
+        this.atpAvg15 = atpAvg15;
+    }
+
+    public BigDecimal getAtpAvg20() {
+        return atpAvg20;
+    }
+
+    public void setAtpAvg20(BigDecimal atpAvg20) {
+        this.atpAvg20 = atpAvg20;
     }
 
     public BigDecimal getVolumeAvg05() {

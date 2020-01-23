@@ -55,7 +55,7 @@ public class DeliveryMarketUploader extends BaseUploader {
         //LOGGER.info("DM-upload | looking for file Name along with path:[{}]",fromFile);
 
         if(!nseFileUtils.isFileExist(fromFile)) {
-            LOGGER.info("DCM-upload | file does not exist: [{}]", fromFile);
+            LOGGER.info("DM-upload | file does not exist: [{}]", fromFile);
             return;
         }
         Map<String, DmBean> mtLatestBeanMap = csvReader.read(fromFile);
@@ -78,7 +78,7 @@ public class DeliveryMarketUploader extends BaseUploader {
                 recordFailed.incrementAndGet();
             }
         });
-        LOGGER.info("CM-upload | record - uploaded {}, failed: [{}]", recordSucceed.get(), recordFailed.get());
+        LOGGER.info("DM-upload | record - uploaded {}, failed: [{}]", recordSucceed.get(), recordFailed.get());
     }
 
 }
