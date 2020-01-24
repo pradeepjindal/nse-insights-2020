@@ -172,6 +172,8 @@ public class PastPresentFutureReporter {
 
         // write report
         writeReport(filePath, symbolMap);
+        String str = "PPF-" +forDate+ " (" +forMinusDays+ ")";
+        email(null, str, str, filePath);
     }
 
 //    private void fillTheNextData(Map<LocalDate, Map<String, DeliverySpikeDto>> tradeDateSymbolMap) {
@@ -297,6 +299,14 @@ public class PastPresentFutureReporter {
         } catch (FileNotFoundException e) {
             LOGGER.error("Error: {}", e);
             throw new RuntimeException(PPF_10 + ": Could not create file");
+        }
+    }
+
+    private void email(String toEmail, String subject, String text, String pathToAttachment) {
+        if(nseFileUtils.isFileExist(pathToAttachment)) {
+            emailService.sendAttachmentMessage("pradeepjindal.mca@gmail.com", subject, text, pathToAttachment, null);
+        } else {
+            LOGGER.error("skipping email: DeliverySpikeReport not found at disk");
         }
     }
 
