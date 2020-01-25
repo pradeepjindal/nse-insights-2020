@@ -20,12 +20,15 @@ public class ReportConstants {
 
     static final String PPF_CSV_HEADER =
             "symbol,trade_date," +
-            "open,high,low,close,last,closingBell,closeToLastPrcnt,atp,hlm," +
-            "atpGrowth10,volumeGrowth10,tradedChgPrcnt," +
-            "deliveryGrowth10,deliveredChgPrcnt," +
-            "oiGrowth10,oiChgPrcnt," +
-            "premium,openingBell," +
-            "nxtCloseToOpenPercent,nxtOptoHighPrcnt,nxtOptoLowPrcnt,nxtOptoAtpPrcnt," +
+            "open,high,low,hlp,close,last,closingBell,closeToLastPct,atp,hlm," +
+
+            "atpTally10atpSpike10,atpChgPct," +
+            "volTally10volSpike10,volChgPct," +
+            "delTally10delSpike10,delChgPct," +
+            "foiTally10foiSpike10,foiChgPct," +
+
+                    "premium,openingBell," +
+            "nxtCloseToOpenPct,nxtOptoHighPct,nxtOptoLowPct,nxtOptoAtpPct," +
             "VolumeAtpMfi10,DeliveryAtpMfi10," +
             "AtpRsi10Ema,CloseRsi10Ema,LastRsi10Ema";
 

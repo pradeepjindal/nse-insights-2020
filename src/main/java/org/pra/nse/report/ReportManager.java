@@ -104,6 +104,7 @@ public class ReportManager implements Manager {
 //                });
         pastPresentFutureReport.reportFromLast(15);
         pastPresentFutureReport.reportFromLast(20);
+        pastPresentFutureReport.reportFromLast(30);
 
         LOGGER.info("======================================== Report Manager");
     }
