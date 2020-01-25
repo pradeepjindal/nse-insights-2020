@@ -66,7 +66,6 @@ public class ReportManager implements Manager {
 //        deliverySpikeReport.reportFromLast();
 
         LOGGER.info("--------------------");
-        //deliverySpikeReportFull.process();
         nseFileUtils.getDatesToBeComputed(()-> ReportConstants.DSRF, ApCo.REPORTS_DIR_NAME_TMP)
                 .forEach( forDate -> {
                     LOGGER.info(".");
@@ -79,13 +78,13 @@ public class ReportManager implements Manager {
                 });
 
         LOGGER.info("--------------------");
-        //pastPresentFutureReport.process();
         nseFileUtils.getDatesToBeComputed(()-> ReportConstants.PPF_10, ApCo.REPORTS_DIR_NAME_TMP)
                 .forEach( forDate -> {
                     LOGGER.info(".");
                     LOGGER.info("report-{} | for:{}", ReportConstants.PPF_10, forDate.toString());
                     try {
-                        pastPresentFutureReport.reportForDate(forDate, 10);
+                        //pastPresentFutureReport.reportForDate(forDate, 10);
+                        pastPresentFutureReport.reportFromLast(10);
                     } catch (Exception e) {
                         LOGGER.error("ERROR: {}", e);
                     }
@@ -104,6 +103,7 @@ public class ReportManager implements Manager {
 //                    }
 //                });
         pastPresentFutureReport.reportFromLast(15);
+        pastPresentFutureReport.reportFromLast(20);
 
         LOGGER.info("======================================== Report Manager");
     }
@@ -133,6 +133,5 @@ public class ReportManager implements Manager {
 
         LOGGER.info("======================================== Report Manager");
     }
-
 
 }

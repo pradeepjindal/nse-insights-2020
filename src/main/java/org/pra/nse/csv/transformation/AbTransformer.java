@@ -140,7 +140,6 @@ public class AbTransformer extends BaseTransformer {
         String fileName = pathToAttachment.substring(pathToAttachment.indexOf("EQ_"));
         if(nseFileUtils.isFileExist(pathToAttachment)) {
             emailService.sendAttachmentMessage("ca.manish.thakkar@gmail.com", fileName, fileName, pathToAttachment, null);
-            LOGGER.info(".");
             emailService.sendAttachmentMessage("pradeepjindal.mca@gmail.com", fileName, fileName, pathToAttachment, null);
         } else {
             LOGGER.error("skipping email: AmiBroker file not found at disk");

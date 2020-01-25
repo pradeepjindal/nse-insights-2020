@@ -47,13 +47,13 @@ public class MainProcess implements ApplicationRunner {
         LOGGER.info("");
         LOGGER.info("Main Process | ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ | commencing");
         LOGGER.info("");
-        try{
-            downloadManager.download();
-            transformationManager.transform();
-            uploadManager.upload();
+        try {
+            downloadManager.execute();
+            transformationManager.execute();
+            uploadManager.execute();
             if(praFileUtils.validateDownload() != null) {
                 calculationManager.execute();
-                processManager.process();
+                processManager.execute();
                 reportManager.execute();
             }
         } catch(Exception e) {

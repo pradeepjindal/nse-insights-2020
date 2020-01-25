@@ -1,11 +1,12 @@
 package org.pra.nse.csv.download;
 
+import org.pra.nse.Manager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 @Component
-public class DownloadManager {
+public class DownloadManager implements Manager {
     private static final Logger LOGGER = LoggerFactory.getLogger(DownloadManager.class);
 
     private final CmDownloader cmDownloader;
@@ -26,7 +27,8 @@ public class DownloadManager {
         this.dbcDownloader = dbcDownloader;
     }
 
-    public void download() {
+    @Override
+    public void execute() {
         LOGGER.info(".");
         LOGGER.info("____________________ Download Manager");
 

@@ -117,4 +117,20 @@ public class DateUtils {
     public static boolean isWeekend(LocalDate date) {
         return "SATURDAY".equals(date.getDayOfWeek().name()) || "SUNDAY".equals(date.getDayOfWeek().name());
     }
+
+    public static boolean isFixHoliday(LocalDate date) {
+        if(date.getDayOfMonth() == 26 && date.getMonthValue() == 1) return true;
+        if(date.getDayOfMonth() == 15 && date.getMonthValue() == 8) return true;
+        if(date.getDayOfMonth() == 2 && date.getMonthValue() == 10) return true;
+        if(date.getDayOfMonth() == 25 && date.getMonthValue() == 12) return true;
+        return false;
+    }
+
+    public static boolean isDeepawali(LocalDate date) {
+        if (date.equals(LocalDate.of(2017,10,19))) return true; //wed
+        if (date.equals(LocalDate.of(2018,11,7))) return true; //wed
+        if (date.equals(LocalDate.of(2019,10,27))) return true;//sun
+        if (date.equals(LocalDate.of(2020,11,14))) return true;//sat
+        return false;
+    }
 }

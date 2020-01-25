@@ -88,6 +88,7 @@ public class FmDownloader {
     }
 
     private void download(String fileUrl) {
+        //TODO 28-Aug-2019 file not to be downloaded as it is corrupt
         downloadHelper.downloadFile(fileUrl, Data_Dir,
                 () -> (Data_Dir + File.separator + fileUrl.substring(66, 89)),
                 zipFilePathAndName -> {

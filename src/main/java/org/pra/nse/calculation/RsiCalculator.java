@@ -21,8 +21,7 @@ import java.util.*;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 
-import static org.pra.nse.calculation.CalcCons.RSI_DATA_FILE_PREFIX;
-import static org.pra.nse.calculation.CalcCons.RSI_CSV_HEADER;
+import static org.pra.nse.calculation.CalcCons.*;
 
 @Component
 public class RsiCalculator {
@@ -71,8 +70,10 @@ public class RsiCalculator {
         });
 
         //
-        saveToCsv(forDate, dtos_ToBeSaved);
-        saveToDb(forDate, dtos_ToBeSaved);
+        if(CalcHelper.validateForSaving(forDate, dtos_ToBeSaved, RSI_DATA_FILE_PREFIX)) {
+            saveToCsv(forDate, dtos_ToBeSaved);
+            saveToDb(forDate, dtos_ToBeSaved);
+        }
     }
 
     public void calculateSma(LocalDate forDate,
@@ -98,15 +99,15 @@ public class RsiCalculator {
             }
 
             //if(dsDto.getTdycloseMinusYesclose().compareTo(zero) > 0)  {
-            BigDecimal rsiColumn = functionSupplier.apply(dsDto);
-            if(rsiColumn.compareTo(zero) > 0)  {
+            BigDecimal indicatorColumn = functionSupplier.apply(dsDto);
+            if(indicatorColumn.compareTo(zero) > 0)  {
                 //up = up.add(dsDto.getTdycloseMinusYesclose());
-                up = up.add(rsiColumn);
+                up = up.add(indicatorColumn);
                 upCtr++;
             }
             else {
                 //dn = dn.add(dsDto.getTdycloseMinusYesclose());
-                dn = dn.add(rsiColumn);
+                dn = dn.add(indicatorColumn);
                 dnCtr++;
             }
         }
@@ -149,47 +150,32 @@ public class RsiCalculator {
     }
 
     private void saveToCsv(LocalDate forDate, List<DeliverySpikeDto> dtos) {
-        //validateDate
-        Set<LocalDate> forDateSet = new HashSet<>();
-        dtos.forEach( dto -> forDateSet.add(dto.getTradeDate()));
-        if(forDateSet.size() != 1) return;
-
         String fileName = RSI_DATA_FILE_PREFIX + "-" + forDate + ApCo.DATA_FILE_EXT;
         String toPath = ApCo.ROOT_DIR + File.separator + ApCo.COMPUTE_DIR_NAME + File.separator + fileName;
         File file = new File(toPath);
-
         RsiData.saveOverWrite(RSI_CSV_HEADER, dtos, toPath, dto -> dto.toString());
     }
 
     private void saveToDb(LocalDate forDate, List<DeliverySpikeDto> dtos) {
-        //validateDate
-        Set<LocalDate> forDateSet = new HashSet<>();
-        dtos.forEach( dto -> forDateSet.add(dto.getTradeDate()));
-        if(forDateSet.size() != 1) {
-            LOGGER.info("{} | saving of csv skipped, discrepancy in the data", RSI_DATA_FILE_PREFIX);
-        }
-        if(forDateSet.size() != 1 && forDate.compareTo(dtos.get(0).getTradeDate()) != 0) {
-            LOGGER.info("{} | upload skipped, discrepancy in the data", RSI_DATA_FILE_PREFIX);
-            return;
-        }
+        long dataCtr = dao.dataCount(forDate);
+        if (dataCtr == 0) {
+            CalcRsiTab tab = new CalcRsiTab();
+            dtos.forEach(dto -> {
+                tab.reset();
+                tab.setSymbol(dto.getSymbol());
+                tab.setTradeDate(dto.getTradeDate());
 
-        if(dao.dataCount(forDate) > 0) {
+                tab.setCloseRsi10Ema(dto.getTdyCloseRsi10Ema());
+                tab.setLastRsi10Ema(dto.getTdyLastRsi10Ema());
+                tab.setAtpRsi10Ema(dto.getTdyAtpRsi10Ema());
+
+                repository.save(tab);
+            });
+        } else if (dataCtr == dtos.size()) {
             LOGGER.info("{} | upload skipped, already uploaded", RSI_DATA_FILE_PREFIX);
-            return;
+        } else {
+            LOGGER.warn("{} | upload skipped, discrepancy in data dbRecords={}, dtoSize={}", RSI_DATA_FILE_PREFIX, dataCtr, dtos.size());
         }
-
-        CalcRsiTab calcRsiTab = new CalcRsiTab();
-        dtos.forEach( dto -> {
-            calcRsiTab.reset();
-            calcRsiTab.setSymbol(dto.getSymbol());
-            calcRsiTab.setTradeDate(dto.getTradeDate());
-
-            calcRsiTab.setCloseRsi10Ema(dto.getTdyCloseRsi10Ema());
-            calcRsiTab.setLastRsi10Ema(dto.getTdyLastRsi10Ema());
-            calcRsiTab.setAtpRsi10Ema(dto.getTdyAtpRsi10Ema());
-
-            repository.save(calcRsiTab);
-        });
     }
 
 }

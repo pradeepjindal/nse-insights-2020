@@ -1,14 +1,14 @@
 package org.pra.nse.processor;
 
 import org.pra.nse.ApCo;
+import org.pra.nse.Manager;
 import org.pra.nse.util.NseFileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
-
 @Component
-public class ProcessManager {
+public class ProcessManager implements Manager {
     private static final Logger LOGGER = LoggerFactory.getLogger(ProcessManager.class);
 
     private final NseFileUtils nseFileUtils;
@@ -27,12 +27,13 @@ public class ProcessManager {
         this.manishProcessorB = manishProcessorB;
     }
 
-    public void process() {
+    @Override
+    public void execute() {
         LOGGER.info(".");
         LOGGER.info("____________________ Process Manager");
 
-        //nseFileUtils.getDatesToBeComputed(()-> ApCo.PRADEEP_FILE_NAME), ApCo.DOWNLOAD_FROM_DATE)
-        nseFileUtils.getDatesToBeComputed(()-> ApCo.PRADEEP_FILE_NAME)
+        //nseFileUtils.getDatesToBeComputed(()-> ApCo.PRADEEP_FILE_NAME)
+        nseFileUtils.getDatesToBeComputed( ()-> ApCo.PRADEEP_FILE_NAME, ApCo.PROCESS_FROM_DATE)
                 .forEach( forDate -> {
                     LOGGER.info(".");
                     LOGGER.info("report-{} | for:{}", ApCo.PRADEEP_FILE_NAME, forDate.toString());
@@ -45,7 +46,7 @@ public class ProcessManager {
                 });
 
 //        LOGGER.info("----------");
-//        nseFileUtils.getFilesToBeComputed(()-> ApCo.MANISH_FILE_NAME)
+//        nseFileUtils.getFilesToBeComputed( ()-> ApCo.MANISH_FILE_NAME, ApCo.PROCESS_FROM_DATE)
 //                .forEach( forDate -> {
 //                    LOGGER.info(".");
 //                    LOGGER.info("report-{} | for:{}", ApCo.MANISH_FILE_NAME, forDate.toString());
@@ -57,7 +58,8 @@ public class ProcessManager {
 //                });
 
         LOGGER.info("----------");
-        nseFileUtils.getDatesToBeComputed(()-> ApCo.MANISH_FILE_NAME_B)
+        //nseFileUtils.getDatesToBeComputed(()-> ApCo.MANISH_FILE_NAME_B)
+        nseFileUtils.getDatesToBeComputed( ()-> ApCo.MANISH_FILE_NAME_B, ApCo.PROCESS_FROM_DATE)
                 .forEach( forDate -> {
                     LOGGER.info(".");
                     LOGGER.info("report-{} | for:{}", ApCo.MANISH_FILE_NAME_B, forDate.toString());
@@ -67,7 +69,6 @@ public class ProcessManager {
                         LOGGER.error("ERROR: {}", e);
                     }
                 });
-
 
         LOGGER.info("======================================== Process Manager");
     }

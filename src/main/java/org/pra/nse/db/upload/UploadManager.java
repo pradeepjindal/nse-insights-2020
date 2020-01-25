@@ -1,5 +1,6 @@
 package org.pra.nse.db.upload;
 
+import org.pra.nse.Manager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -7,7 +8,7 @@ import org.springframework.stereotype.Component;
 import java.time.LocalDate;
 
 @Component
-public class UploadManager {
+public class UploadManager implements Manager {
     private static final Logger LOGGER = LoggerFactory.getLogger(UploadManager.class);
 
     private final CashMarketUploader cashMarketUploader;
@@ -23,7 +24,8 @@ public class UploadManager {
         this.deliveryMarketUploader = deliveryMarketUploader;
     }
 
-    public void upload() {
+    @Override
+    public void execute() {
         LOGGER.info(".");
         LOGGER.info("____________________ Upload Manager");
 

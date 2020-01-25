@@ -1,11 +1,12 @@
 package org.pra.nse.csv.transformation;
 
+import org.pra.nse.Manager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 @Component
-public class TransformationManager {
+public class TransformationManager implements Manager {
     private static final Logger LOGGER = LoggerFactory.getLogger(TransformationManager.class);
 
     private final CmTransformer cmTransformer;
@@ -24,7 +25,8 @@ public class TransformationManager {
     }
 
 
-    public void transform() {
+    @Override
+    public void execute() {
         LOGGER.info(".");
         LOGGER.info("____________________ Transform Manager");
 

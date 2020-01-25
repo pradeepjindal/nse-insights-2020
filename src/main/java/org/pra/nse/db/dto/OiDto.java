@@ -3,19 +3,16 @@ package org.pra.nse.db.dto;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
-public class OiSumDto {
+public class OiDto {
     private String symbol;
     private LocalDate tradeDate;
     private BigDecimal sumOi;
-
-
 
     public String toCsvString() {
         return  symbol + ","
                 + tradeDate + ","
                 + sumOi;
     }
-
 
     public String getSymbol() {
         return symbol;

@@ -8,8 +8,8 @@ import java.time.format.DateTimeFormatter;
 public class ApCo {
     public static final LocalDate DOWNLOAD_FROM_DATE = LocalDate.of(2020,1,1);
     public static final LocalTime DAILY_DOWNLOAD_TIME = LocalTime.of(18,0,0,0);
-
-    public static final LocalDate EMAIL_FROM_DATE = LocalDate.of(2020,1,1);
+    public static final LocalDate PROCESS_FROM_DATE = LocalDate.of(2020,1,25);
+    public static final LocalDate EMAIL_FROM_DATE = LocalDate.of(2020,1,25);
     public static final boolean EMAIL_ENABLED = true;
     public static final boolean EMAIL_ENABLED_FOR_MANISH = true;
     public static final boolean EMAIL_ENABLED_FOR_PRADEEP = true;
@@ -53,9 +53,10 @@ public class ApCo {
 
     public static final String COMPUTE_DIR_NAME = "pra-computed-data";
     public static final String REPORTS_DIR_NAME = "pra-reports-data";
+    public static final String REPORTS_DIR_NAME_TMP = "pra-reports-tmp";
     public static final String REPORTS_DIR_NAME_MANISH = "pra-reports-manish";
     public static final String REPORTS_DIR_NAME_SHUVI = "pra-reports-shuvi";
-    public static final String REPORTS_DIR_NAME_TMP = "pra-reports-tmp";
+
 
     public static final String CM_FILE_NAME_REGEX = "";
     public static final String FM_FILE_NAME_REGEX = "";
@@ -96,6 +97,7 @@ public class ApCo {
     public static final String PRA_DM_DATA_DATE_FORMAT = "yyyy-MM-dd";
     public static final String AB_DATA_DATE_FORMAT = "yyyyMMdd";
     public static final String REPORTS_DATE_FORMAT = "dd-MMM-yyyy";
+    public static final String FIX_HOLIDAYS_DATE_FORMAT = "dd-MMM";
 
     public static final String NSE_CM_FILE_PREFIX = "cm";
     public static final String NSE_FM_FILE_PREFIX = "fo";
@@ -159,4 +161,6 @@ public class ApCo {
 
     public static final DateTimeFormatter DEFAULT_DTF = DateTimeFormatter.ofPattern(ApCo.DEFAULT_FILE_NAME_DATE_FORMAT);
     public static final String DEFAULT_FILES_PATH = ApCo.ROOT_DIR + File.separator + ApCo.ROOT_DIR;
+
+    public static final DateTimeFormatter FIX_HOLIDAYS_DTF = DateTimeFormatter.ofPattern(ApCo.FIX_HOLIDAYS_DATE_FORMAT);
 }

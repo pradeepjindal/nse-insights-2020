@@ -3,11 +3,12 @@ package org.pra.nse.calculation;
 import org.pra.nse.ApCo;
 import org.pra.nse.csv.data.AvgData;
 import org.pra.nse.data.DataManager;
+import org.pra.nse.db.dao.GeneralDao;
 import org.pra.nse.db.dao.calc.AvgCalculationDao;
 import org.pra.nse.db.dto.DeliverySpikeDto;
-import org.pra.nse.db.dto.OiSumDto;
 import org.pra.nse.db.model.CalcAvgTab;
 import org.pra.nse.db.repository.CalcAvgRepository;
+import org.pra.nse.service.TradeDateService;
 import org.pra.nse.util.NseFileUtils;
 import org.pra.nse.util.PraFileUtils;
 import org.slf4j.Logger;
@@ -22,8 +23,7 @@ import java.util.*;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 
-import static org.pra.nse.calculation.CalcCons.AVG_DATA_FILE_PREFIX;
-import static org.pra.nse.calculation.CalcCons.AVG_CSV_HEADER;
+import static org.pra.nse.calculation.CalcCons.*;
 
 @Component
 public class AvgCalculator {
@@ -31,17 +31,24 @@ public class AvgCalculator {
 
     private final NseFileUtils nseFileUtils;
     private final PraFileUtils praFileUtils;
+    private final GeneralDao generalDao;
     private final AvgCalculationDao dao;
     private final CalcAvgRepository repository;
     private final DataManager dataManager;
+    private final TradeDateService tradeDateService;
 
     public AvgCalculator(NseFileUtils nseFileUtils, PraFileUtils praFileUtils,
-                         AvgCalculationDao avgCalculationDao, CalcAvgRepository calcAvgRepository, DataManager dataManager) {
+                         GeneralDao generalDao, AvgCalculationDao avgCalculationDao,
+                         CalcAvgRepository calcAvgRepository,
+                         DataManager dataManager,
+                         TradeDateService tradeDateService) {
         this.nseFileUtils = nseFileUtils;
         this.praFileUtils = praFileUtils;
+        this.generalDao = generalDao;
         this.dao = avgCalculationDao;
         this.repository = calcAvgRepository;
         this.dataManager = dataManager;
+        this.tradeDateService = tradeDateService;
     }
 
     public void calculateAndSave(LocalDate forDate) {
@@ -57,13 +64,9 @@ public class AvgCalculator {
             return;
         }
 
-        List<OiSumDto> oiSumDtos = dao.getOiSum(forDate);
-        Map<String, BigDecimal> oiSumMap = new HashMap<>();
-        oiSumDtos.stream().forEach( dto-> oiSumMap.put(dto.getSymbol(), dto.getSumOi()));
-
         Map<String, List<DeliverySpikeDto>> symbolMap = dataManager.getDataBySymbol(forDate, 10);
 
-        // calculate mfi for each s symbol
+        // calculate avg for each s symbol
         List<DeliverySpikeDto> dtos_ToBeSaved = new ArrayList<>();
         symbolMap.forEach( (symbol, list)  -> {
             calculate(forDate, symbol, list,
@@ -87,7 +90,7 @@ public class AvgCalculator {
             );
             calculate(forDate, symbol, list,
                     dto -> {
-                        return oiSumMap.get(dto.getSymbol());
+                        return dto.getOi();
                     },
                     (dto, avg) -> {
                         dto.setOiAvg10(avg);
@@ -97,8 +100,10 @@ public class AvgCalculator {
         });
 
         //
-        saveToCsv(forDate, dtos_ToBeSaved);
-        saveToDb(forDate, dtos_ToBeSaved);
+        if(CalcHelper.validateForSaving(forDate, dtos_ToBeSaved, AVG_DATA_FILE_PREFIX)) {
+            saveToCsv(forDate, dtos_ToBeSaved);
+            saveToDb(forDate, dtos_ToBeSaved);
+        }
     }
 
     public void calculate(LocalDate forDate,
@@ -124,12 +129,12 @@ public class AvgCalculator {
             }
 
             //if(dsDto.getTdycloseMinusYesclose().compareTo(zero) > 0)  {
-            BigDecimal rsiColumn = functionSupplier.apply(dsDto);
-            if(rsiColumn==null) {
-                rsiColumn = BigDecimal.ZERO;
+            BigDecimal indicatorColumn = functionSupplier.apply(dsDto);
+            if(indicatorColumn==null) {
+                indicatorColumn = BigDecimal.ZERO;
             }
             ctr++;
-            sum = sum.add(rsiColumn);
+            sum = sum.add(indicatorColumn);
         }
 
         if(ctr == 0) {
@@ -145,7 +150,7 @@ public class AvgCalculator {
 
         if(latestDto!=null) biConsumer.accept(latestDto, avg);
         else LOGGER.warn("skipping avg, latestDto is null for symbol {}, may be phasing out from FnO", symbol);
-        //LOGGER.info("for symbol = {}, rsi = {}", symbol, rsi);
+        //LOGGER.info("for symbol = {}, avg = {}", symbol, avg);
     }
 
     public void calculateEma(List<LocalDate> latestTenDates,
@@ -156,52 +161,35 @@ public class AvgCalculator {
 
     }
 
-    private void saveToCsv(LocalDate forDate, List<DeliverySpikeDto> dtos) {
-        //validateDate
-        Set<LocalDate> forDateSet = new HashSet<>();
-        dtos.forEach( dto -> forDateSet.add(dto.getTradeDate()));
-        if(forDateSet.size() != 1) {
-            LOGGER.info("{} | saving of csv skipped, discrepancy in the data", AVG_DATA_FILE_PREFIX);
-        }
-        if(forDateSet.size() != 1 && forDate.compareTo(dtos.get(0).getTradeDate()) != 0) {
-            LOGGER.info("avg | csv skipped, discrepancy in the data");
-            return;
-        }
 
+    private void saveToCsv(LocalDate forDate, List<DeliverySpikeDto> dtos) {
         String fileName = AVG_DATA_FILE_PREFIX + "-" + forDate + ApCo.DATA_FILE_EXT;
         String toPath = ApCo.ROOT_DIR + File.separator + ApCo.COMPUTE_DIR_NAME + File.separator + fileName;
         File file = new File(toPath);
-
         AvgData.saveOverWrite(AVG_CSV_HEADER, dtos, toPath, dto -> dto.toString());
     }
 
     private void saveToDb(LocalDate forDate, List<DeliverySpikeDto> dtos) {
-        //validateDate
-        Set<LocalDate> forDateSet = new HashSet<>();
-        dtos.forEach( dto -> forDateSet.add(dto.getTradeDate()));
-        if(forDateSet.size() != 1) {
-            LOGGER.info("{} | upload skipped, discrepancy in the data", AVG_DATA_FILE_PREFIX);
-            return;
-        }
+        long dataCtr = dao.dataCount(forDate);
+        if (dataCtr == 0) {
+            CalcAvgTab tab = new CalcAvgTab();
+            dtos.forEach(dto -> {
+                tab.reset();
+                tab.setSymbol(dto.getSymbol());
+                tab.setTradeDate(dto.getTradeDate());
 
-        if(dao.dataCount(forDate) > 0) {
+                tab.setAtpAvg10(dto.getAtpAvg10());
+                tab.setVolumeAvg10(dto.getVolumeAvg10());
+                tab.setDeliveryAvg10(dto.getDeliveryAvg10());
+                tab.setOiAvg10(dto.getOiAvg10());
+
+                repository.save(tab);
+            });
+        } else if (dataCtr == dtos.size()) {
             LOGGER.info("{} | upload skipped, already uploaded", AVG_DATA_FILE_PREFIX);
-            return;
+        } else {
+            LOGGER.warn("{} | upload skipped, discrepancy in data dbRecords={}, dtoSize={}", AVG_DATA_FILE_PREFIX, dataCtr, dtos.size());
         }
-
-        CalcAvgTab tab = new CalcAvgTab();
-        dtos.forEach( dto -> {
-            tab.reset();
-            tab.setSymbol(dto.getSymbol());
-            tab.setTradeDate(dto.getTradeDate());
-
-            tab.setAtpAvg10(dto.getAtpAvg10());
-            tab.setVolumeAvg10(dto.getVolumeAvg10());
-            tab.setDeliveryAvg10(dto.getDeliveryAvg10());
-            tab.setOiAvg10(dto.getOiAvg10());
-
-            repository.save(tab);
-        });
     }
 
 }

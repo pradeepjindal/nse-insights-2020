@@ -21,8 +21,7 @@ import java.util.*;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 
-import static org.pra.nse.calculation.CalcCons.MFI_DATA_FILE_PREFIX;
-import static org.pra.nse.calculation.CalcCons.MFI_CSV_HEADER;
+import static org.pra.nse.calculation.CalcCons.*;
 
 @Component
 public class MfiCalculator {
@@ -88,8 +87,10 @@ public class MfiCalculator {
         });
 
         //
-        saveToCsv(forDate, dtos_ToBeSaved);
-        saveToDb(forDate, dtos_ToBeSaved);
+        if(CalcHelper.validateForSaving(forDate, dtos_ToBeSaved, MFI_DATA_FILE_PREFIX)) {
+            saveToCsv(forDate, dtos_ToBeSaved);
+            saveToDb(forDate, dtos_ToBeSaved);
+        }
     }
 
     public void calculate(LocalDate forDate,
@@ -118,17 +119,17 @@ public class MfiCalculator {
             }
 
             //if(dsDto.getTdycloseMinusYesclose().compareTo(zero) > 0)  {
-            BigDecimal rsiColumn = functionSupplier.apply(dsDto);
-            if(rsiColumn==null) {
-                rsiColumn = BigDecimal.ZERO;
+            BigDecimal indicatorColumn = functionSupplier.apply(dsDto);
+            if(indicatorColumn==null) {
+                indicatorColumn = BigDecimal.ZERO;
             }
-            if(rsiColumn.compareTo(zero) > 0)  {
+            if(indicatorColumn.compareTo(zero) > 0)  {
                 //up = up.add(dsDto.getTdycloseMinusYesclose());
-                up = up.add(rsiColumn);
+                up = up.add(indicatorColumn);
                 upCtr++;
             } else {
                 //dn = dn.add(dsDto.getTdycloseMinusYesclose());
-                dn = dn.add(rsiColumn.abs());
+                dn = dn.add(indicatorColumn.abs());
                 dnCtr++;
             }
         }
@@ -161,10 +162,9 @@ public class MfiCalculator {
         mfi = hundred.subtract(mfi);
         //===========================================
 
-        //if(latestDto!=null) latestDto.setTdyCloseRsi10Ema(rsi);
         if(latestDto!=null) biConsumer.accept(latestDto, mfi);
         else LOGGER.warn("skipping mfi, latestDto is null for symbol {}, may be phasing out from FnO", symbol);
-        //LOGGER.info("for symbol = {}, rsi = {}", symbol, rsi);
+        //LOGGER.info("for symbol = {}, mfi = {}", symbol, mfi);
     }
 
     public void calculateEma(List<LocalDate> latestTenDates,
@@ -175,50 +175,32 @@ public class MfiCalculator {
 
     }
 
-    private void saveToCsv(LocalDate forDate, List<DeliverySpikeDto> dtoHavingMfi) {
-        //validateDate
-        Set<LocalDate> forDateSet = new HashSet<>();
-        dtoHavingMfi.forEach( dto -> forDateSet.add(dto.getTradeDate()));
-        if(forDateSet.size() != 1) {
-            LOGGER.info("{} | saving of csv skipped, discrepancy in the data", MFI_DATA_FILE_PREFIX);
-        }
-        if(forDateSet.size() != 1 && forDate.compareTo(dtoHavingMfi.get(0).getTradeDate())  != 0) {
-            LOGGER.info("mfi | csv skipped, discrepancy in the data");
-            return;
-        }
-
+    private void saveToCsv(LocalDate forDate, List<DeliverySpikeDto> dtos) {
         String fileName = MFI_DATA_FILE_PREFIX + "-" + forDate + ApCo.DATA_FILE_EXT;
         String toPath = ApCo.ROOT_DIR + File.separator + ApCo.COMPUTE_DIR_NAME + File.separator + fileName;
         File file = new File(toPath);
-
-        MfiData.saveOverWrite(MFI_CSV_HEADER, dtoHavingMfi, toPath, dto -> dto.toString());
+        MfiData.saveOverWrite(MFI_CSV_HEADER, dtos, toPath, dto -> dto.toString());
     }
 
     private void saveToDb(LocalDate forDate, List<DeliverySpikeDto> dtos) {
-        //validateDate
-        Set<LocalDate> forDateSet = new HashSet<>();
-        dtos.forEach( dto -> forDateSet.add(dto.getTradeDate()));
-        if(forDateSet.size() != 1 && forDate.compareTo(dtos.get(0).getTradeDate()) != 0) {
-            LOGGER.info("{} | upload skipped, discrepancy in the data", MFI_DATA_FILE_PREFIX);
-            return;
-        }
+        long dataCtr = dao.dataCount(forDate);
+        if (dataCtr == 0) {
+            CalcMfiTab tab = new CalcMfiTab();
+            dtos.forEach(dto -> {
+                tab.reset();
+                tab.setSymbol(dto.getSymbol());
+                tab.setTradeDate(dto.getTradeDate());
 
-        if(dao.dataCount(forDate) > 0) {
+                tab.setVolumeAtpMfi10(dto.getVolumeAtpMfi10());
+                tab.setDeliveryAtpMfi10(dto.getDeliveryAtpMfi10());
+
+                repository.save(tab);
+            });
+        } else if (dataCtr == dtos.size()) {
             LOGGER.info("{} | upload skipped, already uploaded", MFI_DATA_FILE_PREFIX);
-            return;
+        } else {
+            LOGGER.warn("{} | upload skipped, discrepancy in data dbRecords={}, dtoSize={}", MFI_DATA_FILE_PREFIX, dataCtr, dtos.size());
         }
-
-        CalcMfiTab tab = new CalcMfiTab();
-        dtos.forEach( dto -> {
-            tab.reset();
-            tab.setSymbol(dto.getSymbol());
-            tab.setTradeDate(dto.getTradeDate());
-
-            tab.setVolumeAtpMfi10(dto.getVolumeAtpMfi10());
-            tab.setDeliveryAtpMfi10(dto.getDeliveryAtpMfi10());
-
-            repository.save(tab);
-        });
     }
 
 }

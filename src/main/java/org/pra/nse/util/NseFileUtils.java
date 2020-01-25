@@ -112,6 +112,38 @@ public class NseFileUtils {
         zis.close();
     }
 
+    public List<LocalDate> getDatesToBeComputed(Supplier<String> filePrefixSupplier) {
+        return getDatesToBeComputed(filePrefixSupplier, ApCo.REPORTS_DIR_NAME, ApCo.DOWNLOAD_FROM_DATE);
+    }
+    public List<LocalDate> getDatesToBeComputed(Supplier<String> filePrefixSupplier, LocalDate fromDate) {
+        return getDatesToBeComputed(filePrefixSupplier, ApCo.REPORTS_DIR_NAME, fromDate);
+    }
+    public List<LocalDate> getDatesToBeComputed(Supplier<String> filePrefixSupplier, String inDir) {
+        return getDatesToBeComputed(filePrefixSupplier, inDir, ApCo.DOWNLOAD_FROM_DATE);
+    }
+    public List<LocalDate> getDatesToBeComputed(Supplier<String> filePrefixSupplier, String inDir, LocalDate fromDate) {
+        String dataDir = ApCo.ROOT_DIR + File.separator + inDir;
+        String filePrefix = filePrefixSupplier.get();
+        String fileSuffix = ApCo.REPORTS_FILE_EXT;
+        List<String> filesToBeDownloaded = constructFileNames(fromDate, ApCo.PRA_FILE_NAME_DATE_FORMAT, filePrefix + "-", fileSuffix);
+        filesToBeDownloaded.removeAll(fetchFileNames(dataDir, null, null));
+        List<LocalDate> localDates = new ArrayList<>();
+        TreeMap<LocalDate, LocalDate> localDateMap = new TreeMap<>();
+        filesToBeDownloaded.forEach( file -> {
+            String date = file.replace(filePrefix + "-", "");
+            date = date.replace(ApCo.REPORTS_FILE_EXT, "");
+            LocalDate localDate = LocalDate.of(
+                    Integer.valueOf(date.substring(0,4)),
+                    Integer.valueOf(date.substring(5,7)),
+                    Integer.valueOf(date.substring(8,10)));
+            localDates.add(localDate);
+            localDateMap.put(localDate, localDate);
+            //localDates.add(LocalDate.of(date.substring(0,4), date.substring(5,7), date.substring(8,10)));
+        });
+        return localDates;
+        //return (List<LocalDate>)localDateMap.values();
+    }
+
     public List<String> constructFileNames(LocalDate fromDate, String fileNameDateFormat, String filePrefix, String fileSuffix) {
         List<String> fileNameList = new ArrayList<>();
         LocalDate rollingDate = fromDate;
@@ -119,13 +151,15 @@ public class NseFileUtils {
         LocalDate todayDate = LocalDate.now();
         //LocalDate todayDate = LocalDate.of(2018, 12, 31);
         int weekends = 0;
-        while(rollingDate.compareTo(todayDate) < 1) {
+        while (rollingDate.compareTo(todayDate) < 1) {
             //LOGGER.info(localDate);
             //LOGGER.info(localDate.getDayOfWeek());
-            if(rollingDate.equals(LocalDate.of(2019,10,27))) {
+            if (rollingDate.equals(LocalDate.of(2019,10,27))) {
                 LOGGER.info("Deepawali Found - {}", rollingDate);
                 calcAndAddFileName(fileNameList, filePrefix, formatter, fileSuffix, rollingDate);
-            } else if(DateUtils.isWeekend(rollingDate)) {
+            } else if (DateUtils.isFixHoliday(rollingDate)) {
+                LOGGER.info("Fix Holiday Found - {}", rollingDate);
+            } else if (DateUtils.isWeekend(rollingDate)) {
                 weekends++;
             } else {
                 calcAndAddFileName(fileNameList, filePrefix, formatter, fileSuffix, rollingDate);
@@ -154,7 +188,7 @@ public class NseFileUtils {
                 //LOGGER.info("File " + listOfFiles[i].getName());
                 existingFiles.add(listOfFile.getName());
             } else if (listOfFile.isDirectory()) {
-                LOGGER.info("Directory " + listOfFile.getName());
+                LOGGER.info("Directory found with name:" + listOfFile.getName());
             }
         }
 //        existingFiles.forEach(name-> {
@@ -193,38 +227,6 @@ public class NseFileUtils {
             throw new IOException("Entry is outside of the target dir: " + zipEntry.getName());
         }
         return destFile;
-    }
-
-    public List<LocalDate> getDatesToBeComputed(Supplier<String> filePrefixSupplier) {
-        return getDatesToBeComputed(filePrefixSupplier, ApCo.REPORTS_DIR_NAME, ApCo.DOWNLOAD_FROM_DATE);
-    }
-    public List<LocalDate> getDatesToBeComputed(Supplier<String> filePrefixSupplier, LocalDate fromDate) {
-        return getDatesToBeComputed(filePrefixSupplier, ApCo.REPORTS_DIR_NAME, fromDate);
-    }
-    public List<LocalDate> getDatesToBeComputed(Supplier<String> filePrefixSupplier, String inDir) {
-        return getDatesToBeComputed(filePrefixSupplier, inDir, ApCo.DOWNLOAD_FROM_DATE);
-    }
-    public List<LocalDate> getDatesToBeComputed(Supplier<String> filePrefixSupplier, String inDir, LocalDate fromDate) {
-        String dataDir = ApCo.ROOT_DIR + File.separator + inDir;
-        String filePrefix = filePrefixSupplier.get();
-        String fileSuffix = ApCo.REPORTS_FILE_EXT;
-        List<String> filesToBeDownloaded = constructFileNames(fromDate, ApCo.PRA_FILE_NAME_DATE_FORMAT, filePrefix + "-", fileSuffix);
-        filesToBeDownloaded.removeAll(fetchFileNames(dataDir, null, null));
-        List<LocalDate> localDates = new ArrayList<>();
-        TreeMap<LocalDate, LocalDate> localDateMap = new TreeMap<>();
-        filesToBeDownloaded.forEach( file -> {
-            String date = file.replace(filePrefix + "-", "");
-            date = date.replace(ApCo.REPORTS_FILE_EXT, "");
-            LocalDate localDate = LocalDate.of(
-                    Integer.valueOf(date.substring(0,4)),
-                    Integer.valueOf(date.substring(5,7)),
-                    Integer.valueOf(date.substring(8,10)));
-            localDates.add(localDate);
-            localDateMap.put(localDate, localDate);
-            //localDates.add(LocalDate.of(date.substring(0,4), date.substring(5,7), date.substring(8,10)));
-        });
-        return localDates;
-        //return (List<LocalDate>)localDateMap.values();
     }
 
     private void calcAndAddFileName(List<String> fileNameList, String filePrefix, DateTimeFormatter formatter, String fileSuffix, LocalDate localDate) {

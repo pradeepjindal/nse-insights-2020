@@ -140,7 +140,10 @@ public class PastPresentFutureReporter {
         LocalDate minDate = dataManager.getMinDate(forDate, forMinusDays);
         List<CalcAvgTab> calcAvgTabs = calcAvgRepository.findAll();
         Map<String, CalcAvgTab> calcAvgMap = calcAvgTabs.stream()
-                .filter( avg -> avg.getTradeDate().compareTo(minDate) == 0)
+                //.peek( xray -> LOGGER.info("{}", xray.getTradeDate()) )
+                .filter( row -> row.getTradeDate().compareTo(minDate) == 0)
+                //.peek( xray -> LOGGER.info("{}", xray) )
+                //.filter( row -> filterDate(row, minDate, forDate))
                 .collect(Collectors.toMap(row->row.getSymbol(), row-> row));
 
         Map.Entry<String, LocalDate> previousDate = new AbstractMap.SimpleEntry<>("tradeDate", LocalDate.now());
@@ -149,21 +152,24 @@ public class PastPresentFutureReporter {
         symbolMap.entrySet().forEach( entry -> {
             previousDate.setValue(null);
             entry.getValue().forEach( dto -> {
+                BigDecimal atpOnePercent = calcAvgMap.get(dto.getSymbol()).getAtpAvg10().divide(hundred, 2, RoundingMode.HALF_UP);
+                BigDecimal volumeOnePercent = calcAvgMap.get(dto.getSymbol()).getVolumeAvg10().divide(hundred, 2, RoundingMode.HALF_UP);
+                BigDecimal deliveryOnePercent = calcAvgMap.get(dto.getSymbol()).getDeliveryAvg10().divide(hundred, 2, RoundingMode.HALF_UP);
+                BigDecimal oiOnePercent = calcAvgMap.get(dto.getSymbol()).getOiAvg10().divide(hundred, 2, RoundingMode.HALF_UP);
                 if(previousDate.getValue() == null || previousDate.getValue().isBefore(dto.getTradeDate())) {
                     previousDate.setValue(dto.getTradeDate());
-                    BigDecimal atpOnePercent = calcAvgMap.get(dto.getSymbol()).getAtpAvg10().divide(hundred, 2, RoundingMode.HALF_UP);
+                    //BigDecimal atpOnePercent = calcAvgMap.get(dto.getSymbol()).getAtpAvg10().divide(hundred, 2, RoundingMode.HALF_UP);
                     BigDecimal atpGrowth = dto.getAtp().divide(atpOnePercent, 2, RoundingMode.HALF_UP);
                         dto.setAtpGrowth10(atpGrowth);
-                    BigDecimal volumeOnePercent = calcAvgMap.get(dto.getSymbol()).getVolumeAvg10().divide(hundred, 2, RoundingMode.HALF_UP);
+                    //BigDecimal volumeOnePercent = calcAvgMap.get(dto.getSymbol()).getVolumeAvg10().divide(hundred, 2, RoundingMode.HALF_UP);
                     BigDecimal volumeGrowth = dto.getVolume().divide(volumeOnePercent, 2, RoundingMode.HALF_UP);
                         dto.setVolumeGrowth10(volumeGrowth);
-                    BigDecimal deliveryOnePercent = calcAvgMap.get(dto.getSymbol()).getDeliveryAvg10().divide(hundred, 2, RoundingMode.HALF_UP);
+                    //BigDecimal deliveryOnePercent = calcAvgMap.get(dto.getSymbol()).getDeliveryAvg10().divide(hundred, 2, RoundingMode.HALF_UP);
                     BigDecimal deliveryGrowth = dto.getDelivery().divide(deliveryOnePercent, 2, RoundingMode.HALF_UP);
                         dto.setDeliveryGrowth10(deliveryGrowth);
-                    BigDecimal oiOnePercent = calcAvgMap.get(dto.getSymbol()).getOiAvg10().divide(hundred, 2, RoundingMode.HALF_UP);
-//                    BigDecimal oi = calcAvgMap.get(dto.getSymbol()).oi
-////                    BigDecimal oiGrowth = dto.getOi().divide(oiOnePercent, 2, RoundingMode.HALF_UP);
-////                    dto.setVolumeGrowth10(oiGrowth);
+                    //BigDecimal oiOnePercent = calcAvgMap.get(dto.getSymbol()).getOiAvg10().divide(hundred, 2, RoundingMode.HALF_UP);
+                    BigDecimal oiGrowth = dto.getOi().divide(oiOnePercent, 2, RoundingMode.HALF_UP);
+                        dto.setOiGrowth10(oiGrowth);
                 } else {
                     LOGGER.warn("unknown condition - previousDate:{}, currentDate:{}", previousDate.getValue(), dto.getTradeDate());
                 }
@@ -174,6 +180,10 @@ public class PastPresentFutureReporter {
         writeReport(filePath, symbolMap);
         String str = "PPF-" +forDate+ " (" +forMinusDays+ ")";
         email(null, str, str, filePath);
+    }
+
+    private boolean filterDate(CalcAvgTab pojo, LocalDate minDate, LocalDate maxDate) {
+        return pojo.getTradeDate().isAfter(minDate.minusDays(1)) && pojo.getTradeDate().isBefore(maxDate.plusDays(1));
     }
 
 //    private void fillTheNextData(Map<LocalDate, Map<String, DeliverySpikeDto>> tradeDateSymbolMap) {

@@ -1,7 +1,6 @@
 package org.pra.nse.db.dao.calc;
 
 import org.pra.nse.config.YamlPropertyLoaderFactory;
-import org.pra.nse.db.dto.OiSumDto;
 import org.pra.nse.db.model.CalcAvgTab;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
@@ -21,8 +20,7 @@ public class AvgCalculationDao {
     private String avgDataCountForDateSql;
     @Value("${avgSql}")
     private String avgSql;
-    @Value("${oiSumSql}")
-    private String oiSumSql;
+
 
     AvgCalculationDao(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
@@ -49,12 +47,5 @@ public class AvgCalculationDao {
         List<CalcAvgTab> result = jdbcTemplate.query(avgSql, new BeanPropertyRowMapper<CalcAvgTab>(CalcAvgTab.class));
         return result;
     }
-
-    public List<OiSumDto> getOiSum(LocalDate forDate) {
-        String param = forDate.toString();
-        List<OiSumDto> result = jdbcTemplate.query(oiSumSql, new BeanPropertyRowMapper<OiSumDto>(OiSumDto.class), param);
-        return result;
-    }
-
 
 }

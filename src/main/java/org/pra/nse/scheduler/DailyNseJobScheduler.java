@@ -83,12 +83,12 @@ public class DailyNseJobScheduler implements SchedulingConfigurer {
                     public void run() {
                         LOGGER.info("cron executed at "+ new Date());
                         try {
-                            downloadManager.download();
-                            transformationManager.transform();
-                            uploadManager.upload();
+                            downloadManager.execute();
+                            transformationManager.execute();
+                            uploadManager.execute();
                             if(praFileUtils.validateDownload() != null) {
                                 calculationManager.execute();
-                                processManager.process();
+                                processManager.execute();
                                 reportManager.execute();
                             }
                         } catch(Exception e) {

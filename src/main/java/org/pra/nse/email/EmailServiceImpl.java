@@ -44,6 +44,7 @@ public class EmailServiceImpl implements EmailService {
 
     @Override
     public void sendAttachmentMessage(String to, String subject, String text, String pathToAttachment, String outputFileName) {
+        //TODO use cross cutting to send emails
         LocalDate fileForDate = DateUtils.getLocalDateFromPath(pathToAttachment);
         if(fileForDate == null) {
             fileForDate = DateUtils.getLocalDateFromPath(pathToAttachment, ApCo.AB_FILE_NAME_DATE_REGEX, ApCo.AB_FILE_NAME_DATE_FORMAT);
@@ -61,7 +62,7 @@ public class EmailServiceImpl implements EmailService {
             LOGGER.info("Mailing | disabled for Shuvi, mailing requests ignored");
             return;
         } else if(fileForDate.compareTo(ApCo.EMAIL_FROM_DATE) < 0) {
-            LOGGER.info("Mailing | skipped, file is for older date then configured - {}", fileForDate);
+            LOGGER.info("Mailing | skipped, file is for younger date then configured - {}", ApCo.EMAIL_FROM_DATE);
             return;
         }
 

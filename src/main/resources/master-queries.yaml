@@ -1,7 +1,0 @@
-trade_date_ranking: >
-  SELECT
-    tt1.trade_date,
-    rank() OVER (ORDER BY tt1.trade_date DESC) AS trade_day_rank
-  FROM ( SELECT DISTINCT nse_future_market_tab.trade_date
-         FROM nse_future_market_tab
-         WHERE nse_future_market_tab.instrument::text = 'FUTSTK'::text) tt1;

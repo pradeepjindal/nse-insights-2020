@@ -2,7 +2,10 @@ package org.pra.nse.data;
 
 import org.pra.nse.Manager;
 import org.pra.nse.db.dao.NseReportsDao;
+import org.pra.nse.db.dao.nse.OiDao;
 import org.pra.nse.db.dto.DeliverySpikeDto;
+import org.pra.nse.db.dto.OiDto;
+import org.pra.nse.service.TradeDateService;
 import org.pra.nse.util.PraFileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,6 +23,8 @@ public class DataManager implements Manager {
 
     private final PraFileUtils praFileUtils;
     private final NseReportsDao nseReportsDao;
+    private final OiDao oiDao;
+    private final TradeDateService tradeDateService;
 
     private final NavigableMap<Integer, LocalDate>  tradeDates_NavigableMap = new TreeMap<>();
     private final List<LocalDate>                   tradeDates_Desc_LinkedList = new LinkedList<>();
@@ -32,9 +37,12 @@ public class DataManager implements Manager {
     private List<LocalDate> latest20Dates = null;
 
 
-    public DataManager(PraFileUtils praFileUtils, NseReportsDao nseReportsDao) {
+    public DataManager(PraFileUtils praFileUtils, NseReportsDao nseReportsDao, OiDao oiDao,
+                       TradeDateService tradeDateService) {
         this.praFileUtils = praFileUtils;
         this.nseReportsDao = nseReportsDao;
+        this.oiDao = oiDao;
+        this.tradeDateService = tradeDateService;
     }
 
 
@@ -47,7 +55,8 @@ public class DataManager implements Manager {
         LocalDate latestNseDate = praFileUtils.getLatestNseDate();
         if(dbResults == null || latestNseDate.isAfter(latestDbDate)) {
             bootUpData();
-            fillTheNextData();
+            fillTheOi();
+            fillTheNext();
         }
         if(forDate.isAfter(latestDbDate))
             return null;
@@ -55,11 +64,13 @@ public class DataManager implements Manager {
             return minDate(forDate, forMinusDays);
     }
 
+
+
     public Map<String, List<DeliverySpikeDto>> getDataBySymbol(LocalDate forDate, int forMinusDays) {
         return getDataBySymbol(forDate, forMinusDays, null);
     }
     public Map<String, List<DeliverySpikeDto>> getDataBySymbol(LocalDate forDate, int forMinusDays, String forSymbol) {
-        Predicate<DeliverySpikeDto> predicate =  initializeAndReturnData(forDate, forMinusDays, forSymbol);
+        Predicate<DeliverySpikeDto> predicate =  initializeData(forDate, forMinusDays, forSymbol);
         return predicate == null ? Collections.EMPTY_MAP : prepareDataBySymbol(predicate);
     }
 
@@ -67,24 +78,26 @@ public class DataManager implements Manager {
         return getDataByTradeDateAndSymbol(forDate, forMinusDays, null);
     }
     public Map<LocalDate, Map<String, DeliverySpikeDto>> getDataByTradeDateAndSymbol(LocalDate forDate, int forMinusDays, String forSymbol) {
-        Predicate<DeliverySpikeDto> predicate =  initializeAndReturnData(forDate, forMinusDays, forSymbol);
+        Predicate<DeliverySpikeDto> predicate =  initializeData(forDate, forMinusDays, forSymbol);
         return predicate == null ? Collections.EMPTY_MAP : prepareDataByTradeDateAndSymbol(predicate);
     }
 
-    private Predicate<DeliverySpikeDto> initializeAndReturnData(LocalDate forDate, int forMinusDays, String forSymbol) {
+    private Predicate<DeliverySpikeDto> initializeData(LocalDate forDate, int forMinusDays, String forSymbol) {
+        if(!tradeDateService.validateTradeDate(forDate)) return null;
         LocalDate latestNseDate = praFileUtils.getLatestNseDate();
         if(dbResults == null || latestNseDate.isAfter(latestDbDate)) {
             bootUpData();
-            fillTheNextData();
+            fillTheOi();
+            fillTheNext();
         }
         if(forDate.isAfter(latestDbDate))
             return null;
         else
-            return predicateAndReturnData(forDate, forMinusDays, forSymbol);
+            return predicateIt(forDate, forMinusDays, forSymbol);
     }
 
-    private Predicate<DeliverySpikeDto> predicateAndReturnData(LocalDate forDate, int forMinusDays, String forSymbol) {
-        //TODO what if mindDate is null
+    private Predicate<DeliverySpikeDto> predicateIt(LocalDate forDate, int forMinusDays, String forSymbol) {
+        //TODO what if minDate is null
         LocalDate minDate = minDate(forDate, forMinusDays);
         Predicate<DeliverySpikeDto> predicate = null;
         if (forSymbol == null) {
@@ -158,7 +171,42 @@ public class DataManager implements Manager {
         return symbol.toUpperCase().equals(dto.getSymbol());
     }
 
-    private void fillTheNextData() {
+    private void fillTheOi() {
+        //LocalDate minDate = minDate(latestDbDate, 20);
+        Predicate<DeliverySpikeDto> predicate = dto -> true;
+        Map<LocalDate, Map<String, DeliverySpikeDto>> tradeDateAndSymbolMap = prepareDataByTradeDateAndSymbol(predicate);
+
+        List<OiDto> dbResults = oiDao.getOiAll();
+        Map<String, Map<LocalDate, OiDto>> oiMap = new HashMap<>();
+
+//        Map<String, Map<LocalDate, OiDto>> localMap = new HashMap<>();
+//        dbResults.forEach( filteredRow-> {
+//            if(localMap.containsKey(filteredRow.getSymbol())) {
+//                if(localMap.get(filteredRow.getSymbol()).containsKey(filteredRow.getTradeDate())) {
+//                    LOGGER.warn("tradeDate-symbol | matched symbol {} tradeDate {}", filteredRow.getSymbol(), filteredRow.getTradeDate());
+//                } else {
+//                    localMap.get(filteredRow.getSymbol()).put(filteredRow.getTradeDate(), filteredRow);
+//                }
+//            } else {
+//                LOGGER.warn("oi | new entry. symbol {} tradeDate {}", filteredRow.getSymbol(), filteredRow.getTradeDate());
+//                Map<LocalDate, OiDto> map = new HashMap<>();
+//                map.put(filteredRow.getTradeDate(), filteredRow);
+//                localMap.put(filteredRow.getSymbol(), map);
+//                //LOGGER.info("tradeDate-symbol | tradeDate {}", filteredRow.getTradeDate());
+//            }
+//        });
+
+
+        dbResults.forEach( row -> {
+            try {
+                tradeDateAndSymbolMap.get(row.getTradeDate()).get(row.getSymbol()).setOi(row.getSumOi());
+            } catch (Exception e) {
+                //LOGGER.warn("oi not found, {} for {}", row.getSymbol(), row.getTradeDate());
+            }
+        });
+    }
+
+    private void fillTheNext() {
         LocalDate minDate = minDate(latestDbDate, 20);
         Predicate<DeliverySpikeDto> predicate = dto -> filterDate(dto, minDate, latestDbDate);
         Map<LocalDate, Map<String, DeliverySpikeDto>> tradeDateAndSymbolMap = prepareDataByTradeDateAndSymbol(predicate);
