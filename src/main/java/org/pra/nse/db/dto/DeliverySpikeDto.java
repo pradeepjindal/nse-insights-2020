@@ -11,6 +11,7 @@ public class DeliverySpikeDto {
     private BigDecimal open;
     private BigDecimal high;
     private BigDecimal low;
+    private BigDecimal highLowPct;
     private BigDecimal close;
     private BigDecimal last;
     private BigDecimal atp;
@@ -161,6 +162,7 @@ public class DeliverySpikeDto {
                 + open + ","
                 + high + ","
                 + low + ","
+                + highLowPct + ","
                 + close + ","
                 + last + ","
                 + closingBell + ","
@@ -169,12 +171,14 @@ public class DeliverySpikeDto {
                 + highLowMid + ","
 
                 + atpGrowth10 + ","
+                + atpChgPrcnt + ","
                 + volumeGrowth10 + ","
                 + tradedChgPrcnt + ","
                 + deliveryGrowth10 + ","
                 + deliveredChgPrcnt + ","
                 + oiGrowth10 + ","
                 + oiChgPrcnt + ","
+
                 + premium + ","
                 + openingBell + ","
 
@@ -236,6 +240,14 @@ public class DeliverySpikeDto {
 
     public void setLow(BigDecimal low) {
         this.low = low;
+    }
+
+    public BigDecimal getHighLowPct() {
+        return highLowPct;
+    }
+
+    public void setHighLowPct(BigDecimal highLowPct) {
+        this.highLowPct = highLowPct;
     }
 
     public BigDecimal getClose() {

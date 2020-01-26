@@ -6,6 +6,7 @@ sqlDeliverySpike: >
     tdy.cmopen open,
     tdy.cmhigh high,
     tdy.cmlow low,
+    round((tdy.cmhigh-tdy.cmlow)/(tdy.cmopen/100), 2) as high_low_pct,
     tdy.cmclose as close,
     tdy.cmlast as last,
     tdy.cmatp atp,
