@@ -20,14 +20,12 @@ import org.springframework.stereotype.Component;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
 
 import static org.pra.nse.report.ReportConstants.PPF_CSV_HEADER;
-import static org.pra.nse.report.ReportConstants.PPF_10;
+import static org.pra.nse.report.ReportConstants.PPF_FULL;
 
 @Component
 public class PastPresentFutureReporter {
@@ -82,10 +80,10 @@ public class PastPresentFutureReporter {
         LocalDate latestNseDate = praFileUtils.getLatestNseDate();
         if(forDate.isAfter(latestNseDate)) return;
 
-        String report_name = PPF_10.replace("10", forMinusDays.toString());
+        String report_name = PPF_FULL.replace("days", forMinusDays.toString());
 
         String fileName = report_name + "-" + forDate.toString() + ApCo.REPORTS_FILE_EXT;
-        String filePath = ApCo.ROOT_DIR + File.separator + ApCo.REPORTS_DIR_NAME_TMP + File.separator + fileName;
+        String filePath = ApCo.ROOT_DIR + File.separator + ApCo.REPORTS_DIR_NAME_TMP+"-2" + File.separator + fileName;
 
         LOGGER.info("{} | for:{}", report_name, forDate.toString());
         if(nseFileUtils.isFileExist(filePath)) {
@@ -102,79 +100,20 @@ public class PastPresentFutureReporter {
 
         //load old Rsi
         List<CalcRsiTab> oldRsiList = calcRsiRepository.findAll();
-        oldRsiList.forEach( oldRsi -> {
-            if(tradeDateAndSymbolWise_DoubleMap.containsKey(oldRsi.getTradeDate())) {
-                if(tradeDateAndSymbolWise_DoubleMap.get(oldRsi.getTradeDate()).containsKey(oldRsi.getSymbol())) {
-                    DeliverySpikeDto tdyDto = tradeDateAndSymbolWise_DoubleMap.get(oldRsi.getTradeDate()).get(oldRsi.getSymbol());
-                    tdyDto.setTdyCloseRsi10Ema(oldRsi.getCloseRsi10Ema());
-                    tdyDto.setTdyLastRsi10Ema(oldRsi.getLastRsi10Ema());
-                    tdyDto.setTdyAtpRsi10Ema(oldRsi.getAtpRsi10Ema());
-                        // calculating Bells
-                        calculateBells2(tdyDto);
-                } else {
-                    //LOGGER.warn("old rsi | symbol {} not found for tradeDate {}", oldRsi.getSymbol(), oldRsi.getTradeDate());
-                }
-            } else {
-                //LOGGER.warn("old rsi | tradeDate {} not found for symbol {}", oldRsi.getTradeDate(), oldRsi.getSymbol());
-            }
-        });
+        ReportHelper.enrichRsi(oldRsiList, tradeDateAndSymbolWise_DoubleMap);
 
         //load old Mfi
         List<CalcMfiTab> oldMfiList = calcMfiRepository.findAll();
-        oldMfiList.forEach( oldMfi -> {
-            if(tradeDateAndSymbolWise_DoubleMap.containsKey(oldMfi.getTradeDate())) {
-                if(tradeDateAndSymbolWise_DoubleMap.get(oldMfi.getTradeDate()).containsKey(oldMfi.getSymbol())) {
-                    DeliverySpikeDto tdyDto = tradeDateAndSymbolWise_DoubleMap.get(oldMfi.getTradeDate()).get(oldMfi.getSymbol());
-                    tdyDto.setVolumeAtpMfi10(oldMfi.getVolumeAtpMfi10());
-                    tdyDto.setDeliveryAtpMfi10(oldMfi.getDeliveryAtpMfi10());
-                } else {
-                    //LOGGER.warn("old rsi | symbol {} not found for tradeDate {}", oldRsi.getSymbol(), oldRsi.getTradeDate());
-                }
-            } else {
-                //LOGGER.warn("old rsi | tradeDate {} not found for symbol {}", oldRsi.getTradeDate(), oldRsi.getSymbol());
-            }
-        });
+        ReportHelper.enrichMfi(oldMfiList, tradeDateAndSymbolWise_DoubleMap);
 
         // load avg
-        BigDecimal hundred = new BigDecimal(100);
         LocalDate minDate = dataManager.getMinDate(forDate, forMinusDays);
         List<CalcAvgTab> calcAvgTabs = calcAvgRepository.findAll();
         Map<String, CalcAvgTab> calcAvgMap = calcAvgTabs.stream()
-                //.peek( xray -> LOGGER.info("{}", xray.getTradeDate()) )
                 .filter( row -> row.getTradeDate().compareTo(minDate) == 0)
-                //.peek( xray -> LOGGER.info("{}", xray) )
-                //.filter( row -> filterDate(row, minDate, forDate))
                 .collect(Collectors.toMap(row->row.getSymbol(), row-> row));
-
-        Map.Entry<String, LocalDate> previousDate = new AbstractMap.SimpleEntry<>("tradeDate", LocalDate.now());
         Map<String, List<DeliverySpikeDto>> symbolMap = dataManager.getDataBySymbol(forDate, forMinusDays);
-        //Map<String, List<DeliverySpikeDto>> symbolMap = dataManager.getDataBySymbol(forDate, forMinusDays);
-        symbolMap.entrySet().forEach( entry -> {
-            previousDate.setValue(null);
-            entry.getValue().forEach( dto -> {
-                BigDecimal atpOnePercent = calcAvgMap.get(dto.getSymbol()).getAtpAvg10().divide(hundred, 2, RoundingMode.HALF_UP);
-                BigDecimal volumeOnePercent = calcAvgMap.get(dto.getSymbol()).getVolumeAvg10().divide(hundred, 2, RoundingMode.HALF_UP);
-                BigDecimal deliveryOnePercent = calcAvgMap.get(dto.getSymbol()).getDeliveryAvg10().divide(hundred, 2, RoundingMode.HALF_UP);
-                BigDecimal oiOnePercent = calcAvgMap.get(dto.getSymbol()).getOiAvg10().divide(hundred, 2, RoundingMode.HALF_UP);
-                if(previousDate.getValue() == null || previousDate.getValue().isBefore(dto.getTradeDate())) {
-                    previousDate.setValue(dto.getTradeDate());
-                    //BigDecimal atpOnePercent = calcAvgMap.get(dto.getSymbol()).getAtpAvg10().divide(hundred, 2, RoundingMode.HALF_UP);
-                    BigDecimal atpGrowth = dto.getAtp().divide(atpOnePercent, 2, RoundingMode.HALF_UP);
-                        dto.setAtpGrowth10(atpGrowth);
-                    //BigDecimal volumeOnePercent = calcAvgMap.get(dto.getSymbol()).getVolumeAvg10().divide(hundred, 2, RoundingMode.HALF_UP);
-                    BigDecimal volumeGrowth = dto.getVolume().divide(volumeOnePercent, 2, RoundingMode.HALF_UP);
-                        dto.setVolumeGrowth10(volumeGrowth);
-                    //BigDecimal deliveryOnePercent = calcAvgMap.get(dto.getSymbol()).getDeliveryAvg10().divide(hundred, 2, RoundingMode.HALF_UP);
-                    BigDecimal deliveryGrowth = dto.getDelivery().divide(deliveryOnePercent, 2, RoundingMode.HALF_UP);
-                        dto.setDeliveryGrowth10(deliveryGrowth);
-                    //BigDecimal oiOnePercent = calcAvgMap.get(dto.getSymbol()).getOiAvg10().divide(hundred, 2, RoundingMode.HALF_UP);
-                    BigDecimal oiGrowth = dto.getOi().divide(oiOnePercent, 2, RoundingMode.HALF_UP);
-                        dto.setOiGrowth10(oiGrowth);
-                } else {
-                    LOGGER.warn("unknown condition - previousDate:{}, currentDate:{}", previousDate.getValue(), dto.getTradeDate());
-                }
-            });
-        });
+        ReportHelper.enrichCalc(calcAvgMap, symbolMap);
 
         // write report
         writeReport(filePath, symbolMap);
@@ -186,102 +125,6 @@ public class PastPresentFutureReporter {
         return pojo.getTradeDate().isAfter(minDate.minusDays(1)) && pojo.getTradeDate().isBefore(maxDate.plusDays(1));
     }
 
-//    private void fillTheNextData(Map<LocalDate, Map<String, DeliverySpikeDto>> tradeDateSymbolMap) {
-//        //Map<LocalDate, Map<String, DeliverySpikeDto>> tradeDateSymbolMap = getDataByTradeDateAndSymbol(latestDbDate, 10);
-//        long ctr = dbResults.stream().filter( row -> row.getTradeDate().isAfter(tradeDates_Desc_LinkedList.get(10))
-//                && row.getTradeDate().isBefore(tradeDates_Desc_LinkedList.get(0))
-//        )
-//                .map( filteredRow -> {
-//                    LocalDate nextDate = nextDateMap.get(filteredRow.getTradeDate());
-//                    DeliverySpikeDto nextDto = tradeDateSymbolMap.get(nextDate).get(filteredRow.getSymbol());
-//
-//                    filteredRow.setNxtCloseToOpenPercent(nextDto.getCloseToOpenPercent());
-//                    filteredRow.setNxtOptoHighPrcnt(nextDto.getOthighPrcnt());
-//                    filteredRow.setNxtOptoLowPrcnt(nextDto.getOtlowPrcnt());
-//                    filteredRow.setNxtOptoAtpPrcnt(nextDto.getOtatpPrcnt());
-//                    return true;
-//                }).count();
-//    }
-
-    private void calculateBells(DeliverySpikeDto dto) {
-        String signal;
-        BigDecimal hundred = new BigDecimal(100);
-        BigDecimal minPlusThreshHold = new BigDecimal(0.20f);
-        BigDecimal minMinusThreshHold = new BigDecimal(-0.20f);
-
-        if(dto.getLast().compareTo(dto.getClose()) == 1) {
-            BigDecimal percent = dto.getClose().divide(hundred, 2, RoundingMode.HALF_UP);
-            BigDecimal diff = dto.getLast().subtract(dto.getClose());
-            dto.setCloseToLastPercent(diff.divide(percent, 2, RoundingMode.HALF_UP));
-            signal = dto.getCloseToLastPercent().compareTo(minPlusThreshHold) > 0 ? "bullish" : "";
-            dto.setClosingBell(signal);
-        } else {
-            BigDecimal percent = dto.getLast().divide(hundred, 2, RoundingMode.HALF_UP);
-            BigDecimal diff = dto.getClose().subtract(dto.getLast()).multiply(new BigDecimal(-1));
-            dto.setCloseToLastPercent(diff.divide(percent, 2, RoundingMode.HALF_UP));
-            signal = dto.getCloseToLastPercent().compareTo(minMinusThreshHold) < 0 ? "bearish" : "";
-            dto.setClosingBell(signal);
-        }
-
-        if(dto.getOpen().compareTo(dto.getPreviousClose()) == 1) {
-            signal = dto.getCloseToOpenPercent().compareTo(minPlusThreshHold) > 0 ? "gapUp" : "";
-            dto.setOpeningBell(signal);
-        } else {
-            signal = dto.getCloseToOpenPercent().compareTo(minMinusThreshHold) < 0 ? "gapDown" : "";
-            dto.setOpeningBell(signal);
-        }
-    }
-
-    private void calculateBells2(DeliverySpikeDto dto) {
-        String signal;
-        BigDecimal hundred = new BigDecimal(100);
-
-        BigDecimal minPlusThreshHold = new BigDecimal(0.25f);
-        BigDecimal plusThreshHold = new BigDecimal(0.55f);
-        BigDecimal veryPlusThreshHold = new BigDecimal(0.95f);
-
-        BigDecimal minMinusThreshHold = new BigDecimal(-0.25f);
-        BigDecimal minusThreshHold = new BigDecimal(-0.55f);
-        BigDecimal veryMinusThreshHold = new BigDecimal(-0.95f);
-
-        if(dto.getLast().compareTo(dto.getClose()) == 1) {
-            BigDecimal percent = dto.getClose().divide(hundred, 2, RoundingMode.HALF_UP);
-            BigDecimal diff = dto.getLast().subtract(dto.getClose());
-            dto.setCloseToLastPercent(diff.divide(percent, 2, RoundingMode.HALF_UP));
-            signal = dto.getCloseToLastPercent().compareTo(new BigDecimal(0.20f)) > 0 ? "bullish" : "";
-            signal = dto.getCloseToLastPercent().compareTo(new BigDecimal(0.45f)) > 0 ? "Bullish" : signal;
-            signal = dto.getCloseToLastPercent().compareTo(new BigDecimal(0.75f)) > 0 ? "BULLISH" : signal;
-            signal = dto.getCloseToLastPercent().compareTo(new BigDecimal(0.95f)) > 0 ? "BULLISHhh" : signal;
-            dto.setClosingBell(signal);
-        } else {
-            BigDecimal percent = dto.getLast().divide(hundred, 2, RoundingMode.HALF_UP);
-            BigDecimal diff = dto.getClose().subtract(dto.getLast()).multiply(new BigDecimal(-1));
-            dto.setCloseToLastPercent(diff.divide(percent, 2, RoundingMode.HALF_UP));
-            signal = dto.getCloseToLastPercent().compareTo(new BigDecimal(-0.20f)) < 0 ? "bearish" : "";
-            signal = dto.getCloseToLastPercent().compareTo(new BigDecimal(-0.45f)) < 0 ? "Bearish" : signal;
-            signal = dto.getCloseToLastPercent().compareTo(new BigDecimal(-0.75f)) < 0 ? "BEARISH" : signal;
-            signal = dto.getCloseToLastPercent().compareTo(new BigDecimal(-0.95f)) < 0 ? "BEARISHhh" : signal;
-            dto.setClosingBell(signal);
-        }
-
-        if(dto.getOpen().compareTo(dto.getPreviousClose()) == 1) {
-            signal = dto.getCloseToOpenPercent().compareTo(minPlusThreshHold) > 0 ? "gapup" : "";
-            signal = dto.getCloseToOpenPercent().compareTo(plusThreshHold) > 0 ? "GapUp" : signal;
-            signal = dto.getCloseToOpenPercent().compareTo(veryPlusThreshHold) > 0 ? "GAPUP" : signal;
-            dto.setOpeningBell(signal);
-        } else {
-            signal = dto.getCloseToOpenPercent().compareTo(minMinusThreshHold) < 0 ? "gapdown" : "";
-            signal = dto.getCloseToOpenPercent().compareTo(minusThreshHold) < 0 ? "GapDown" : signal;
-            signal = dto.getCloseToOpenPercent().compareTo(veryMinusThreshHold) < 0 ? "GAPDOWN" : signal;
-            dto.setOpeningBell(signal);
-        }
-    }
-
-//    private void writeReport(String toPath, Map<String, List<DeliverySpikeDto>> symbolMap) {
-//        List<DeliverySpikeDto> lists = new LinkedList<>();
-//        symbolMap.values().forEach( list -> lists.addAll(list));
-//        writeReport(toPath, lists);
-//    }
     private void writeReport(String toPath, Map<String, List<DeliverySpikeDto>> symbolMap) {
         List<String> keys = symbolMap.keySet().stream().collect(Collectors.toList());
         Collections.sort(keys);
@@ -308,7 +151,7 @@ public class PastPresentFutureReporter {
                     .forEach(pw::println);
         } catch (FileNotFoundException e) {
             LOGGER.error("Error: {}", e);
-            throw new RuntimeException(PPF_10 + ": Could not create file");
+            throw new RuntimeException(PPF_FULL + ": Could not create file");
         }
     }
 

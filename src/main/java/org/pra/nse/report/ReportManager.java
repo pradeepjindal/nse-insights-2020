@@ -77,18 +77,18 @@ public class ReportManager implements Manager {
                     }
                 });
 
-        LOGGER.info("--------------------");
-        nseFileUtils.getDatesToBeComputed(()-> ReportConstants.PPF_10, ApCo.REPORTS_DIR_NAME_TMP, ApCo.REPORTS_FROM_DATE)
-                .forEach( forDate -> {
-                    LOGGER.info(".");
-                    LOGGER.info("report-{} | for:{}", ReportConstants.PPF_10, forDate.toString());
-                    try {
-                        //pastPresentFutureReport.reportForDate(forDate, 10);
-                        pastPresentFutureReport.reportFromLast(10);
-                    } catch (Exception e) {
-                        LOGGER.error("ERROR: {}", e);
-                    }
-                });
+//        LOGGER.info("--------------------");
+//        nseFileUtils.getDatesToBeComputed(()-> ReportConstants.PPF_10, ApCo.REPORTS_DIR_NAME_TMP, ApCo.REPORTS_FROM_DATE)
+//                .forEach( forDate -> {
+//                    LOGGER.info(".");
+//                    LOGGER.info("report-{} | for:{}", ReportConstants.PPF_10, forDate.toString());
+//                    try {
+//                        //pastPresentFutureReport.reportForDate(forDate, 10);
+//                        pastPresentFutureReport.reportFromLast(10);
+//                    } catch (Exception e) {
+//                        LOGGER.error("ERROR: {}", e);
+//                    }
+//                });
 
         LOGGER.info("--------------------");
         //pastPresentFutureReport.process();
@@ -102,9 +102,9 @@ public class ReportManager implements Manager {
 //                        LOGGER.error("ERROR: {}", e);
 //                    }
 //                });
+        pastPresentFutureReport.reportFromLast(10);
         pastPresentFutureReport.reportFromLast(15);
         pastPresentFutureReport.reportFromLast(20);
-        pastPresentFutureReport.reportFromLast(30);
 
         LOGGER.info("======================================== Report Manager");
     }
