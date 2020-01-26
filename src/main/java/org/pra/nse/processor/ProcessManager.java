@@ -33,7 +33,7 @@ public class ProcessManager implements Manager {
         LOGGER.info("____________________ Process Manager");
 
         //nseFileUtils.getDatesToBeComputed(()-> ApCo.PRADEEP_FILE_NAME)
-        nseFileUtils.getDatesToBeComputed( ()-> ApCo.PRADEEP_FILE_NAME, ApCo.PROCESS_FROM_DATE)
+        nseFileUtils.getDatesToBeComputed( ()-> ApCo.PRADEEP_FILE_NAME, ApCo.REPORTS_FROM_DATE)
                 .forEach( forDate -> {
                     LOGGER.info(".");
                     LOGGER.info("report-{} | for:{}", ApCo.PRADEEP_FILE_NAME, forDate.toString());
@@ -59,7 +59,7 @@ public class ProcessManager implements Manager {
 
         LOGGER.info("----------");
         //nseFileUtils.getDatesToBeComputed(()-> ApCo.MANISH_FILE_NAME_B)
-        nseFileUtils.getDatesToBeComputed( ()-> ApCo.MANISH_FILE_NAME_B, ApCo.PROCESS_FROM_DATE)
+        nseFileUtils.getDatesToBeComputed( ()-> ApCo.MANISH_FILE_NAME_B, ApCo.REPORTS_FROM_DATE)
                 .forEach( forDate -> {
                     LOGGER.info(".");
                     LOGGER.info("report-{} | for:{}", ApCo.MANISH_FILE_NAME_B, forDate.toString());

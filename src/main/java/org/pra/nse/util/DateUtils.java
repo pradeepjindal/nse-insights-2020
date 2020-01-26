@@ -127,10 +127,21 @@ public class DateUtils {
     }
 
     public static boolean isDeepawali(LocalDate date) {
-        if (date.equals(LocalDate.of(2017,10,19))) return true; //wed
-        if (date.equals(LocalDate.of(2018,11,7))) return true; //wed
-        if (date.equals(LocalDate.of(2019,10,27))) return true;//sun
-        if (date.equals(LocalDate.of(2020,11,14))) return true;//sat
-        return false;
+//        if (date.equals(LocalDate.of(2015,11,11))) return true; //wed
+//        if (date.equals(LocalDate.of(2016,10,30))) return true; //sun
+//        if (date.equals(LocalDate.of(2017,10,19))) return true; //thu
+//        if (date.equals(LocalDate.of(2018,11,7))) return true;  //wed
+//        if (date.equals(LocalDate.of(2019,10,27))) return true; //sun
+//        if (date.equals(LocalDate.of(2020,11,14))) return true; //sat
+        boolean matches = false;
+        switch (date.getYear()) {
+            case 2020: if (date.equals(LocalDate.of(2020,11,14))) matches = true; break;  //sat
+            case 2019: if (date.equals(LocalDate.of(2019,10,27))) matches = true; break;  //sun
+            //case 2018: if (date.equals(LocalDate.of(2018,11,7))) matches = true; break;   //wed
+            //case 2017: if (date.equals(LocalDate.of(2017,10,19))) matches = true; break;  //thu
+            case 2016: if (date.equals(LocalDate.of(2016,110,30))) matches = true; break; //sun
+            //case 2015: if (date.equals(LocalDate.of(2015,11,11))) matches = true; break;  //wed
+        }
+        return matches;
     }
 }

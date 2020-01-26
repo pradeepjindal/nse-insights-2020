@@ -9,6 +9,7 @@ import java.io.*;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.TreeMap;
 import java.util.function.Supplier;
@@ -154,11 +155,11 @@ public class NseFileUtils {
         while (rollingDate.compareTo(todayDate) < 1) {
             //LOGGER.info(localDate);
             //LOGGER.info(localDate.getDayOfWeek());
-            if (rollingDate.equals(LocalDate.of(2019,10,27))) {
+            if (DateUtils.isDeepawali(rollingDate)) {
                 LOGGER.info("Deepawali Found - {}", rollingDate);
                 calcAndAddFileName(fileNameList, filePrefix, formatter, fileSuffix, rollingDate);
             } else if (DateUtils.isFixHoliday(rollingDate)) {
-                LOGGER.info("Fix Holiday Found - {}", rollingDate);
+                LOGGER.info("FixHoliday Found - {}", rollingDate);
             } else if (DateUtils.isWeekend(rollingDate)) {
                 weekends++;
             } else {

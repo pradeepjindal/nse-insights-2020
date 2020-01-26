@@ -66,7 +66,7 @@ public class ReportManager implements Manager {
 //        deliverySpikeReport.reportFromLast();
 
         LOGGER.info("--------------------");
-        nseFileUtils.getDatesToBeComputed(()-> ReportConstants.DSRF, ApCo.REPORTS_DIR_NAME_TMP)
+        nseFileUtils.getDatesToBeComputed(()-> ReportConstants.DSRF, ApCo.REPORTS_DIR_NAME_TMP, ApCo.REPORTS_FROM_DATE)
                 .forEach( forDate -> {
                     LOGGER.info(".");
                     LOGGER.info("report-{} | for:{}", ReportConstants.DSRF, forDate.toString());
@@ -78,7 +78,7 @@ public class ReportManager implements Manager {
                 });
 
         LOGGER.info("--------------------");
-        nseFileUtils.getDatesToBeComputed(()-> ReportConstants.PPF_10, ApCo.REPORTS_DIR_NAME_TMP)
+        nseFileUtils.getDatesToBeComputed(()-> ReportConstants.PPF_10, ApCo.REPORTS_DIR_NAME_TMP, ApCo.REPORTS_FROM_DATE)
                 .forEach( forDate -> {
                     LOGGER.info(".");
                     LOGGER.info("report-{} | for:{}", ReportConstants.PPF_10, forDate.toString());
@@ -92,7 +92,7 @@ public class ReportManager implements Manager {
 
         LOGGER.info("--------------------");
         //pastPresentFutureReport.process();
-//        nseFileUtils.getDatesToBeComputed(()-> ReportConstants.PPF_20, ApCo.REPORTS_DIR_NAME_TMP)
+//        nseFileUtils.getDatesToBeComputed(()-> ReportConstants.PPF_20, ApCo.REPORTS_DIR_NAME_TMP, ApCo.REPORTS_FROM_DATE)
 //                .forEach( forDate -> {
 //                    LOGGER.info(".");
 //                    LOGGER.info("report-{} | for:{}", ReportConstants.PPF_20, forDate.toString());
@@ -104,32 +104,6 @@ public class ReportManager implements Manager {
 //                });
         pastPresentFutureReport.reportFromLast(15);
         pastPresentFutureReport.reportFromLast(20);
-
-        LOGGER.info("======================================== Report Manager");
-    }
-
-    public void reportOld() {
-        LOGGER.info(".");
-        LOGGER.info("____________________ Report Manager");
-
-        LOGGER.info("--------------------");
-        deliverySpikeReport.reportFromLast();
-
-        LOGGER.info("--------------------");
-        deliverySpikeReportFull.reportFromLast();
-
-        LOGGER.info("--------------------");
-        //pastPresentFutureReport.process();
-        nseFileUtils.getDatesToBeComputed(()-> "mfi", ApCo.COMPUTE_DIR_NAME)
-                .forEach( forDate -> {
-                    LOGGER.info(".");
-                    LOGGER.info("report-{} | for:{}", "mfi", forDate.toString());
-                    try {
-                        pastPresentFutureReport.reportForDate(forDate, 10);
-                    } catch (Exception e) {
-                        LOGGER.error("ERROR: {}", e);
-                    }
-                });
 
         LOGGER.info("======================================== Report Manager");
     }
