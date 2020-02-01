@@ -135,7 +135,9 @@ public class DateUtils {
 //        if (date.equals(LocalDate.of(2020,11,14))) return true; //sat
         boolean matches = false;
         switch (date.getYear()) {
-            case 2020: if (date.equals(LocalDate.of(2020,11,14))) matches = true; break;  //sat
+            case 2020: if (date.equals(LocalDate.of(2020,02,01))) matches = true;         //sat
+                       if (date.equals(LocalDate.of(2020,11,14))) matches = true;         //sat
+                       break;
             case 2019: if (date.equals(LocalDate.of(2019,10,27))) matches = true; break;  //sun
             //case 2018: if (date.equals(LocalDate.of(2018,11,7))) matches = true; break;   //wed
             //case 2017: if (date.equals(LocalDate.of(2017,10,19))) matches = true; break;  //thu
