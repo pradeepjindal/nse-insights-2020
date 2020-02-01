@@ -8,7 +8,7 @@ public class ReportConstants {
 
     public static final String PPF_10 = "PPF_10_Report";
     public static final String PPF_20 = "PPF_20_Report";
-    public static final String PPF_FULL = "PPF_Full_Report";
+    public static final String PPF_FULL = "PPF_days_Full_Report";
 
     static final String DSRF_CSV_HEADER =
             "symbol,trade_date," +
@@ -18,18 +18,20 @@ public class ReportConstants {
             "othighPrcnt,otlowPrcnt,otclosePrcnt,otlastPrcnt,otatpPrcnt," +
             "tdyAtpRsi10Ema,tdyCloseRsi10Ema,tdyLastRsi10Ema";
 
+    static final String abc = "Tally,Growth,Spike,Bell";
+
     static final String PPF_CSV_HEADER =
             "symbol,trade_date," +
             "open,high,low,hlp,close,last,closingBell,closeToLastPct,atp,hlm," +
 
-            "atpTally10atpSpike10,atpChgPct," +
-            "volTally10volSpike10,volChgPct," +
-            "delTally10delSpike10,delChgPct," +
-            "foiTally10foiSpike10,foiChgPct," +
+            "calcAtpGrowth10,atpChgPct," +
+            "calcVolGrowth10,volChgPct," +
+            "calcDelGrowth10,delChgPct," +
+            "calcFoiGrowth10,foiChgPct," +
 
-                    "premium,openingBell," +
+            "premium,openingBell," +
             "nxtCloseToOpenPct,nxtOptoHighPct,nxtOptoLowPct,nxtOptoAtpPct," +
-            "VolumeAtpMfi10,DeliveryAtpMfi10," +
+            "VolAtpMfi10,DelAtpMfi10," +
             "AtpRsi10Ema,CloseRsi10Ema,LastRsi10Ema";
 
     static final List<String> SHUVI_TICKERS =

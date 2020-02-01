@@ -21,6 +21,9 @@ import java.util.zip.ZipInputStream;
 public class NseFileUtils {
     private static final Logger LOGGER = LoggerFactory.getLogger(NseFileUtils.class);
 
+    public void createFolders(String outputPathAndFileName) {
+        //TODO at the beginning of program, check all the folders required and create if missing
+    }
     public void createFolder(String outputPathAndFileName) {
         String dataDir = ApCo.ROOT_DIR + File.separator + ApCo.REPORTS_DIR_NAME;
         File folder = new File(dataDir);
@@ -30,7 +33,7 @@ public class NseFileUtils {
         }
     }
 
-    public void createDataDir(String dataDir) {
+    private void createDataDir(String dataDir) {
         File newFolder = new File(dataDir);
         boolean created =  newFolder.mkdir();
         LOGGER.info("creating folder: " + dataDir);
