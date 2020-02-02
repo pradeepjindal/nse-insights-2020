@@ -68,8 +68,12 @@ public class FmCsvReader {
             MappingIterator<FmBean> it = mapper.readerFor(FmBean.class).with(schema).readValues(csvFile);
             //return it.readAll();
             beans = new ArrayList<>();
+            LOGGER.warn("OPTIDX and OPTSTK are disbled, hence would be loaded");
             while (it.hasNextValue()) {
-                beans.add(it.nextValue());
+                FmBean fmBean = it.nextValue();
+                if("FUTSTK".equals(fmBean.getInstrument().trim()) || "FUTIDX".equals(fmBean.getInstrument().trim())) {
+                    beans.add(fmBean);
+                }
             }
             LOGGER.info("CSV, Total Rows Count: [{}]", beans.size());
         } catch (Exception e) {

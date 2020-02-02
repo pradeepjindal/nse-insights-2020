@@ -6,11 +6,11 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 
 public class ApCo {
-    //public static final LocalDate DOWNLOAD_FROM_DATE = LocalDate.of(2019,12,1);
-    public static final LocalDate DOWNLOAD_FROM_DATE = LocalDate.of(2020,1,1);
+
     public static final LocalTime DAILY_DOWNLOAD_TIME = LocalTime.of(18,0,0,0);
+    public static final LocalDate DOWNLOAD_FROM_DATE = LocalDate.of(2020,2,1);
     public static final LocalDate REPORTS_FROM_DATE = LocalDate.of(2020,2,1);
-    public static final LocalDate CALC_FROM_DATE = LocalDate.of(2020,1,1);
+    public static final LocalDate CALC_FROM_DATE = LocalDate.of(2020,2,1);
     public static final LocalDate EMAIL_FROM_DATE = LocalDate.of(2020,2,1);
 
 
@@ -28,10 +28,10 @@ public class ApCo {
     public static final String MFI_DIR_NAME = "calc-mfi";
 
         public static final String COMPUTE_DIR_NAME = "computed-data";
-        public static final String REPORTS_DIR_NAME = "reports-data";
 
+        public static final String REPORTS_DIR_NAME = "reports-data";
         public static final String REPORTS_DIR_NAME_TMP = "reports-tmp";
-    public static final String REPORTS_DIR_NAME_DSR = "reports-dsr";
+        public static final String REPORTS_DIR_NAME_DSR = "reports-dsr";
         public static final String REPORTS_DIR_NAME_PPF = "reports-ppf";
         public static final String REPORTS_DIR_NAME_MANISH = "reports-manish";
         public static final String REPORTS_DIR_NAME_SHUVI = "reports-shuvi";
@@ -39,9 +39,6 @@ public class ApCo {
     public static final String PRADEEP_DIR_NAME = "reports-pradeep";
     public static final String MANISH_DIR_NAME = "reports-manish";
     public static final String SHUVI_DIR_NAME = "reports-shuvi";
-
-    public static final String PRA_DIR_NAME = "data-pra";
-
 
 
     public static final String AB_FILE_PREFIX = "EQ_";
@@ -58,28 +55,29 @@ public class ApCo {
 
     public static final String ddMMMyyyy_DATE_FORMAT = "ddMMMyyyy";
     public static final String ddMMyyyy_DATE_FORMAT = "ddMMyyyy";
-    public static final String yyyyMMdd_DATE_FORMAT = "yyyy-MM-dd";
+    public static final String yyyyMMdd_DATE_FORMAT = "yyyyMMdd";
+    public static final String yyyy_D_MM_D_dd_DATE_FORMAT = "yyyy-MM-dd";
+    public static final String dd_D_MMM_D_yyyy_DATE_FORMAT = "dd-MMM-yyyy";
 
-    public static final String DATA_FILE_NAME_DATE_FORMAT = "yyyy-MM-dd";
-    public static final String PRA_FILE_NAME_DATE_FORMAT = "yyyy-MM-dd";
-    public static final String DEFAULT_FILE_NAME_DATE_FORMAT = "yyyy-MM-dd";
+    public static final String DATA_FILE_NAME_DATE_FORMAT = yyyy_D_MM_D_dd_DATE_FORMAT;
+    public static final String PRA_FILE_NAME_DATE_FORMAT = yyyy_D_MM_D_dd_DATE_FORMAT;
+    public static final String DEFAULT_FILE_NAME_DATE_FORMAT = yyyy_D_MM_D_dd_DATE_FORMAT;
 
-    public static final String PRA_CM_DATA_DATE_FORMAT = "dd-MMM-yyyy";
-    public static final String PRA_FM_DATA_DATE_FORMAT = "dd-MMM-yyyy";
-    public static final String PRA_DM_DATA_DATE_FORMAT = "yyyy-MM-dd";
-    public static final String AB_DATA_DATE_FORMAT = "yyyyMMdd";
-    public static final String REPORTS_DATE_FORMAT = "dd-MMM-yyyy";
+    public static final String PRA_CM_DATA_DATE_FORMAT = dd_D_MMM_D_yyyy_DATE_FORMAT;
+    public static final String PRA_FM_DATA_DATE_FORMAT = dd_D_MMM_D_yyyy_DATE_FORMAT;
+    public static final String PRA_DM_DATA_DATE_FORMAT = yyyy_D_MM_D_dd_DATE_FORMAT;
+    public static final String AB_DATA_DATE_FORMAT = yyyyMMdd_DATE_FORMAT;
+    public static final String REPORTS_DATE_FORMAT = dd_D_MMM_D_yyyy_DATE_FORMAT;
     public static final String FIX_HOLIDAYS_DATE_FORMAT = "dd-MMM";
 
 
-
+    public static final String DEFAULT_FILE_EXT = ".csv";
     public static final String DATA_FILE_EXT = ".csv";
     public static final String REPORTS_FILE_EXT = ".csv";
-    public static final String DEFAULT_FILE_EXT = ".csv";
+
 
     public static final String PRADEEP_FILE_NAME = "pradeepData";
     public static final String SHUVI_FILE_NAME = "shuviData";
-
     public static final String MANISH_FILE_NAME = "manishData";
     public static final String MANISH_FILE_NAME_B = "manishDataB";
 
@@ -100,4 +98,5 @@ public class ApCo {
     public static final String DEFAULT_FILES_PATH = ApCo.ROOT_DIR + File.separator + ApCo.ROOT_DIR;
 
     public static final DateTimeFormatter FIX_HOLIDAYS_DTF = DateTimeFormatter.ofPattern(ApCo.FIX_HOLIDAYS_DATE_FORMAT);
+
 }

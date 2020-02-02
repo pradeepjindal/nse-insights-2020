@@ -72,6 +72,7 @@ public class FutureMarketUploader extends BaseUploader {
         NseOptionMarketTab optionTab = new NseOptionMarketTab();
         AtomicInteger recordSucceed = new AtomicInteger();
         AtomicInteger recordFailed = new AtomicInteger();
+        LOGGER.warn("OPTIDX and OPTSTK are disbled, hence would not be uploaded");
         foBeanMap.values().forEach( source -> {
             try {
                 if("FUTSTK".equals(source.getInstrument()) || "FUTIDX".equals(source.getInstrument())) {
