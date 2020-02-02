@@ -21,28 +21,6 @@ import java.util.zip.ZipInputStream;
 public class NseFileUtils {
     private static final Logger LOGGER = LoggerFactory.getLogger(NseFileUtils.class);
 
-    public void createFolders(String outputPathAndFileName) {
-        //TODO at the beginning of program, check all the folders required and create if missing
-    }
-    public void createFolder(String outputPathAndFileName) {
-        String dataDir = ApCo.ROOT_DIR + File.separator + ApCo.REPORTS_DIR_NAME;
-        File folder = new File(dataDir);
-        File[] listOfFiles = folder.listFiles();
-        if(null == folder.listFiles()) {
-            createDataDir(dataDir);
-        }
-    }
-
-    private void createDataDir(String dataDir) {
-        File newFolder = new File(dataDir);
-        boolean created =  newFolder.mkdir();
-        LOGGER.info("creating folder: " + dataDir);
-        if(created)
-            LOGGER.info("Folder was created!");
-        else
-            LOGGER.info("Unable to create folder");
-    }
-
     public boolean isFileExist(String filePathAndName) {
         return new File(filePathAndName).exists();
     }
@@ -70,6 +48,7 @@ public class NseFileUtils {
         zis.close();
     }
     public void unzipNew(String outputDirAndFileName, String filePrefix) throws IOException {
+        //TODO remove the target file logic name, and get it via parameter
         int lastIndex = outputDirAndFileName.lastIndexOf(File.separator);
         File destDir = new File(outputDirAndFileName.substring(0, lastIndex));
         byte[] buffer = new byte[1024];
@@ -158,11 +137,11 @@ public class NseFileUtils {
         while (rollingDate.compareTo(todayDate) < 1) {
             //LOGGER.info(localDate);
             //LOGGER.info(localDate.getDayOfWeek());
-            if (DateUtils.isDeepawali(rollingDate)) {
-                LOGGER.info("Deepawali Found - {}", rollingDate);
+            if (DateUtils.isTradingOnHoliday(rollingDate)) {
+                //LOGGER.info("Trading on holiday Found - {}", rollingDate);
                 calcAndAddFileName(fileNameList, filePrefix, formatter, fileSuffix, rollingDate);
             } else if (DateUtils.isFixHoliday(rollingDate)) {
-                LOGGER.info("FixHoliday Found - {}", rollingDate);
+                //LOGGER.info("FixHoliday Found - {}", rollingDate);
             } else if (DateUtils.isWeekend(rollingDate)) {
                 weekends++;
             } else {
@@ -183,7 +162,7 @@ public class NseFileUtils {
         File folder = new File(dirPathAndName);
         File[] listOfFiles = folder.listFiles();
         if(null == folder.listFiles()) {
-            createDataDir(dirPathAndName);
+            DirUtils.createFolder(folder);
             listOfFiles = folder.listFiles();
         }
         List<String> existingFiles = new ArrayList<>();

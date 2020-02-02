@@ -1,6 +1,7 @@
 package org.pra.nse.csv.transformation;
 
 import org.pra.nse.ApCo;
+import org.pra.nse.NseCo;
 import org.pra.nse.util.DateUtils;
 import org.pra.nse.util.NseFileUtils;
 import org.pra.nse.util.PraFileUtils;
@@ -25,7 +26,7 @@ import java.util.stream.Stream;
 public class DmTransformer extends BaseTransformer {
     private static final Logger LOGGER = LoggerFactory.getLogger(DmTransformer.class);
 
-    private final String Data_Dir = ApCo.ROOT_DIR + File.separator + ApCo.DM_DIR_NAME;
+    private final String Data_Dir = ApCo.ROOT_DIR + File.separator + NseCo.DM_DIR_NAME;
 
 
     public DmTransformer(TransformationHelper transformationHelper, NseFileUtils nseFileUtils, PraFileUtils praFileUtils) {
@@ -50,21 +51,24 @@ public class DmTransformer extends BaseTransformer {
 
 
     private Map<String, String> prepare(LocalDate fromDate) {
-        List<String> fileNames = nseFileUtils.constructFileNames(
-                            fromDate,
-                            ApCo.NSE_DM_FILE_NAME_DATE_FORMAT,
-                            ApCo.NSE_DM_FILE_PREFIX,
-                            ApCo.NSE_DM_FILE_EXT);
+        List<String> sourceFileNames = nseFileUtils.constructFileNames(
+                fromDate,
+                NseCo.NSE_DM_FILE_NAME_DATE_FORMAT,
+                NseCo.NSE_DM_FILE_PREFIX,
+                NseCo.NSE_DM_FILE_EXT);
         //filesToBeDownloaded.removeAll(nseFileUtils.fetchFileNames(dataDir, null, null));
         //
         Map<String, String> filePairMap = new HashMap<>();
-        fileNames.forEach( sourceFileName -> {
-            LOGGER.info("{}", sourceFileName);
-            //DateUtils.extractDate(fileName, ApCo.NSE_DM_FILE_NAME_DATE_REGEX, ApCo.NSE_DM_FILE_NAME_DATE_FORMAT);
-            LocalDate localDate = DateUtils.getLocalDateFromPath(sourceFileName, ApCo.NSE_DM_FILE_NAME_DATE_REGEX, ApCo.NSE_DM_FILE_NAME_DATE_FORMAT);
-            String targetFileName = ApCo.PRA_DM_FILE_PREFIX + localDate.toString() + ApCo.REPORTS_FILE_EXT;
-            filePairMap.put(sourceFileName, targetFileName);
-        });
+//        fileNames.forEach( sourceFileName -> {
+//            LOGGER.info("{}", sourceFileName);
+//            //DateUtils.extractDate(fileName, ApCo.NSE_DM_FILE_NAME_DATE_REGEX, ApCo.NSE_DM_FILE_NAME_DATE_FORMAT);
+//            LocalDate localDate = DateUtils.getLocalDateFromPath(sourceFileName, NseCo.NSE_DM_FILE_NAME_DATE_REGEX, NseCo.NSE_DM_FILE_NAME_DATE_FORMAT);
+//            String targetFileName = ApCo.PRA_DM_FILE_PREFIX + localDate.toString() + ApCo.REPORTS_FILE_EXT;
+//            filePairMap.put(sourceFileName, targetFileName);
+//        });
+        filePairMap = TransformationHelper.prepareFileNames(sourceFileNames,
+                NseCo.NSE_DM_FILE_NAME_DATE_REGEX, NseCo.NSE_DM_FILE_NAME_DATE_FORMAT,
+                ApCo.PRA_DM_FILE_PREFIX, ApCo.REPORTS_FILE_EXT, ApCo.yyyyMMdd_DTF);
         return filePairMap;
     }
 
@@ -98,7 +102,7 @@ public class DmTransformer extends BaseTransformer {
                 ApCo.PRA_DM_FILE_PREFIX
                 + DateUtils.transformDate(downloadedDirAndFileName.substring(firstIndex+1, firstIndex+9))
                 + ApCo.REPORTS_FILE_EXT;
-        String toFile = ApCo.ROOT_DIR + File.separator + ApCo.DM_DIR_NAME + File.separator + csvFileName;
+        String toFile = ApCo.ROOT_DIR + File.separator + NseCo.DM_DIR_NAME + File.separator + csvFileName;
         AtomicInteger atomicInteger = new AtomicInteger();
         File csvOutputFile = new File(toFile);
         try (PrintWriter pw = new PrintWriter(csvOutputFile)) {

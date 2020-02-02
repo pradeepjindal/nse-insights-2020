@@ -1,6 +1,9 @@
 package org.pra.nse.calculation;
 
 import org.pra.nse.ApCo;
+import org.pra.nse.csv.data.CalcBean;
+import org.pra.nse.csv.data.MfiBean;
+import org.pra.nse.csv.data.MfiCao;
 import org.pra.nse.data.DataManager;
 import org.pra.nse.db.dao.calc.MfiCalculationDao;
 import org.pra.nse.db.dto.DeliverySpikeDto;
@@ -10,20 +13,26 @@ import org.pra.nse.util.NseFileUtils;
 import org.pra.nse.util.PraFileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 
 import java.io.File;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 
 import static org.pra.nse.calculation.CalcCons.*;
 
-//@Component
-public class MfiCalculator {
-    private static final Logger LOGGER = LoggerFactory.getLogger(MfiCalculator.class);
+@Component
+public class MfiCalculatorNew {
+    private static final Logger LOGGER = LoggerFactory.getLogger(MfiCalculatorNew.class);
+
+    private final String computeFolderName = ApCo.MFI_DIR_NAME;
 
     private final NseFileUtils nseFileUtils;
     private final PraFileUtils praFileUtils;
@@ -31,8 +40,8 @@ public class MfiCalculator {
     private final CalcMfiRepository repository;
     private final DataManager dataManager;
 
-    public MfiCalculator(NseFileUtils nseFileUtils, PraFileUtils praFileUtils,
-                         MfiCalculationDao mfiCalculationDao, CalcMfiRepository calcMfiRepository, DataManager dataManager) {
+    public MfiCalculatorNew(NseFileUtils nseFileUtils, PraFileUtils praFileUtils,
+                            MfiCalculationDao mfiCalculationDao, CalcMfiRepository calcMfiRepository, DataManager dataManager) {
         this.nseFileUtils = nseFileUtils;
         this.praFileUtils = praFileUtils;
         this.dao = mfiCalculationDao;
@@ -44,58 +53,91 @@ public class MfiCalculator {
         LocalDate latestNseDate = praFileUtils.getLatestNseDate();
         if(forDate.isAfter(latestNseDate)) return;
 
-        String fileName = MFI_DATA_FILE_PREFIX + forDate.toString() + ApCo.DATA_FILE_EXT;
-        String toDir = ApCo.ROOT_DIR +File.separator+ ApCo.COMPUTE_DIR_NAME +File.separator+ fileName;
-
+//        String fileName = MFI_DATA_FILE_PREFIX + "-" + forDate.toString() + ApCo.DATA_FILE_EXT;
+//        String toDir = ApCo.ROOT_DIR +File.separator+ computeFolderName +File.separator+ fileName;
+        String computeFilePath = getComputeOutputPath(forDate);
         LOGGER.info("{} | for:{}", MFI_DATA_FILE_PREFIX, forDate.toString());
-        if(nseFileUtils.isFileExist(toDir)) {
-            LOGGER.warn("{} already present (calculation and saving would be skipped): {}", MFI_DATA_FILE_PREFIX, toDir);
+        if(nseFileUtils.isFileExist(computeFilePath)) {
+            LOGGER.warn("{} already present (calculation and saving would be skipped): {}", MFI_DATA_FILE_PREFIX, computeFilePath);
             return;
         }
 
-        Map<String, List<DeliverySpikeDto>> symbolMap = dataManager.getDataBySymbol(forDate, 10);
+        LOGGER.info("{} calculating for 20 days", MFI_DATA_FILE_PREFIX);
+        Map<String, List<DeliverySpikeDto>> symbolMap;
+        symbolMap = dataManager.getDataBySymbol(forDate, 20);
 
-        // calculate mfi for each s symbol
-        List<DeliverySpikeDto> dtos_ToBeSaved = new ArrayList<>();
-        symbolMap.forEach( (symbol, list)  -> {
+            Map<String, MfiBean> beansMap = new HashMap<>();
+            symbolMap.values().forEach( list -> {
+                list.forEach( dto -> {
+                    if (dto.getTradeDate().compareTo(forDate) == 0) {
+                        MfiBean bean = new MfiBean();
+                        bean.setSymbol(dto.getSymbol());
+                        bean.setTradeDate(dto.getTradeDate());
+                        beansMap.put(dto.getSymbol(), bean);
+                    }
+                });
+            });
+
+        loopIt(forDate, symbolMap,
+                (dto, mfi) -> beansMap.get(dto.getSymbol()).setVolMfi20(mfi),
+                (dto, mfi) -> beansMap.get(dto.getSymbol()).setDelMfi20(mfi)
+        );
+
+        LOGGER.info("{} calculating for 10 days", MFI_DATA_FILE_PREFIX);
+        symbolMap = dataManager.getDataBySymbol(forDate, 10);
+        loopIt(forDate, symbolMap,
+                (dto, mfi) -> beansMap.get(dto.getSymbol()).setVolMfi10(mfi),
+                (dto, mfi) -> beansMap.get(dto.getSymbol()).setDelMfi10(mfi)
+        );
+
+        //
+        List<CalcBean> calcBeanList = new ArrayList<>();
+        beansMap.values().forEach(bean -> calcBeanList.add(bean));
+        if(CalcHelper.validateForSaving(forDate, calcBeanList, MFI_DATA_FILE_PREFIX)) {
+            List<MfiBean> beansList = new ArrayList<>();
+            beansMap.values().forEach(bean -> beansList.add(bean));
+            saveToCsv(forDate, beansList);
+            saveToDb(forDate, beansList);
+        }
+    }
+
+    private void loopIt(LocalDate forDate,
+                        Map<String, List<DeliverySpikeDto>> symbolDtosMap,
+                        BiConsumer<DeliverySpikeDto, BigDecimal> biConsumerVol,
+                        BiConsumer<DeliverySpikeDto, BigDecimal> biConsumerDel) {
+        //List<DeliverySpikeDto> dtos_ToBeSaved = new ArrayList<>();
+        symbolDtosMap.forEach( (symbol, list) -> {
             calculate(forDate, symbol, list,
                     dto -> {
-//                        LOGGER.info("dt:{}, pm:{}, atp:{}, vol:{}, del:{}, H:{}, L:{}, C:{},L:{}",
-//                                dto.getTradeDate(), dto.getAtpChgPrcnt(), dto.getAtp(), dto.getVolume(), dto.getDelivery(), dto.getHigh(), dto.getLow(), dto.getClose(), dto.getLast());
+//                        LOGGER.info("dt:{}, val:{}, del:{}, oi:{}", dto.getTradeDate(), dto.getVolume, dto.getDelivery, oiSumMap.get(dto.getSymbol());
+                        //return dto.getVolume();
                         if(dto.getAtpChgPrcnt().compareTo(BigDecimal.ZERO) > 0) {
                             return dto.getAtp().multiply(dto.getVolume());
                         } else {
                             return dto.getAtp().multiply(dto.getVolume()).multiply(new BigDecimal(-1));
                         }
                     },
-                    (dto, mfi) -> dto.setVolAtpMfi10(mfi));
+                    (dto, calculatedValue) -> biConsumerVol.accept(dto, calculatedValue)
+            );
             calculate(forDate, symbol, list,
                     dto -> {
+                        //return dto.getDelivery();
                         if(dto.getAtpChgPrcnt().compareTo(BigDecimal.ZERO) > 0) {
                             return dto.getAtp().multiply(dto.getDelivery());
                         } else {
                             return dto.getAtp().multiply(dto.getDelivery()).multiply(new BigDecimal(-1));
                         }
                     },
-                    (dto, mfi) -> {
-                        dto.setDelAtpMfi10(mfi);
-                        dtos_ToBeSaved.add(dto);
-                    }
+                    (dto, calculatedValue) -> biConsumerDel.accept(dto, calculatedValue)
             );
         });
-
-        //
-//        if(CalcHelper.validateForSaving(forDate, dtos_ToBeSaved, MFI_DATA_FILE_PREFIX)) {
-//            saveToCsv(forDate, dtos_ToBeSaved);
-//            saveToDb(forDate, dtos_ToBeSaved);
-//        }
+        //return dtos_ToBeSaved;
     }
 
-    public void calculate(LocalDate forDate,
-                                String symbol,
-                                List<DeliverySpikeDto> deliverySpikeDtoList,
-                                Function<DeliverySpikeDto, BigDecimal> functionSupplier,
-                                BiConsumer<DeliverySpikeDto,BigDecimal> biConsumer) {
+    public void calculate(LocalDate forDate, String symbol,
+                            List<DeliverySpikeDto> spikeDtoList,
+                            Function<DeliverySpikeDto, BigDecimal> functionSupplier,
+                            BiConsumer<DeliverySpikeDto, BigDecimal> biConsumer) {
         // calculate mfi for each s symbol
         //LOGGER.info("mfi | for symbol = {}", symbol);
         BigDecimal zero = BigDecimal.ZERO;
@@ -106,11 +148,7 @@ public class MfiCalculator {
         BigDecimal dn = BigDecimal.ZERO;
 
         DeliverySpikeDto latestDto = null;
-
-//        if("EXIDEIND".equals(symbol)) {
-//            LOGGER.info("");
-//        }
-        for(DeliverySpikeDto dsDto:deliverySpikeDtoList) {
+        for(DeliverySpikeDto dsDto:spikeDtoList) {
             //LOGGER.info("loopDto = {}", dsDto.toFullCsvString());
             if(dsDto.getTradeDate().compareTo(forDate)  == 0) {
                 latestDto = dsDto;
@@ -137,7 +175,6 @@ public class MfiCalculator {
         }
 
         //LOGGER.info("latestDto = {}", latestDto.toFullCsvString());
-
         BigDecimal moneyFlowRatio;
         moneyFlowRatio = up.divide(dnCtr == 0 ? BigDecimal.ONE : dn, 2, RoundingMode.HALF_UP);
         if(upCtr > 0 && dnCtr > 0) {
@@ -160,27 +197,20 @@ public class MfiCalculator {
         mfi = hundred.subtract(mfi);
         //===========================================
 
-        if(latestDto!=null) biConsumer.accept(latestDto, mfi);
+        if(latestDto != null) biConsumer.accept(latestDto, mfi);
         else LOGGER.warn("skipping mfi, latestDto is null for symbol {}, may be phasing out from FnO", symbol);
         //LOGGER.info("for symbol = {}, mfi = {}", symbol, mfi);
     }
 
-    public void calculateEma(List<LocalDate> latestTenDates,
-                                    String symbol,
-                                    List<DeliverySpikeDto> deliverySpikeDtoList,
-                                    Function<DeliverySpikeDto, BigDecimal> functionSupplier,
-                                    BiConsumer<DeliverySpikeDto,BigDecimal> biConsumer) {
-
+    private void saveToCsv(LocalDate forDate, List<MfiBean> dtos) {
+//        String fileName = MFI_DATA_FILE_PREFIX + forDate + ApCo.DATA_FILE_EXT;
+//        String toPath = ApCo.ROOT_DIR + File.separator + computeFolderName + File.separator + fileName;
+        String computeToFilePath = getComputeOutputPath(forDate);
+        MfiCao.saveOverWrite(MFI_CSV_HEADER, dtos, computeToFilePath, dto -> dto.toCsvString());
+        LOGGER.info("{} | saved on disk ({})", MFI_DATA_FILE_PREFIX, computeToFilePath);
     }
 
-//    private void saveToCsv(LocalDate forDate, List<DeliverySpikeDto> dtos) {
-//        String fileName = MFI_DATA_FILE_PREFIX + "-" + forDate + ApCo.DATA_FILE_EXT;
-//        String toPath = ApCo.ROOT_DIR + File.separator + ApCo.COMPUTE_DIR_NAME + File.separator + fileName;
-//        File file = new File(toPath);
-//        MfiData.saveOverWrite(MFI_CSV_HEADER, dtos, toPath, dto -> dto.toString());
-//    }
-
-    private void saveToDb(LocalDate forDate, List<DeliverySpikeDto> dtos) {
+    private void saveToDb(LocalDate forDate, List<MfiBean> dtos) {
         long dataCtr = dao.dataCount(forDate);
         if (dataCtr == 0) {
             CalcMfiTab tab = new CalcMfiTab();
@@ -189,11 +219,15 @@ public class MfiCalculator {
                 tab.setSymbol(dto.getSymbol());
                 tab.setTradeDate(dto.getTradeDate());
 
-                tab.setVolAtpMfi10Sma(dto.getVolAtpMfi10());
-                tab.setDelAtpMfi10Sma(dto.getDelAtpMfi10());
+                tab.setVolAtpMfi10Sma(dto.getVolMfi10());
+                tab.setDelAtpMfi10Sma(dto.getDelMfi10());
+
+                tab.setVolAtpMfi20Sma(dto.getVolMfi20());
+                tab.setDelAtpMfi20Sma(dto.getDelMfi20());
 
                 repository.save(tab);
             });
+            LOGGER.info("{} | uploaded", MFI_DATA_FILE_PREFIX);
         } else if (dataCtr == dtos.size()) {
             LOGGER.info("{} | upload skipped, already uploaded", MFI_DATA_FILE_PREFIX);
         } else {
@@ -201,4 +235,10 @@ public class MfiCalculator {
         }
     }
 
+
+    private String getComputeOutputPath(LocalDate forDate) {
+        String computeFileName = MFI_DATA_FILE_PREFIX + forDate + ApCo.DATA_FILE_EXT;
+        String computePath = ApCo.ROOT_DIR + File.separator + computeFolderName + File.separator + computeFileName;
+        return computePath;
+    }
 }

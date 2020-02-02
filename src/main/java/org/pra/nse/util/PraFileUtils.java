@@ -2,6 +2,7 @@ package org.pra.nse.util;
 
 
 import org.pra.nse.ApCo;
+import org.pra.nse.NseCo;
 import org.pra.nse.ProCo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -85,15 +86,15 @@ public class PraFileUtils {
     }
 
     public LocalDate getLatestNseDate() {
-        String cmFileName = getLatestFileNameFor(ApCo.CM_FILES_PATH, ApCo.PRA_CM_FILE_PREFIX, ApCo.DATA_FILE_EXT, 1);
+        String cmFileName = getLatestFileNameFor(NseCo.CM_FILES_PATH, ApCo.PRA_CM_FILE_PREFIX, ApCo.DATA_FILE_EXT, 1);
         String cmDateStr = ProCo.extractDate(cmFileName);
         LocalDate cmDate = DateUtils.toLocalDate(cmDateStr);
 
-        String fmFileName = getLatestFileNameFor(ApCo.FM_FILES_PATH, ApCo.PRA_FM_FILE_PREFIX, ApCo.DATA_FILE_EXT, 1);
+        String fmFileName = getLatestFileNameFor(NseCo.FM_FILES_PATH, ApCo.PRA_FM_FILE_PREFIX, ApCo.DATA_FILE_EXT, 1);
         String fmDateStr = ProCo.extractDate(fmFileName);
         LocalDate fmDate = DateUtils.toLocalDate(fmDateStr);
 
-        String dmFileName = getLatestFileNameFor(ApCo.DM_FILES_PATH, ApCo.PRA_DM_FILE_PREFIX, ApCo.DATA_FILE_EXT, 1);
+        String dmFileName = getLatestFileNameFor(NseCo.DM_FILES_PATH, ApCo.PRA_DM_FILE_PREFIX, ApCo.DATA_FILE_EXT, 1);
         String dmDateStr = ProCo.extractDate(dmFileName);
         LocalDate dmDate = DateUtils.toLocalDate(dmDateStr);
 
@@ -106,16 +107,18 @@ public class PraFileUtils {
     }
 
     public String validateDownload() {
-        String cmDate = getLatestFileNameFor(ApCo.CM_FILES_PATH, ApCo.PRA_CM_FILE_PREFIX, ApCo.REPORTS_FILE_EXT, 1);
+        String cmDate = getLatestFileNameFor(NseCo.CM_FILES_PATH, ApCo.PRA_CM_FILE_PREFIX, ApCo.REPORTS_FILE_EXT, 1);
         cmDate = ProCo.extractDate(cmDate);
 
-        String foDate = getLatestFileNameFor(ApCo.FM_FILES_PATH, ApCo.PRA_FM_FILE_PREFIX, ApCo.REPORTS_FILE_EXT, 1);
+        String foDate = getLatestFileNameFor(NseCo.FM_FILES_PATH, ApCo.PRA_FM_FILE_PREFIX, ApCo.REPORTS_FILE_EXT, 1);
         foDate = ProCo.extractDate(foDate);
 
-        String mtDate = getLatestFileNameFor(ApCo.DM_FILES_PATH, ApCo.PRA_DM_FILE_PREFIX, ApCo.REPORTS_FILE_EXT, 1);
+        String mtDate = getLatestFileNameFor(NseCo.DM_FILES_PATH, ApCo.PRA_DM_FILE_PREFIX, ApCo.REPORTS_FILE_EXT, 1);
         mtDate = ProCo.extractDate(mtDate);
 
-        if(cmDate.equals(foDate) && foDate.equals(mtDate)) {
+        if (cmDate == null || foDate == null || mtDate == null) {
+            return null;
+        } else if (cmDate.equals(foDate) && foDate.equals(mtDate)) {
             return cmDate;
         } else {
             LOGGER.warn("Not All files are available: fo=[fo-{}], cm=[cm-{}], mt=[mt-{}]", foDate, cmDate, mtDate);
@@ -126,7 +129,5 @@ public class PraFileUtils {
             return null;
         }
     }
-
-
 
 }

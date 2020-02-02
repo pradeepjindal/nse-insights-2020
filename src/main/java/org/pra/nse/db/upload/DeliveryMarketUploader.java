@@ -1,6 +1,7 @@
 package org.pra.nse.db.upload;
 
 import org.pra.nse.ApCo;
+import org.pra.nse.NseCo;
 import org.pra.nse.csv.bean.in.DmBean;
 import org.pra.nse.csv.read.DmCsvReader;
 import org.pra.nse.db.dao.nse.DeliveryMarketDao;
@@ -34,7 +35,7 @@ public class DeliveryMarketUploader extends BaseUploader {
                                   NseFileUtils nseFileUtils,
                                   PraFileUtils praFileUtils,
                                   DmCsvReader csvReader) {
-        super(praFileUtils, ApCo.DM_DIR_NAME, ApCo.PRA_DM_FILE_PREFIX);
+        super(praFileUtils, NseCo.DM_DIR_NAME, ApCo.PRA_DM_FILE_PREFIX);
         this.repository = nseDeliveryMarketRepository;
         this.dao = deliveryMarketDao;
         this.nseFileUtils = nseFileUtils;
@@ -51,7 +52,7 @@ public class DeliveryMarketUploader extends BaseUploader {
             LOGGER.info("DM-upload | uploading | for date:[{}]", forDate);
         }
 
-        String fromFile = ApCo.DM_FILES_PATH + File.separator+ ApCo.PRA_DM_FILE_PREFIX +forDate+ ApCo.REPORTS_FILE_EXT;
+        String fromFile = NseCo.DM_FILES_PATH + File.separator+ ApCo.PRA_DM_FILE_PREFIX +forDate+ ApCo.REPORTS_FILE_EXT;
         //LOGGER.info("DM-upload | looking for file Name along with path:[{}]",fromFile);
 
         if(!nseFileUtils.isFileExist(fromFile)) {

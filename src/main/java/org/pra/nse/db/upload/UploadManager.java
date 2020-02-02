@@ -29,17 +29,17 @@ public class UploadManager implements Manager {
         LOGGER.info(".");
         LOGGER.info("____________________ Upload Manager");
 
-        cashMarketUploader.uploadFromLastDate();
-        LOGGER.info("----------");
-        futureMarketUploader.uploadFromLastDate();
-        LOGGER.info("----------");
-        deliveryMarketUploader.uploadFromLastDate();
+//        cashMarketUploader.uploadFromLastDate();
+//        LOGGER.info("----------");
+//        futureMarketUploader.uploadFromLastDate();
+//        LOGGER.info("----------");
+//        deliveryMarketUploader.uploadFromLastDate();
 
-//        cashMarketUploader.uploadFromDefaultDate();
-//        LOGGER.info("----------");
-//        futureMarketUploader.uploadFromDefaultDate();
-//        LOGGER.info("----------");
-//        deliveryMarketUploader.uploadFromDefaultDate();
+        cashMarketUploader.uploadFromDefaultDate();
+        LOGGER.info("----------");
+        futureMarketUploader.uploadFromDefaultDate();
+        LOGGER.info("----------");
+        deliveryMarketUploader.uploadFromDefaultDate();
 
         LOGGER.info("======================================== Upload Manager");
     }

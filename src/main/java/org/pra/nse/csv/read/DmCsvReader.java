@@ -1,6 +1,7 @@
 package org.pra.nse.csv.read;
 
 import org.pra.nse.ApCo;
+import org.pra.nse.NseCo;
 import org.pra.nse.csv.bean.in.DmBean;
 import org.pra.nse.util.NseFileUtils;
 import org.slf4j.Logger;
@@ -30,7 +31,7 @@ public class DmCsvReader {
 
     public Map<String, DmBean> read(String fromFile) {
 
-        String toFile = PathHelper.fileNameWithFullPath(ApCo.DM_DIR_NAME, ApCo.PRA_DM_FILE_PREFIX, fromFile);
+        String toFile = PathHelper.fileNameWithFullPath(NseCo.DM_DIR_NAME, ApCo.PRA_DM_FILE_PREFIX, fromFile);
         if(nseFileUtils.isFileExist(toFile)) {
             LOGGER.info("Mat file exist [{}]", toFile);
         } else {

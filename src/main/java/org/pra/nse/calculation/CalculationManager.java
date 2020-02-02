@@ -22,15 +22,15 @@ public class CalculationManager implements Manager {
 
     private final DataManager dataManager;
 
-    private final AvgCalculator avgCalculator;
-    private final RsiCalculator rsiCalculator;
-    private final MfiCalculator mfiCalculator;
+    private final AvgCalculatorNew avgCalculator;
+    private final RsiCalculatorNew rsiCalculator;
+    private final MfiCalculatorNew mfiCalculator;
 
 
 
     public CalculationManager(NseFileUtils nseFileUtils, NseReportsDao nseReportsDao,
                               DataManager dataManager,
-                              AvgCalculator avgCalculator, RsiCalculator rsiCalculator, MfiCalculator mfiCalculator) {
+                              AvgCalculatorNew avgCalculator, RsiCalculatorNew rsiCalculator, MfiCalculatorNew mfiCalculator) {
         this.nseFileUtils = nseFileUtils;
         this.nseReportsDao = nseReportsDao;
         this.dataManager = dataManager;
@@ -46,7 +46,7 @@ public class CalculationManager implements Manager {
 
         //Map<String, List<DeliverySpikeDto>> symbolMap = dataManager.getLatest10DataBySymbol();
 
-        nseFileUtils.getDatesToBeComputed(()-> AVG_DATA_FILE_PREFIX, ApCo.COMPUTE_DIR_NAME)
+        nseFileUtils.getDatesToBeComputed(()-> AVG_DATA_FILE_PREFIX, ApCo.AVG_DIR_NAME, ApCo.CALC_FROM_DATE)
                 .forEach( forDate -> {
                     LOGGER.info(".");
                     LOGGER.info("calc-{} | for:{}", AVG_DATA_FILE_PREFIX, forDate.toString());
@@ -58,7 +58,7 @@ public class CalculationManager implements Manager {
                 });
 
         LOGGER.info("----------");
-        nseFileUtils.getDatesToBeComputed(()-> RSI_DATA_FILE_PREFIX, ApCo.COMPUTE_DIR_NAME)
+        nseFileUtils.getDatesToBeComputed(()-> RSI_DATA_FILE_PREFIX, ApCo.RSI_DIR_NAME, ApCo.CALC_FROM_DATE)
                 .forEach( forDate -> {
                     LOGGER.info(".");
                     LOGGER.info("calc-{} | for:{}", RSI_DATA_FILE_PREFIX, forDate.toString());
@@ -70,7 +70,7 @@ public class CalculationManager implements Manager {
                 });
 
         LOGGER.info("----------");
-        nseFileUtils.getDatesToBeComputed(()-> MFI_DATA_FILE_PREFIX, ApCo.COMPUTE_DIR_NAME)
+        nseFileUtils.getDatesToBeComputed(()-> MFI_DATA_FILE_PREFIX, ApCo.MFI_DIR_NAME, ApCo.CALC_FROM_DATE)
                 .forEach( forDate -> {
                     LOGGER.info(".");
                     LOGGER.info("calc-{} | for:{}", MFI_DATA_FILE_PREFIX, forDate.toString());

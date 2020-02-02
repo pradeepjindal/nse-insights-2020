@@ -1,6 +1,7 @@
 package org.pra.nse.email;
 
 import org.pra.nse.ApCo;
+import org.pra.nse.NseCo;
 import org.pra.nse.util.DateUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,7 +48,7 @@ public class EmailServiceImpl implements EmailService {
         //TODO use cross cutting to send emails
         LocalDate fileForDate = DateUtils.getLocalDateFromPath(pathToAttachment);
         if(fileForDate == null) {
-            fileForDate = DateUtils.getLocalDateFromPath(pathToAttachment, ApCo.AB_FILE_NAME_DATE_REGEX, ApCo.AB_FILE_NAME_DATE_FORMAT);
+            fileForDate = DateUtils.getLocalDateFromPath(pathToAttachment, NseCo.AB_FILE_NAME_DATE_REGEX, NseCo.AB_FILE_NAME_DATE_FORMAT);
         }
         if (!ApCo.EMAIL_ENABLED ) {
             LOGGER.info("Mailing | disabled, mailing requests ignored");

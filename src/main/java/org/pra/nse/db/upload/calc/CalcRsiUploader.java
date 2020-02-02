@@ -28,7 +28,7 @@ public class CalcRsiUploader {
 
 
     public void upload(LocalDate forDate, List<CalcRsiTab> list) {
-
+        //TODO not in use
         if(dao.dataCount(forDate) > 0) {
             LOGGER.info("rsi-upload | SKIPPING - already uploaded | for date:[{}]", forDate);
             return;
@@ -41,13 +41,13 @@ public class CalcRsiUploader {
         list.forEach( source -> {
             target.reset();
             target.setSymbol(source.getSymbol());
-            target.setOpenRsi10Ema(source.getOpenRsi10Ema());
-            target.setHighRsi10Ema(source.getHighRsi10Ema());
-            target.setLowRsi10Ema(source.getLowRsi10Ema());
-            target.setCloseRsi10Ema(source.getCloseRsi10Ema());
-            target.setLastRsi10Ema(source.getLastRsi10Ema());
-            target.setAtpRsi10Ema(source.getAtpRsi10Ema());
-            target.setHlmRsi10Ema(source.getHlmRsi10Ema());
+            target.setOpenRsi10Sma(source.getOpenRsi10Sma());
+            target.setHighRsi10Sma(source.getHighRsi10Sma());
+            target.setLowRsi10Sma(source.getLowRsi10Sma());
+            target.setCloseRsi10Sma(source.getCloseRsi10Sma());
+            target.setLastRsi10Sma(source.getLastRsi10Sma());
+            target.setAtpRsi10Sma(source.getAtpRsi10Sma());
+            target.setHlmRsi10Sma(source.getHlmRsi10Sma());
             try {
                 repository.save(target);
             } catch(DataIntegrityViolationException dive) {

@@ -16,23 +16,24 @@ public class CalcMfiTab implements Serializable {
     private Long id;
     private String symbol;
     private LocalDate tradeDate;
-    @Column(name = "volume_atp_mfi_05")
-    private BigDecimal volumeAtpMfi05;
-    @Column(name = "volume_atp_mfi_10")
-    private BigDecimal volumeAtpMfi10;
-    @Column(name = "volume_atp_mfi_15")
-    private BigDecimal volumeAtpMfi15;
-    @Column(name = "volume_atp_mfi_20")
-    private BigDecimal volumeAtpMfi20;
 
-    @Column(name = "delivery_atp_mfi_05")
-    private BigDecimal deliveryAtpMfi05;
-    @Column(name = "delivery_atp_mfi_10")
-    private BigDecimal deliveryAtpMfi10;
-    @Column(name = "delivery_atp_mfi_15")
-    private BigDecimal deliveryAtpMfi15;
-    @Column(name = "delivery_atp_mfi_20")
-    private BigDecimal deliveryAtpMfi20;
+    @Column(name = "vol_atp_mfi_05_Sma")
+    private BigDecimal volAtpMfi05Sma;
+    @Column(name = "vol_atp_mfi_10_Sma")
+    private BigDecimal volAtpMfi10Sma;
+    @Column(name = "vol_atp_mfi_15_Sma")
+    private BigDecimal volAtpMfi15Sma;
+    @Column(name = "vol_atp_mfi_20_Sma")
+    private BigDecimal volAtpMfi20Sma;
+
+    @Column(name = "del_atp_mfi_05_Sma")
+    private BigDecimal delAtpMfi05Sma;
+    @Column(name = "del_atp_mfi_10_Sma")
+    private BigDecimal delAtpMfi10Sma;
+    @Column(name = "del_atp_mfi_15_Sma")
+    private BigDecimal delAtpMfi15Sma;
+    @Column(name = "del_atp_mfi_20_Sma")
+    private BigDecimal delAtpMfi20Sma;
 
 
 
@@ -40,28 +41,32 @@ public class CalcMfiTab implements Serializable {
     public String toString() {
         return symbol +
                 "," + tradeDate +
-                "," + volumeAtpMfi05 +
-                "," + volumeAtpMfi10 +
-                "," + volumeAtpMfi15 +
-                "," + volumeAtpMfi20 +
-                "," + deliveryAtpMfi05 +
-                "," + deliveryAtpMfi10 +
-                "," + deliveryAtpMfi15 +
-                "," + deliveryAtpMfi20;
+
+                "," + volAtpMfi05Sma +
+                "," + volAtpMfi10Sma +
+                "," + volAtpMfi15Sma +
+                "," + volAtpMfi20Sma +
+
+                "," + delAtpMfi05Sma +
+                "," + delAtpMfi10Sma +
+                "," + delAtpMfi15Sma +
+                "," + delAtpMfi20Sma;
     }
 
     public void reset() {
         id = null;
         symbol = null;
         tradeDate = null;
-        volumeAtpMfi05 = null;
-        volumeAtpMfi10 = null;
-        volumeAtpMfi15 = null;
-        volumeAtpMfi20 = null;
-        deliveryAtpMfi05 = null;
-        deliveryAtpMfi10 = null;
-        deliveryAtpMfi15 = null;
-        deliveryAtpMfi20 = null;
+
+        volAtpMfi05Sma = null;
+        volAtpMfi10Sma = null;
+        volAtpMfi15Sma = null;
+        volAtpMfi20Sma = null;
+
+        delAtpMfi05Sma = null;
+        delAtpMfi10Sma = null;
+        delAtpMfi15Sma = null;
+        delAtpMfi20Sma = null;
     }
 
 
@@ -93,67 +98,67 @@ public class CalcMfiTab implements Serializable {
         this.tradeDate = tradeDate;
     }
 
-    public BigDecimal getVolumeAtpMfi05() {
-        return volumeAtpMfi05;
+    public BigDecimal getVolAtpMfi05Sma() {
+        return volAtpMfi05Sma;
     }
 
-    public void setVolumeAtpMfi05(BigDecimal volumeAtpMfi05) {
-        this.volumeAtpMfi05 = volumeAtpMfi05;
+    public void setVolAtpMfi05Sma(BigDecimal volAtpMfi05Sma) {
+        this.volAtpMfi05Sma = volAtpMfi05Sma;
     }
 
-    public BigDecimal getVolumeAtpMfi10() {
-        return volumeAtpMfi10;
+    public BigDecimal getVolAtpMfi10Sma() {
+        return volAtpMfi10Sma;
     }
 
-    public void setVolumeAtpMfi10(BigDecimal volumeAtpMfi10) {
-        this.volumeAtpMfi10 = volumeAtpMfi10;
+    public void setVolAtpMfi10Sma(BigDecimal volAtpMfi10Sma) {
+        this.volAtpMfi10Sma = volAtpMfi10Sma;
     }
 
-    public BigDecimal getVolumeAtpMfi15() {
-        return volumeAtpMfi15;
+    public BigDecimal getVolAtpMfi15Sma() {
+        return volAtpMfi15Sma;
     }
 
-    public void setVolumeAtpMfi15(BigDecimal volumeAtpMfi15) {
-        this.volumeAtpMfi15 = volumeAtpMfi15;
+    public void setVolAtpMfi15Sma(BigDecimal volAtpMfi15Sma) {
+        this.volAtpMfi15Sma = volAtpMfi15Sma;
     }
 
-    public BigDecimal getVolumeAtpMfi20() {
-        return volumeAtpMfi20;
+    public BigDecimal getVolAtpMfi20Sma() {
+        return volAtpMfi20Sma;
     }
 
-    public void setVolumeAtpMfi20(BigDecimal volumeAtpMfi20) {
-        this.volumeAtpMfi20 = volumeAtpMfi20;
+    public void setVolAtpMfi20Sma(BigDecimal volAtpMfi20Sma) {
+        this.volAtpMfi20Sma = volAtpMfi20Sma;
     }
 
-    public BigDecimal getDeliveryAtpMfi05() {
-        return deliveryAtpMfi05;
+    public BigDecimal getDelAtpMfi05Sma() {
+        return delAtpMfi05Sma;
     }
 
-    public void setDeliveryAtpMfi05(BigDecimal deliveryAtpMfi05) {
-        this.deliveryAtpMfi05 = deliveryAtpMfi05;
+    public void setDelAtpMfi05Sma(BigDecimal delAtpMfi05Sma) {
+        this.delAtpMfi05Sma = delAtpMfi05Sma;
     }
 
-    public BigDecimal getDeliveryAtpMfi10() {
-        return deliveryAtpMfi10;
+    public BigDecimal getDelAtpMfi10Sma() {
+        return delAtpMfi10Sma;
     }
 
-    public void setDeliveryAtpMfi10(BigDecimal deliveryAtpMfi10) {
-        this.deliveryAtpMfi10 = deliveryAtpMfi10;
+    public void setDelAtpMfi10Sma(BigDecimal delAtpMfi10Sma) {
+        this.delAtpMfi10Sma = delAtpMfi10Sma;
     }
 
-    public BigDecimal getDeliveryAtpMfi15() {
-        return deliveryAtpMfi15;
+    public BigDecimal getDelAtpMfi15Sma() {
+        return delAtpMfi15Sma;
     }
 
-    public void setDeliveryAtpMfi15(BigDecimal deliveryAtpMfi15) {
-        this.deliveryAtpMfi15 = deliveryAtpMfi15;
+    public void setDelAtpMfi15Sma(BigDecimal delAtpMfi15Sma) {
+        this.delAtpMfi15Sma = delAtpMfi15Sma;
     }
 
-    public BigDecimal getDeliveryAtpMfi20() {
-        return deliveryAtpMfi20;
+    public BigDecimal getDelAtpMfi20Sma() {
+        return delAtpMfi20Sma;
     }
 
-    public void setDeliveryAtpMfi20(BigDecimal deliveryAtpMfi20) {
-        this.deliveryAtpMfi20 = deliveryAtpMfi20;
+    public void setDelAtpMfi20Sma(BigDecimal delAtpMfi20Sma) {
+        this.delAtpMfi20Sma = delAtpMfi20Sma;
     }
 }

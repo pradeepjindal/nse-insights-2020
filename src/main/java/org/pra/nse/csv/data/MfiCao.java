@@ -1,7 +1,6 @@
 package org.pra.nse.csv.data;
 
 import org.pra.nse.ApCo;
-import org.pra.nse.db.dto.DeliverySpikeDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -10,30 +9,32 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 
-
-public class MfiData {
-    private static final Logger LOGGER = LoggerFactory.getLogger(MfiData.class);
+/**
+ * CAO Csv Access Object
+ */
+public class MfiCao {
+    private static final Logger LOGGER = LoggerFactory.getLogger(MfiCao.class);
 
 
     public static void saveOverWrite(String csvHeaderString,
-                                     List<DeliverySpikeDto> dtos,
+                                     List<MfiBean> dtos,
                                      String toPath,
                                      Function<MfiBean, String> csvStringFunction) {
         //
-        List<MfiBean> beans = new ArrayList<>();
-        dtos.stream().forEach( dto -> {
-            MfiBean bean = new MfiBean();
-            bean.setSymbol(dto.getSymbol());
-            //rsiBean.setTradeDate(DateUtils.toUtilDate(dto.getTradeDate()));
-            bean.setTradeDate(dto.getTradeDate());
-            bean.setVolumeAtpMfi10(dto.getVolumeAtpMfi10());
-            bean.setDeliveryAtpMfi10(dto.getDeliveryAtpMfi10());
-            beans.add(bean);
-        });
+//        List<MfiBean> beans = new ArrayList<>();
+//        dtos.stream().forEach( dto -> {
+//            MfiBean bean = new MfiBean();
+//            bean.setSymbol(dto.getSymbol());
+//            //rsiBean.setTradeDate(DateUtils.toUtilDate(dto.getTradeDate()));
+//            bean.setTradeDate(dto.getTradeDate());
+//            bean.setVolumeAtpMfi10(dto.getVolumeAtpMfi10());
+//            bean.setDeliveryAtpMfi10(dto.getDeliveryAtpMfi10());
+//            beans.add(bean);
+//        });
         // create and collect csv lines
         List<String> csvLines = new ArrayList<>();
         //symbolMap.values().forEach( list -> list.forEach( dto -> csvLines.add(dto.toFullCsvString())));
-        beans.forEach( dto -> csvLines.add( csvStringFunction.apply(dto) ));
+        dtos.forEach( dto -> csvLines.add( csvStringFunction.apply(dto) ));
 
         // print csv lines
         File csvOutputFile = new File(toPath);
@@ -48,26 +49,26 @@ public class MfiData {
         }
     }
 
-    public static void saveAppend(List<DeliverySpikeDto> dtos) {
+    public static void saveAppend(List<MfiBean> dtos) {
 
         //List<RsiEntity> rsiBeans0 = RsiData.load();
         String toPath = ApCo.ROOT_DIR + File.separator + ApCo.COMPUTE_DIR_NAME + File.separator + "mfi.csv";
         //
-        List<RsiBean> beans = new ArrayList<>();
-        dtos.stream().forEach( dto -> {
-            RsiBean bean = new RsiBean();
-            bean.setSymbol(dto.getSymbol());
-            //rsiBean.setTradeDate(DateUtils.toUtilDate(dto.getTradeDate()));
-            bean.setTradeDate(dto.getTradeDate());
-            bean.setCloseRsi10Ema(dto.getTdyCloseRsi10Ema());
-            bean.setLastRsi10Ema(dto.getTdyLastRsi10Ema());
-            bean.setAtpRsi10Ema(dto.getTdyAtpRsi10Ema());
-            beans.add(bean);
-        });
+//        List<RsiBean> beans = new ArrayList<>();
+//        dtos.stream().forEach( dto -> {
+//            RsiBean bean = new RsiBean();
+//            bean.setSymbol(dto.getSymbol());
+//            //rsiBean.setTradeDate(DateUtils.toUtilDate(dto.getTradeDate()));
+//            bean.setTradeDate(dto.getTradeDate());
+//            bean.setCloseRsi10Ema(dto.getTdyCloseRsi10Ema());
+//            bean.setLastRsi10Ema(dto.getTdyLastRsi10Ema());
+//            bean.setAtpRsi10Ema(dto.getTdyAtpRsi10Ema());
+//            beans.add(bean);
+//        });
 
         // create and collect csv lines
         List<String> csvLines = new ArrayList<>();
-        beans.forEach( bean -> csvLines.add(bean.toString()));
+        dtos.forEach( bean -> csvLines.add(bean.toCsvString()));
 
         // print csv lines
         File csvOutputFile = new File(toPath);

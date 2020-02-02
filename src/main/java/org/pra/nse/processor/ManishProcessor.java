@@ -1,6 +1,7 @@
 package org.pra.nse.processor;
 
 import org.pra.nse.ApCo;
+import org.pra.nse.NseCo;
 import org.pra.nse.ProCo;
 import org.pra.nse.csv.bean.out.PraBean;
 import org.pra.nse.csv.merge.CmMerger;
@@ -8,7 +9,6 @@ import org.pra.nse.csv.merge.FmMerger;
 import org.pra.nse.csv.merge.DmMerger;
 import org.pra.nse.csv.writer.ManishCsvWriter;
 import org.pra.nse.email.EmailService;
-import org.pra.nse.util.DateUtils;
 import org.pra.nse.util.PraFileUtils;
 import org.pra.nse.util.NseFileUtils;
 import org.slf4j.Logger;
@@ -51,7 +51,7 @@ public class ManishProcessor {
 
     public void process(LocalDate processForDate) throws IOException {
         String outputPathAndFileNameForFixFile = ProCo.outputPathAndFileNameForFixFile(ApCo.MANISH_FILE_NAME);
-        String foLatestFileName = praFileUtils.getLatestFileNameFor(ApCo.FM_FILES_PATH, ApCo.PRA_FM_FILE_PREFIX, ApCo.REPORTS_FILE_EXT, 1, processForDate);
+        String foLatestFileName = praFileUtils.getLatestFileNameFor(NseCo.FM_FILES_PATH, ApCo.PRA_FM_FILE_PREFIX, ApCo.REPORTS_FILE_EXT, 1, processForDate);
         String outputPathAndFileNameForDynamicFile = ProCo.outputPathAndFileNameForDynamicFile(ApCo.MANISH_FILE_NAME, foLatestFileName);
 
         if(nseFileUtils.isFileExist(outputPathAndFileNameForDynamicFile)) {

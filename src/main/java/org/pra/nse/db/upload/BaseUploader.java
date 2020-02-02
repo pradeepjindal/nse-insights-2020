@@ -48,8 +48,9 @@ public abstract class BaseUploader {
         do {
             processingDate = processingDate.plusDays(1);
             LOGGER.info("upload processing date: [{}], {}", processingDate, processingDate.getDayOfWeek());
-            if("SATURDAY".equals(processingDate.getDayOfWeek().name()) || "SUNDAY".equals(processingDate.getDayOfWeek().name())) {
-                // TODO | Deepawali, sunday trading - logic to be incorporated
+            if(DateUtils.isTradingOnHoliday(processingDate)) {
+                uploadForDate(processingDate);
+            } else if (DateUtils.isWeekend(processingDate)) {
                 continue;
             } else {
                 uploadForDate(processingDate);

@@ -6,6 +6,7 @@ import org.pra.nse.csv.transformation.TransformationManager;
 import org.pra.nse.db.upload.UploadManager;
 import org.pra.nse.processor.*;
 import org.pra.nse.report.ReportManager;
+import org.pra.nse.util.DirUtils;
 import org.pra.nse.util.PraFileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,6 +49,7 @@ public class MainProcess implements ApplicationRunner {
         LOGGER.info("Main Process | ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ | commencing");
         LOGGER.info("");
         try {
+            DirUtils.createRootFolder();
             downloadManager.execute();
             transformationManager.execute();
             uploadManager.execute();

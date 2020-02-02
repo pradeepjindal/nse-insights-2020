@@ -1,6 +1,7 @@
 package org.pra.nse.processor;
 
 import org.pra.nse.ApCo;
+import org.pra.nse.NseCo;
 import org.pra.nse.ProCo;
 import org.pra.nse.csv.bean.out.PraBean;
 import org.pra.nse.csv.merge.CmMerger;
@@ -14,7 +15,6 @@ import org.pra.nse.util.PraFileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.ApplicationArguments;
-import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -52,7 +52,7 @@ public class ShuviProcessor {
 
     public void process(LocalDate processForDate) throws IOException {
         String outputPathAndFileNameForFixFile = ProCo.outputPathAndFileNameForFixFile(File_Name);
-        String foLatestFileName = praFileUtils.getLatestFileNameFor(ApCo.FM_FILES_PATH, ApCo.PRA_FM_FILE_PREFIX, ApCo.REPORTS_FILE_EXT, 1, processForDate);
+        String foLatestFileName = praFileUtils.getLatestFileNameFor(NseCo.FM_FILES_PATH, ApCo.PRA_FM_FILE_PREFIX, ApCo.REPORTS_FILE_EXT, 1, processForDate);
         String outputPathAndFileNameForDynamicFile = ProCo.outputPathAndFileNameForDynamicFile(File_Name, foLatestFileName);
 
         if(nseFileUtils.isFileExist(outputPathAndFileNameForDynamicFile)) {

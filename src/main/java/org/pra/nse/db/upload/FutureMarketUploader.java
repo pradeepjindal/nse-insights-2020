@@ -1,6 +1,7 @@
 package org.pra.nse.db.upload;
 
 import org.pra.nse.ApCo;
+import org.pra.nse.NseCo;
 import org.pra.nse.csv.bean.in.FmBean;
 import org.pra.nse.csv.read.FmCsvReader;
 import org.pra.nse.db.dao.nse.FutureMarketDao;
@@ -39,7 +40,7 @@ public class FutureMarketUploader extends BaseUploader {
                                 NseFileUtils nseFileUtils,
                                 PraFileUtils praFileUtils,
                                 FmCsvReader fmCsvReader) {
-        super(praFileUtils, ApCo.FM_DIR_NAME, ApCo.PRA_FM_FILE_PREFIX);
+        super(praFileUtils, NseCo.FM_DIR_NAME, ApCo.PRA_FM_FILE_PREFIX);
         this.futureMarketRepository = nseFutureMarketRepository;
         this.optionMarketRepository = nseOptionMarketRepository;
         this.dao = futureMarketDao;
@@ -57,7 +58,7 @@ public class FutureMarketUploader extends BaseUploader {
             LOGGER.info("FM-upload | uploading | for date:[{}]", forDate);
         }
 
-        String fromFile = ApCo.FM_FILES_PATH + File.separator+ ApCo.PRA_FM_FILE_PREFIX +forDate+ ApCo.REPORTS_FILE_EXT;
+        String fromFile = NseCo.FM_FILES_PATH + File.separator+ ApCo.PRA_FM_FILE_PREFIX +forDate+ ApCo.REPORTS_FILE_EXT;
         //LOGGER.info("FM-upload | looking for file Name along with path:[{}]",fromFile);
 
         if(!nseFileUtils.isFileExist(fromFile)) {
@@ -91,25 +92,26 @@ public class FutureMarketUploader extends BaseUploader {
                     futureTab.setChangeInOi(source.getChg_In_Oi());
                     futureTab.setTradeDate(DateUtils.toLocalDate(source.getTimestamp()));
                     futureMarketRepository.save(futureTab);
-                }else if("OPTSTK".equals(source.getInstrument()) || "OPTIDX".equals(source.getInstrument())) {
-                    optionTab.reset();
-                    optionTab.setInstrument(source.getInstrument());
-                    optionTab.setSymbol(source.getSymbol());
-                    optionTab.setExpiryDate(DateUtils.toLocalDate(source.getExpiry_Dt()));
-                    optionTab.setStrikePrice(source.getStrike_Pr());
-                    optionTab.setOptionType(source.getOption_Typ());
-                    optionTab.setOpen(source.getOpen());
-                    optionTab.setHigh(source.getHigh());
-                    optionTab.setLow(source.getLow());
-                    optionTab.setClose(source.getClose());
-                    optionTab.setSettlePrice(source.getSettle_Pr());
-                    optionTab.setContracts(source.getContracts());
-                    optionTab.setValueInLakh(source.getVal_InLakh());
-                    optionTab.setOpenInt(source.getOpen_Int());
-                    optionTab.setChangeInOi(source.getChg_In_Oi());
-                    optionTab.setTradeDate(DateUtils.toLocalDate(source.getTimestamp()));
-                    optionMarketRepository.save(optionTab);
                 }
+//                else if("OPTSTK".equals(source.getInstrument()) || "OPTIDX".equals(source.getInstrument())) {
+//                    optionTab.reset();
+//                    optionTab.setInstrument(source.getInstrument());
+//                    optionTab.setSymbol(source.getSymbol());
+//                    optionTab.setExpiryDate(DateUtils.toLocalDate(source.getExpiry_Dt()));
+//                    optionTab.setStrikePrice(source.getStrike_Pr());
+//                    optionTab.setOptionType(source.getOption_Typ());
+//                    optionTab.setOpen(source.getOpen());
+//                    optionTab.setHigh(source.getHigh());
+//                    optionTab.setLow(source.getLow());
+//                    optionTab.setClose(source.getClose());
+//                    optionTab.setSettlePrice(source.getSettle_Pr());
+//                    optionTab.setContracts(source.getContracts());
+//                    optionTab.setValueInLakh(source.getVal_InLakh());
+//                    optionTab.setOpenInt(source.getOpen_Int());
+//                    optionTab.setChangeInOi(source.getChg_In_Oi());
+//                    optionTab.setTradeDate(DateUtils.toLocalDate(source.getTimestamp()));
+//                    optionMarketRepository.save(optionTab);
+//                }
                 recordSucceed.incrementAndGet();
             }catch(DataIntegrityViolationException dive) {
                 recordFailed.incrementAndGet();

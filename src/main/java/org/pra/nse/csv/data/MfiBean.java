@@ -10,7 +10,7 @@ import org.pra.nse.util.LocalDateSerializer;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
-public class MfiBean {
+public class MfiBean implements CalcBean {
 
     private String symbol;
     @JsonFormat(pattern="yyyy-MM-dd")
@@ -18,31 +18,30 @@ public class MfiBean {
     @JsonSerialize(using = LocalDateSerializer.class)
     private LocalDate tradeDate;
 
-    private BigDecimal volumeAtpMfi05;
-    private BigDecimal volumeAtpMfi10;
-    private BigDecimal volumeAtpMfi15;
-    private BigDecimal volumeAtpMfi20;
+    private BigDecimal volMfi05;
+    private BigDecimal volMfi10;
+    private BigDecimal volMfi15;
+    private BigDecimal volMfi20;
 
-    private BigDecimal deliveryAtpMfi05;
-    private BigDecimal deliveryAtpMfi10;
-    private BigDecimal deliveryAtpMfi15;
-    private BigDecimal deliveryAtpMfi20;
+    private BigDecimal delMfi05;
+    private BigDecimal delMfi10;
+    private BigDecimal delMfi15;
+    private BigDecimal delMfi20;
 
 
-    @Override
-    public String toString() {
+    public String toCsvString() {
         return symbol +
                 "," + tradeDate +
 
-                "," + volumeAtpMfi05 +
-                "," + volumeAtpMfi10 +
-                "," + volumeAtpMfi15 +
-                "," + volumeAtpMfi20 +
+                "," + volMfi05 +
+                "," + volMfi10 +
+                "," + volMfi15 +
+                "," + volMfi20 +
 
-                "," + deliveryAtpMfi05 +
-                "," + deliveryAtpMfi10 +
-                "," + deliveryAtpMfi15 +
-                "," + deliveryAtpMfi20;
+                "," + delMfi05 +
+                "," + delMfi10 +
+                "," + delMfi15 +
+                "," + delMfi20;
     }
 
     public String getSymbol() {
@@ -61,68 +60,68 @@ public class MfiBean {
         this.tradeDate = tradeDate;
     }
 
-    public BigDecimal getVolumeAtpMfi05() {
-        return volumeAtpMfi05;
+    public BigDecimal getVolMfi05() {
+        return volMfi05;
     }
 
-    public void setVolumeAtpMfi05(BigDecimal volumeAtpMfi05) {
-        this.volumeAtpMfi05 = volumeAtpMfi05;
+    public void setVolMfi05(BigDecimal volMfi05) {
+        this.volMfi05 = volMfi05;
     }
 
-    public BigDecimal getVolumeAtpMfi10() {
-        return volumeAtpMfi10;
+    public BigDecimal getVolMfi10() {
+        return volMfi10;
     }
 
-    public void setVolumeAtpMfi10(BigDecimal volumeAtpMfi10) {
-        this.volumeAtpMfi10 = volumeAtpMfi10;
+    public void setVolMfi10(BigDecimal volMfi10) {
+        this.volMfi10 = volMfi10;
     }
 
-    public BigDecimal getVolumeAtpMfi15() {
-        return volumeAtpMfi15;
+    public BigDecimal getVolMfi15() {
+        return volMfi15;
     }
 
-    public void setVolumeAtpMfi15(BigDecimal volumeAtpMfi15) {
-        this.volumeAtpMfi15 = volumeAtpMfi15;
+    public void setVolMfi15(BigDecimal volMfi15) {
+        this.volMfi15 = volMfi15;
     }
 
-    public BigDecimal getVolumeAtpMfi20() {
-        return volumeAtpMfi20;
+    public BigDecimal getVolMfi20() {
+        return volMfi20;
     }
 
-    public void setVolumeAtpMfi20(BigDecimal volumeAtpMfi20) {
-        this.volumeAtpMfi20 = volumeAtpMfi20;
+    public void setVolMfi20(BigDecimal volMfi20) {
+        this.volMfi20 = volMfi20;
     }
 
-    public BigDecimal getDeliveryAtpMfi05() {
-        return deliveryAtpMfi05;
+    public BigDecimal getDelMfi05() {
+        return delMfi05;
     }
 
-    public void setDeliveryAtpMfi05(BigDecimal deliveryAtpMfi05) {
-        this.deliveryAtpMfi05 = deliveryAtpMfi05;
+    public void setDelMfi05(BigDecimal delMfi05) {
+        this.delMfi05 = delMfi05;
     }
 
-    public BigDecimal getDeliveryAtpMfi10() {
-        return deliveryAtpMfi10;
+    public BigDecimal getDelMfi10() {
+        return delMfi10;
     }
 
-    public void setDeliveryAtpMfi10(BigDecimal deliveryAtpMfi10) {
-        this.deliveryAtpMfi10 = deliveryAtpMfi10;
+    public void setDelMfi10(BigDecimal delMfi10) {
+        this.delMfi10 = delMfi10;
     }
 
-    public BigDecimal getDeliveryAtpMfi15() {
-        return deliveryAtpMfi15;
+    public BigDecimal getDelMfi15() {
+        return delMfi15;
     }
 
-    public void setDeliveryAtpMfi15(BigDecimal deliveryAtpMfi15) {
-        this.deliveryAtpMfi15 = deliveryAtpMfi15;
+    public void setDelMfi15(BigDecimal delMfi15) {
+        this.delMfi15 = delMfi15;
     }
 
-    public BigDecimal getDeliveryAtpMfi20() {
-        return deliveryAtpMfi20;
+    public BigDecimal getDelMfi20() {
+        return delMfi20;
     }
 
-    public void setDeliveryAtpMfi20(BigDecimal deliveryAtpMfi20) {
-        this.deliveryAtpMfi20 = deliveryAtpMfi20;
+    public void setDelMfi20(BigDecimal delMfi20) {
+        this.delMfi20 = delMfi20;
     }
 
 }

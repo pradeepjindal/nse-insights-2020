@@ -10,7 +10,7 @@ import org.pra.nse.util.LocalDateSerializer;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
-public class RsiBean {
+public class RsiBean implements CalcBean {
 
     private String symbol;
     @JsonFormat(pattern="yyyy-MM-dd")
@@ -18,27 +18,42 @@ public class RsiBean {
     @JsonSerialize(using = LocalDateSerializer.class)
     private LocalDate tradeDate;
 
-    private BigDecimal openRsi10Ema;
-    private BigDecimal highRsi10Ema;
-    private BigDecimal lowRsi10Ema;
-    private BigDecimal closeRsi10Ema;
-    private BigDecimal lastRsi10Ema;
-    private BigDecimal atpRsi10Ema;
-    private BigDecimal hlmRsi10Ema;
+    private BigDecimal openRsi10;
+    private BigDecimal highRsi10;
+    private BigDecimal lowRsi10;
+    private BigDecimal closeRsi10;
+    private BigDecimal lastRsi10;
+    private BigDecimal atpRsi10;
+    private BigDecimal hlmRsi10;
+
+    private BigDecimal openRsi20;
+    private BigDecimal highRsi20;
+    private BigDecimal lowRsi20;
+    private BigDecimal closeRsi20;
+    private BigDecimal lastRsi20;
+    private BigDecimal atpRsi20;
+    private BigDecimal hlmRsi20;
 
 
-    @Override
-    public String toString() {
+    public String toCsvString() {
         return symbol +
                 "," + tradeDate +
 
-                "," + openRsi10Ema +
-                "," + highRsi10Ema +
-                "," + lowRsi10Ema +
-                "," + closeRsi10Ema +
-                "," + lastRsi10Ema +
-                "," + atpRsi10Ema +
-                "," + hlmRsi10Ema;
+                "," + openRsi10 +
+                "," + highRsi10 +
+                "," + lowRsi10 +
+                "," + closeRsi10 +
+                "," + lastRsi10 +
+                "," + atpRsi10 +
+                "," + hlmRsi10 +
+
+                "," + openRsi20 +
+                "," + highRsi20 +
+                "," + lowRsi20 +
+                "," + closeRsi20 +
+                "," + lastRsi20 +
+                "," + atpRsi20 +
+                "," + hlmRsi20;
     }
 
     public String getSymbol() {
@@ -57,61 +72,115 @@ public class RsiBean {
         this.tradeDate = tradeDate;
     }
 
-    public BigDecimal getOpenRsi10Ema() {
-        return openRsi10Ema;
+    public BigDecimal getOpenRsi10() {
+        return openRsi10;
     }
 
-    public void setOpenRsi10Ema(BigDecimal openRsi10Ema) {
-        this.openRsi10Ema = openRsi10Ema;
+    public void setOpenRsi10(BigDecimal openRsi10) {
+        this.openRsi10 = openRsi10;
     }
 
-    public BigDecimal getHighRsi10Ema() {
-        return highRsi10Ema;
+    public BigDecimal getHighRsi10() {
+        return highRsi10;
     }
 
-    public void setHighRsi10Ema(BigDecimal highRsi10Ema) {
-        this.highRsi10Ema = highRsi10Ema;
+    public void setHighRsi10(BigDecimal highRsi10) {
+        this.highRsi10 = highRsi10;
     }
 
-    public BigDecimal getLowRsi10Ema() {
-        return lowRsi10Ema;
+    public BigDecimal getLowRsi10() {
+        return lowRsi10;
     }
 
-    public void setLowRsi10Ema(BigDecimal lowRsi10Ema) {
-        this.lowRsi10Ema = lowRsi10Ema;
+    public void setLowRsi10(BigDecimal lowRsi10) {
+        this.lowRsi10 = lowRsi10;
     }
 
-    public BigDecimal getCloseRsi10Ema() {
-        return closeRsi10Ema;
+    public BigDecimal getCloseRsi10() {
+        return closeRsi10;
     }
 
-    public void setCloseRsi10Ema(BigDecimal closeRsi10Ema) {
-        this.closeRsi10Ema = closeRsi10Ema;
+    public void setCloseRsi10(BigDecimal closeRsi10) {
+        this.closeRsi10 = closeRsi10;
     }
 
-    public BigDecimal getLastRsi10Ema() {
-        return lastRsi10Ema;
+    public BigDecimal getLastRsi10() {
+        return lastRsi10;
     }
 
-    public void setLastRsi10Ema(BigDecimal lastRsi10Ema) {
-        this.lastRsi10Ema = lastRsi10Ema;
+    public void setLastRsi10(BigDecimal lastRsi10) {
+        this.lastRsi10 = lastRsi10;
     }
 
-    public BigDecimal getAtpRsi10Ema() {
-        return atpRsi10Ema;
+    public BigDecimal getAtpRsi10() {
+        return atpRsi10;
     }
 
-    public void setAtpRsi10Ema(BigDecimal atpRsi10Ema) {
-        this.atpRsi10Ema = atpRsi10Ema;
+    public void setAtpRsi10(BigDecimal atpRsi10) {
+        this.atpRsi10 = atpRsi10;
     }
 
-    public BigDecimal getHlmRsi10Ema() {
-        return hlmRsi10Ema;
+    public BigDecimal getHlmRsi10() {
+        return hlmRsi10;
     }
 
-    public void setHlmRsi10Ema(BigDecimal highLowMidRsi10Ema) {
-        this.hlmRsi10Ema = highLowMidRsi10Ema;
+    public void setHlmRsi10(BigDecimal hlmRsi10) {
+        this.hlmRsi10 = hlmRsi10;
     }
 
+    public BigDecimal getOpenRsi20() {
+        return openRsi20;
+    }
 
+    public void setOpenRsi20(BigDecimal openRsi20) {
+        this.openRsi20 = openRsi20;
+    }
+
+    public BigDecimal getHighRsi20() {
+        return highRsi20;
+    }
+
+    public void setHighRsi20(BigDecimal highRsi20) {
+        this.highRsi20 = highRsi20;
+    }
+
+    public BigDecimal getLowRsi20() {
+        return lowRsi20;
+    }
+
+    public void setLowRsi20(BigDecimal lowRsi20) {
+        this.lowRsi20 = lowRsi20;
+    }
+
+    public BigDecimal getCloseRsi20() {
+        return closeRsi20;
+    }
+
+    public void setCloseRsi20(BigDecimal closeRsi20) {
+        this.closeRsi20 = closeRsi20;
+    }
+
+    public BigDecimal getLastRsi20() {
+        return lastRsi20;
+    }
+
+    public void setLastRsi20(BigDecimal lastRsi20) {
+        this.lastRsi20 = lastRsi20;
+    }
+
+    public BigDecimal getAtpRsi20() {
+        return atpRsi20;
+    }
+
+    public void setAtpRsi20(BigDecimal atpRsi20) {
+        this.atpRsi20 = atpRsi20;
+    }
+
+    public BigDecimal getHlmRsi20() {
+        return hlmRsi20;
+    }
+
+    public void setHlmRsi20(BigDecimal hlmRsi20) {
+        this.hlmRsi20 = hlmRsi20;
+    }
 }

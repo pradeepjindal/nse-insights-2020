@@ -1,6 +1,7 @@
 package org.pra.nse.csv.download;
 
 import org.pra.nse.ApCo;
+import org.pra.nse.NseCo;
 import org.pra.nse.util.DateUtils;
 import org.pra.nse.util.NseFileUtils;
 import org.pra.nse.util.PraFileUtils;
@@ -16,14 +17,14 @@ import java.util.List;
 public class DmDownloader {
     private static final Logger LOGGER = LoggerFactory.getLogger(DmDownloader.class);
 
-    private final String Base_Url = ApCo.DM_BASE_URL;
-    private final String Data_Dir = ApCo.ROOT_DIR + File.separator + ApCo.DM_DIR_NAME;
-    private final String File_Prefix = ApCo.NSE_DM_FILE_PREFIX;
-    private final String File_Suffix = ApCo.NSE_DM_FILE_SUFFIX;
-    private final String File_Ext = ApCo.NSE_DM_FILE_EXT;
-    private final String File_Date_Regex = ApCo.NSE_DM_FILE_NAME_DATE_REGEX;
-    private final String File_Date_Format = ApCo.NSE_DM_FILE_NAME_DATE_FORMAT;
-    private final DateTimeFormatter File_Date_Dtf = ApCo.DM_FILE_NAME_DTF;
+    private final String Base_Url = NseCo.DM_BASE_URL;
+    private final String Data_Dir = ApCo.ROOT_DIR + File.separator + NseCo.DM_DIR_NAME;
+    private final String File_Prefix = NseCo.NSE_DM_FILE_PREFIX;
+    private final String File_Suffix = NseCo.NSE_DM_FILE_SUFFIX;
+    private final String File_Ext = NseCo.NSE_DM_FILE_EXT;
+    private final String File_Date_Regex = NseCo.NSE_DM_FILE_NAME_DATE_REGEX;
+    private final String File_Date_Format = NseCo.NSE_DM_FILE_NAME_DATE_FORMAT;
+    private final DateTimeFormatter File_Date_Dtf = NseCo.DM_FILE_NAME_DTF;
     private final String Data_Date_Regex = null;
     private final String Data_Date_Format = null;
     private final DateTimeFormatter Data_Date_Dtf = null;
@@ -43,7 +44,7 @@ public class DmDownloader {
         downloadFromDate(ApCo.DOWNLOAD_FROM_DATE);
     }
     public void downloadFromDate(LocalDate fromDate) {
-        String dataDir = ApCo.ROOT_DIR + File.separator + ApCo.DM_DIR_NAME;
+        String dataDir = ApCo.ROOT_DIR + File.separator + NseCo.DM_DIR_NAME;
         List<String> filesDownloadUrl = prepareFileUrls(fromDate);
         looper(filesDownloadUrl);
     }

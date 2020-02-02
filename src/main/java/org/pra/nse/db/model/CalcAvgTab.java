@@ -17,66 +17,66 @@ public class CalcAvgTab implements Serializable {
     private String symbol;
     private LocalDate tradeDate;
 
-    @Column(name = "atp_avg_05")
-    private BigDecimal atpAvg05;
-    @Column(name = "atp_avg_10")
-    private BigDecimal atpAvg10;
-    @Column(name = "atp_avg_15")
-    private BigDecimal atpAvg15;
-    @Column(name = "atp_avg_20")
-    private BigDecimal atpAvg20;
+    @Column(name = "atp_avg_05_Sma")
+    private BigDecimal atpAvg05Sma;
+    @Column(name = "atp_avg_10_Sma")
+    private BigDecimal atpAvg10Sma;
+    @Column(name = "atp_avg_15_Sma")
+    private BigDecimal atpAvg15Sma;
+    @Column(name = "atp_avg_20_Sma")
+    private BigDecimal atpAvg20Sma;
 
-    @Column(name = "volume_avg_05")
-    private BigDecimal volumeAvg05;
-    @Column(name = "volume_avg_10")
-    private BigDecimal volumeAvg10;
-    @Column(name = "volume_avg_15")
-    private BigDecimal volumeAvg15;
-    @Column(name = "volume_avg_20")
-    private BigDecimal volumeAvg20;
+    @Column(name = "vol_avg_05_Sma")
+    private BigDecimal volAvg05Sma;
+    @Column(name = "vol_avg_10_Sma")
+    private BigDecimal volAvg10Sma;
+    @Column(name = "vol_avg_15_Sma")
+    private BigDecimal volAvg15Sma;
+    @Column(name = "vol_avg_20_Sma")
+    private BigDecimal volAvg20Sma;
 
-    @Column(name = "delivery_avg_05")
-    private BigDecimal deliveryAvg05;
-    @Column(name = "delivery_avg_10")
-    private BigDecimal deliveryAvg10;
-    @Column(name = "delivery_avg_15")
-    private BigDecimal deliveryAvg15;
-    @Column(name = "delivery_avg_20")
-    private BigDecimal deliveryAvg20;
+    @Column(name = "del_avg_05_Sma")
+    private BigDecimal delAvg05Sma;
+    @Column(name = "del_avg_10_Sma")
+    private BigDecimal delAvg10Sma;
+    @Column(name = "del_avg_15_Sma")
+    private BigDecimal delAvg15Sma;
+    @Column(name = "del_avg_20_Sma")
+    private BigDecimal delAvg20Sma;
 
-    @Column(name = "oi_avg_05")
-    private BigDecimal oiAvg05;
-    @Column(name = "oi_avg_10")
-    private BigDecimal oiAvg10;
-    @Column(name = "oi_avg_15")
-    private BigDecimal oiAvg15;
-    @Column(name = "oi_avg_20")
-    private BigDecimal oiAvg20;
+    @Column(name = "oi_avg_05_Sma")
+    private BigDecimal oiAvg05Sma;
+    @Column(name = "oi_avg_10_Sma")
+    private BigDecimal oiAvg10Sma;
+    @Column(name = "oi_avg_15_Sma")
+    private BigDecimal oiAvg15Sma;
+    @Column(name = "oi_avg_20_Sma")
+    private BigDecimal oiAvg20Sma;
 
     @Override
     public String toString() {
         return symbol +
                 "," + tradeDate +
 
-                "," + atpAvg05 +
-                "," + atpAvg10 +
-                "," + atpAvg15 +
-                "," + atpAvg20 +
+                "," + atpAvg05Sma +
+                "," + atpAvg10Sma +
+                "," + atpAvg15Sma +
+                "," + atpAvg20Sma +
 
-                "," + volumeAvg05 +
-                "," + volumeAvg10 +
-                "," + volumeAvg15 +
-                "," + volumeAvg20 +
+                "," + volAvg05Sma +
+                "," + volAvg10Sma +
+                "," + volAvg15Sma +
+                "," + volAvg20Sma +
 
-                "," + deliveryAvg05 +
-                "," + deliveryAvg10 +
-                "," + deliveryAvg15 +
-                "," + deliveryAvg20 +
+                "," + delAvg05Sma +
+                "," + delAvg10Sma +
+                "," + delAvg15Sma +
+                "," + delAvg20Sma +
 
-                "," + oiAvg05 +
-                "," + oiAvg10 +
-                "," + oiAvg15 +
-                "," + oiAvg20;
+                "," + oiAvg05Sma +
+                "," + oiAvg10Sma +
+                "," + oiAvg15Sma +
+                "," + oiAvg20Sma;
     }
 
     public void reset() {
@@ -84,25 +84,25 @@ public class CalcAvgTab implements Serializable {
         symbol = null;
         tradeDate = null;
 
-        atpAvg05 = null;
-        atpAvg10 = null;
-        atpAvg15 = null;
-        atpAvg20 = null;
+        atpAvg05Sma = null;
+        atpAvg10Sma = null;
+        atpAvg15Sma = null;
+        atpAvg20Sma = null;
 
-        volumeAvg05 = null;
-        volumeAvg10 = null;
-        volumeAvg15 = null;
-        volumeAvg20 = null;
+        volAvg05Sma = null;
+        volAvg10Sma = null;
+        volAvg15Sma = null;
+        volAvg20Sma = null;
 
-        deliveryAvg05 = null;
-        deliveryAvg10 = null;
-        deliveryAvg15 = null;
-        deliveryAvg20 = null;
+        delAvg05Sma = null;
+        delAvg10Sma = null;
+        delAvg15Sma = null;
+        delAvg20Sma = null;
 
-        oiAvg05 = null;
-        oiAvg10 = null;
-        oiAvg15 = null;
-        oiAvg20 = null;
+        oiAvg05Sma = null;
+        oiAvg10Sma = null;
+        oiAvg15Sma = null;
+        oiAvg20Sma = null;
     }
 
     public Long getId() {
@@ -133,132 +133,132 @@ public class CalcAvgTab implements Serializable {
         return serialVersionUID;
     }
 
-    public BigDecimal getAtpAvg05() {
-        return atpAvg05;
+    public BigDecimal getAtpAvg05Sma() {
+        return atpAvg05Sma;
     }
 
-    public void setAtpAvg05(BigDecimal atpAvg05) {
-        this.atpAvg05 = atpAvg05;
+    public void setAtpAvg05Sma(BigDecimal atpAvg05Sma) {
+        this.atpAvg05Sma = atpAvg05Sma;
     }
 
-    public BigDecimal getAtpAvg10() {
-        return atpAvg10;
+    public BigDecimal getAtpAvg10Sma() {
+        return atpAvg10Sma;
     }
 
-    public void setAtpAvg10(BigDecimal atpAvg10) {
-        this.atpAvg10 = atpAvg10;
+    public void setAtpAvg10Sma(BigDecimal atpAvg10Sma) {
+        this.atpAvg10Sma = atpAvg10Sma;
     }
 
-    public BigDecimal getAtpAvg15() {
-        return atpAvg15;
+    public BigDecimal getAtpAvg15Sma() {
+        return atpAvg15Sma;
     }
 
-    public void setAtpAvg15(BigDecimal atpAvg15) {
-        this.atpAvg15 = atpAvg15;
+    public void setAtpAvg15Sma(BigDecimal atpAvg15Sma) {
+        this.atpAvg15Sma = atpAvg15Sma;
     }
 
-    public BigDecimal getAtpAvg20() {
-        return atpAvg20;
+    public BigDecimal getAtpAvg20Sma() {
+        return atpAvg20Sma;
     }
 
-    public void setAtpAvg20(BigDecimal atpAvg20) {
-        this.atpAvg20 = atpAvg20;
+    public void setAtpAvg20Sma(BigDecimal atpAvg20Sma) {
+        this.atpAvg20Sma = atpAvg20Sma;
     }
 
-    public BigDecimal getVolumeAvg05() {
-        return volumeAvg05;
+    public BigDecimal getVolAvg05Sma() {
+        return volAvg05Sma;
     }
 
-    public void setVolumeAvg05(BigDecimal volumeAvg05) {
-        this.volumeAvg05 = volumeAvg05;
+    public void setVolAvg05Sma(BigDecimal volAvg05Sma) {
+        this.volAvg05Sma = volAvg05Sma;
     }
 
-    public BigDecimal getVolumeAvg10() {
-        return volumeAvg10;
+    public BigDecimal getVolAvg10Sma() {
+        return volAvg10Sma;
     }
 
-    public void setVolumeAvg10(BigDecimal volumeAvg10) {
-        this.volumeAvg10 = volumeAvg10;
+    public void setVolAvg10Sma(BigDecimal volAvg10Sma) {
+        this.volAvg10Sma = volAvg10Sma;
     }
 
-    public BigDecimal getVolumeAvg15() {
-        return volumeAvg15;
+    public BigDecimal getVolAvg15Sma() {
+        return volAvg15Sma;
     }
 
-    public void setVolumeAvg15(BigDecimal volumeAvg15) {
-        this.volumeAvg15 = volumeAvg15;
+    public void setVolAvg15Sma(BigDecimal volAvg15Sma) {
+        this.volAvg15Sma = volAvg15Sma;
     }
 
-    public BigDecimal getVolumeAvg20() {
-        return volumeAvg20;
+    public BigDecimal getVolAvg20Sma() {
+        return volAvg20Sma;
     }
 
-    public void setVolumeAvg20(BigDecimal volumeAvg20) {
-        this.volumeAvg20 = volumeAvg20;
+    public void setVolAvg20Sma(BigDecimal volAvg20Sma) {
+        this.volAvg20Sma = volAvg20Sma;
     }
 
-    public BigDecimal getDeliveryAvg05() {
-        return deliveryAvg05;
+    public BigDecimal getDelAvg05Sma() {
+        return delAvg05Sma;
     }
 
-    public void setDeliveryAvg05(BigDecimal deliveryAvg05) {
-        this.deliveryAvg05 = deliveryAvg05;
+    public void setDelAvg05Sma(BigDecimal delAvg05Sma) {
+        this.delAvg05Sma = delAvg05Sma;
     }
 
-    public BigDecimal getDeliveryAvg10() {
-        return deliveryAvg10;
+    public BigDecimal getDelAvg10Sma() {
+        return delAvg10Sma;
     }
 
-    public void setDeliveryAvg10(BigDecimal deliveryAvg10) {
-        this.deliveryAvg10 = deliveryAvg10;
+    public void setDelAvg10Sma(BigDecimal delAvg10Sma) {
+        this.delAvg10Sma = delAvg10Sma;
     }
 
-    public BigDecimal getDeliveryAvg15() {
-        return deliveryAvg15;
+    public BigDecimal getDelAvg15Sma() {
+        return delAvg15Sma;
     }
 
-    public void setDeliveryAvg15(BigDecimal deliveryAvg15) {
-        this.deliveryAvg15 = deliveryAvg15;
+    public void setDelAvg15Sma(BigDecimal delAvg15Sma) {
+        this.delAvg15Sma = delAvg15Sma;
     }
 
-    public BigDecimal getDeliveryAvg20() {
-        return deliveryAvg20;
+    public BigDecimal getDelAvg20Sma() {
+        return delAvg20Sma;
     }
 
-    public void setDeliveryAvg20(BigDecimal deliveryAvg20) {
-        this.deliveryAvg20 = deliveryAvg20;
+    public void setDelAvg20Sma(BigDecimal delAvg20Sma) {
+        this.delAvg20Sma = delAvg20Sma;
     }
 
-    public BigDecimal getOiAvg05() {
-        return oiAvg05;
+    public BigDecimal getOiAvg05Sma() {
+        return oiAvg05Sma;
     }
 
-    public void setOiAvg05(BigDecimal oiAvg05) {
-        this.oiAvg05 = oiAvg05;
+    public void setOiAvg05Sma(BigDecimal oiAvg05Sma) {
+        this.oiAvg05Sma = oiAvg05Sma;
     }
 
-    public BigDecimal getOiAvg10() {
-        return oiAvg10;
+    public BigDecimal getOiAvg10Sma() {
+        return oiAvg10Sma;
     }
 
-    public void setOiAvg10(BigDecimal oiAvg10) {
-        this.oiAvg10 = oiAvg10;
+    public void setOiAvg10Sma(BigDecimal oiAvg10Sma) {
+        this.oiAvg10Sma = oiAvg10Sma;
     }
 
-    public BigDecimal getOiAvg15() {
-        return oiAvg15;
+    public BigDecimal getOiAvg15Sma() {
+        return oiAvg15Sma;
     }
 
-    public void setOiAvg15(BigDecimal oiAvg15) {
-        this.oiAvg15 = oiAvg15;
+    public void setOiAvg15Sma(BigDecimal oiAvg15Sma) {
+        this.oiAvg15Sma = oiAvg15Sma;
     }
 
-    public BigDecimal getOiAvg20() {
-        return oiAvg20;
+    public BigDecimal getOiAvg20Sma() {
+        return oiAvg20Sma;
     }
 
-    public void setOiAvg20(BigDecimal oiAvg20) {
-        this.oiAvg20 = oiAvg20;
+    public void setOiAvg20Sma(BigDecimal oiAvg20Sma) {
+        this.oiAvg20Sma = oiAvg20Sma;
     }
 
 }

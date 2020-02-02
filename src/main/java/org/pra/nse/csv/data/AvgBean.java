@@ -10,7 +10,7 @@ import org.pra.nse.util.LocalDateSerializer;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
-public class AvgBean {
+public class AvgBean implements CalcBean {
 
     private String symbol;
     @JsonFormat(pattern="yyyy-MM-dd")
@@ -23,24 +23,23 @@ public class AvgBean {
     private BigDecimal atpAvg15;
     private BigDecimal atpAvg20;
 
-    private BigDecimal volumeAvg05;
-    private BigDecimal volumeAvg10;
-    private BigDecimal volumeAvg15;
-    private BigDecimal volumeAvg20;
+    private BigDecimal volAvg05;
+    private BigDecimal volAvg10;
+    private BigDecimal volAvg15;
+    private BigDecimal volAvg20;
 
-    private BigDecimal deliveryAvg05;
-    private BigDecimal deliveryAvg10;
-    private BigDecimal deliveryAvg15;
-    private BigDecimal deliveryAvg20;
+    private BigDecimal delAvg05;
+    private BigDecimal delAvg10;
+    private BigDecimal delAvg15;
+    private BigDecimal delAvg20;
 
-    private BigDecimal oiAvg05;
-    private BigDecimal oiAvg10;
-    private BigDecimal oiAvg15;
-    private BigDecimal oiAvg20;
+    private BigDecimal foiAvg05;
+    private BigDecimal foiAvg10;
+    private BigDecimal foiAvg15;
+    private BigDecimal foiAvg20;
 
 
-    @Override
-    public String toString() {
+    public String toCsvString() {
         return symbol +
                 "," + tradeDate +
 
@@ -49,20 +48,20 @@ public class AvgBean {
                 "," + atpAvg15 +
                 "," + atpAvg20 +
 
-                "," + volumeAvg05 +
-                "," + volumeAvg10 +
-                "," + volumeAvg15 +
-                "," + volumeAvg20 +
+                "," + volAvg05 +
+                "," + volAvg10 +
+                "," + volAvg15 +
+                "," + volAvg20 +
 
-                "," + deliveryAvg05 +
-                "," + deliveryAvg10 +
-                "," + deliveryAvg15 +
-                "," + deliveryAvg20 +
+                "," + delAvg05 +
+                "," + delAvg10 +
+                "," + delAvg15 +
+                "," + delAvg20 +
 
-                "," + oiAvg05 +
-                "," + oiAvg10 +
-                "," + oiAvg15 +
-                "," + oiAvg20;
+                "," + foiAvg05 +
+                "," + foiAvg10 +
+                "," + foiAvg15 +
+                "," + foiAvg20;
     }
 
     public String getSymbol() {
@@ -113,100 +112,100 @@ public class AvgBean {
         this.atpAvg20 = atpAvg20;
     }
 
-    public BigDecimal getVolumeAvg05() {
-        return volumeAvg05;
+    public BigDecimal getVolAvg05() {
+        return volAvg05;
     }
 
-    public void setVolumeAvg05(BigDecimal volumeAvg05) {
-        this.volumeAvg05 = volumeAvg05;
+    public void setVolAvg05(BigDecimal volAvg05) {
+        this.volAvg05 = volAvg05;
     }
 
-    public BigDecimal getVolumeAvg10() {
-        return volumeAvg10;
+    public BigDecimal getVolAvg10() {
+        return volAvg10;
     }
 
-    public void setVolumeAvg10(BigDecimal volumeAvg10) {
-        this.volumeAvg10 = volumeAvg10;
+    public void setVolAvg10(BigDecimal volAvg10) {
+        this.volAvg10 = volAvg10;
     }
 
-    public BigDecimal getVolumeAvg15() {
-        return volumeAvg15;
+    public BigDecimal getVolAvg15() {
+        return volAvg15;
     }
 
-    public void setVolumeAvg15(BigDecimal volumeAvg15) {
-        this.volumeAvg15 = volumeAvg15;
+    public void setVolAvg15(BigDecimal volAvg15) {
+        this.volAvg15 = volAvg15;
     }
 
-    public BigDecimal getVolumeAvg20() {
-        return volumeAvg20;
+    public BigDecimal getVolAvg20() {
+        return volAvg20;
     }
 
-    public void setVolumeAvg20(BigDecimal volumeAvg20) {
-        this.volumeAvg20 = volumeAvg20;
+    public void setVolAvg20(BigDecimal volAvg20) {
+        this.volAvg20 = volAvg20;
     }
 
-    public BigDecimal getDeliveryAvg05() {
-        return deliveryAvg05;
+    public BigDecimal getDelAvg05() {
+        return delAvg05;
     }
 
-    public void setDeliveryAvg05(BigDecimal deliveryAvg05) {
-        this.deliveryAvg05 = deliveryAvg05;
+    public void setDelAvg05(BigDecimal delAvg05) {
+        this.delAvg05 = delAvg05;
     }
 
-    public BigDecimal getDeliveryAvg10() {
-        return deliveryAvg10;
+    public BigDecimal getDelAvg10() {
+        return delAvg10;
     }
 
-    public void setDeliveryAvg10(BigDecimal deliveryAvg10) {
-        this.deliveryAvg10 = deliveryAvg10;
+    public void setDelAvg10(BigDecimal delAvg10) {
+        this.delAvg10 = delAvg10;
     }
 
-    public BigDecimal getDeliveryAvg15() {
-        return deliveryAvg15;
+    public BigDecimal getDelAvg15() {
+        return delAvg15;
     }
 
-    public void setDeliveryAvg15(BigDecimal deliveryAvg15) {
-        this.deliveryAvg15 = deliveryAvg15;
+    public void setDelAvg15(BigDecimal delAvg15) {
+        this.delAvg15 = delAvg15;
     }
 
-    public BigDecimal getDeliveryAvg20() {
-        return deliveryAvg20;
+    public BigDecimal getDelAvg20() {
+        return delAvg20;
     }
 
-    public void setDeliveryAvg20(BigDecimal deliveryAvg20) {
-        this.deliveryAvg20 = deliveryAvg20;
+    public void setDelAvg20(BigDecimal delAvg20) {
+        this.delAvg20 = delAvg20;
     }
 
-    public BigDecimal getOiAvg05() {
-        return oiAvg05;
+    public BigDecimal getFoiAvg05() {
+        return foiAvg05;
     }
 
-    public void setOiAvg05(BigDecimal oiAvg05) {
-        this.oiAvg05 = oiAvg05;
+    public void setFoiAvg05(BigDecimal foiAvg05) {
+        this.foiAvg05 = foiAvg05;
     }
 
-    public BigDecimal getOiAvg10() {
-        return oiAvg10;
+    public BigDecimal getFoiAvg10() {
+        return foiAvg10;
     }
 
-    public void setOiAvg10(BigDecimal oiAvg10) {
-        this.oiAvg10 = oiAvg10;
+    public void setFoiAvg10(BigDecimal foiAvg10) {
+        this.foiAvg10 = foiAvg10;
     }
 
-    public BigDecimal getOiAvg15() {
-        return oiAvg15;
+    public BigDecimal getFoiAvg15() {
+        return foiAvg15;
     }
 
-    public void setOiAvg15(BigDecimal oiAvg15) {
-        this.oiAvg15 = oiAvg15;
+    public void setFoiAvg15(BigDecimal foiAvg15) {
+        this.foiAvg15 = foiAvg15;
     }
 
-    public BigDecimal getOiAvg20() {
-        return oiAvg20;
+    public BigDecimal getFoiAvg20() {
+        return foiAvg20;
     }
 
-    public void setOiAvg20(BigDecimal oiAvg20) {
-        this.oiAvg20 = oiAvg20;
+    public void setFoiAvg20(BigDecimal foiAvg20) {
+        this.foiAvg20 = foiAvg20;
     }
 
 }

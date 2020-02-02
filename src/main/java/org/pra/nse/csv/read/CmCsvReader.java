@@ -1,11 +1,11 @@
 package org.pra.nse.csv.read;
 
 import org.pra.nse.ApCo;
+import org.pra.nse.NseCo;
 import org.pra.nse.csv.bean.in.CmBean;
 import org.pra.nse.util.NseFileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 import org.supercsv.cellprocessor.ParseDate;
 import org.supercsv.cellprocessor.constraint.DMinMax;
@@ -31,7 +31,7 @@ public class CmCsvReader {
     }
 
     public Map<String, CmBean> read(String fromFile) {
-        String toFile = PathHelper.fileNameWithFullPath(ApCo.CM_DIR_NAME, ApCo.PRA_CM_FILE_PREFIX, fromFile);
+        String toFile = PathHelper.fileNameWithFullPath(NseCo.CM_DIR_NAME, ApCo.PRA_CM_FILE_PREFIX, fromFile);
         if(nseFileUtils.isFileExist(toFile)) {
             LOGGER.info("CM file exists: [{}]", toFile);
         } else {

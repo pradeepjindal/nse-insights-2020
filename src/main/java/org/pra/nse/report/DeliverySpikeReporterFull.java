@@ -7,6 +7,7 @@ import org.pra.nse.db.model.CalcRsiTab;
 import org.pra.nse.db.repository.CalcRsiRepository;
 import org.pra.nse.email.EmailService;
 import org.pra.nse.util.DateUtils;
+import org.pra.nse.util.DirUtils;
 import org.pra.nse.util.NseFileUtils;
 import org.pra.nse.util.PraFileUtils;
 
@@ -25,6 +26,8 @@ import static org.pra.nse.report.ReportConstants.DSRF;
 public class DeliverySpikeReporterFull {
     private static final Logger LOGGER = LoggerFactory.getLogger(DeliverySpikeReporterFull.class);
 
+    private final String outputDirName = ApCo.REPORTS_DIR_NAME_DSR;
+
     private final CalcRsiRepository calcRsiRepository;
     private final EmailService emailService;
     private final NseFileUtils nseFileUtils;
@@ -42,6 +45,7 @@ public class DeliverySpikeReporterFull {
         this.nseFileUtils = nseFileUtils;
         this.praFileUtils = praFileUtils;
         this.dataManager = dataManager;
+        DirUtils.ensureFolder(outputDirName);
     }
 
     public void reportFromLast() {
@@ -58,7 +62,7 @@ public class DeliverySpikeReporterFull {
         if(forDate.isAfter(latestNseDate)) return;
 
         String fileName = DSRF + "-" + forDate.toString() + ApCo.REPORTS_FILE_EXT;
-        String filePath = ApCo.ROOT_DIR + File.separator + ApCo.REPORTS_DIR_NAME_TMP + File.separator + fileName;
+        String filePath = ApCo.ROOT_DIR + File.separator + outputDirName + File.separator + fileName;
 
         LOGGER.info("{} | for:{}", DSRF, forDate.toString());
         if(nseFileUtils.isFileExist(filePath)) {
@@ -81,9 +85,9 @@ public class DeliverySpikeReporterFull {
             if(tradeDateAndSymbolWise_DoubleMap.containsKey(oldRsi.getTradeDate())) {
                 if(tradeDateAndSymbolWise_DoubleMap.get(oldRsi.getTradeDate()).containsKey(oldRsi.getSymbol())) {
                     DeliverySpikeDto tdyDto = tradeDateAndSymbolWise_DoubleMap.get(oldRsi.getTradeDate()).get(oldRsi.getSymbol());
-                    tdyDto.setTdyCloseRsi10Ema(oldRsi.getCloseRsi10Ema());
-                    tdyDto.setTdyLastRsi10Ema(oldRsi.getLastRsi10Ema());
-                    tdyDto.setTdyAtpRsi10Ema(oldRsi.getAtpRsi10Ema());
+                    tdyDto.setTdyCloseRsi10Sma(oldRsi.getCloseRsi10Sma());
+                    tdyDto.setTdyLastRsi10Sma(oldRsi.getLastRsi10Sma());
+                    tdyDto.setTdyAtpRsi10Sma(oldRsi.getAtpRsi10Sma());
                 } else {
                     //LOGGER.warn("old rsi | symbol {} not found for tradeDate {}", oldRsi.getSymbol(), oldRsi.getTradeDate());
                 }

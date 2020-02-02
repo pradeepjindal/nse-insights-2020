@@ -24,10 +24,10 @@ public class ReportConstants {
             "symbol,trade_date," +
             "open,high,low,hlp,close,last,closingBell,closeToLastPct,atp,hlm," +
 
-            "calcAtpGrowth10,atpChgPct," +
-            "calcVolGrowth10,volChgPct," +
-            "calcDelGrowth10,delChgPct," +
-            "calcFoiGrowth10,foiChgPct," +
+            "calcAtpFixGrowth,calcAtpDynGrowth,atpChgPct," +
+            "calcVolFixGrowth,calcVolDynGrowth,volChgPct," +
+            "delTally,calcDelFixGrowth,calcDelDynGrowth,delChgPct," +
+            "calcFoiFixGrowth,calcFoiDynGrowth,foiChgPct," +
 
             "premium,openingBell," +
             "nxtCloseToOpenPct,nxtOptoHighPct,nxtOptoLowPct,nxtOptoAtpPct," +

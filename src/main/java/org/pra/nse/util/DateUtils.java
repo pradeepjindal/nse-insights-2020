@@ -1,6 +1,7 @@
 package org.pra.nse.util;
 
 import org.pra.nse.ApCo;
+import org.pra.nse.NseCo;
 
 import java.time.Instant;
 import java.time.LocalDate;
@@ -65,7 +66,7 @@ public class DateUtils {
 //        return (dateStr == null ? null : toLocalDate(dateStr, dateFormat));
 //    }
     public static String extractDateString(String inputString) {
-        return extractDateString(inputString, ApCo.ddMMMyyyy_UPPER_CASE_DATE_REGEX, ApCo.ddMMMyyyy_DATE_FORMAT);
+        return extractDateString(inputString, NseCo.ddMMMyyyy_UPPER_CASE_DATE_REGEX, ApCo.ddMMMyyyy_DATE_FORMAT);
     }
     private static String extractDateString(String inputString, String dateRegex, String dateFormat) {
         //String input = "John Doe at:2016-01-16 Notes:This is a test";
@@ -126,7 +127,7 @@ public class DateUtils {
         return false;
     }
 
-    public static boolean isDeepawali(LocalDate date) {
+    public static boolean isTradingOnHoliday(LocalDate date) {
 //        if (date.equals(LocalDate.of(2015,11,11))) return true; //wed
 //        if (date.equals(LocalDate.of(2016,10,30))) return true; //sun
 //        if (date.equals(LocalDate.of(2017,10,19))) return true; //thu

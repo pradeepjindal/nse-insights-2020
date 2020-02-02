@@ -1,7 +1,6 @@
 package org.pra.nse.calculation;
 
 import org.pra.nse.ApCo;
-import org.pra.nse.csv.data.RsiData;
 import org.pra.nse.data.DataManager;
 import org.pra.nse.db.dao.calc.RsiCalculationDao;
 import org.pra.nse.db.dto.DeliverySpikeDto;
@@ -11,7 +10,6 @@ import org.pra.nse.util.NseFileUtils;
 import org.pra.nse.util.PraFileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Component;
 
 import java.io.File;
 import java.math.BigDecimal;
@@ -23,7 +21,7 @@ import java.util.function.Function;
 
 import static org.pra.nse.calculation.CalcCons.*;
 
-@Component
+//@Component
 public class RsiCalculator {
     private static final Logger LOGGER = LoggerFactory.getLogger(RsiCalculator.class);
 
@@ -47,7 +45,7 @@ public class RsiCalculator {
         LocalDate latestNseDate = praFileUtils.getLatestNseDate();
         if(forDate.isAfter(latestNseDate)) return;
 
-        String fileName = RSI_DATA_FILE_PREFIX + "-" + forDate.toString() + ApCo.DATA_FILE_EXT;
+        String fileName = RSI_DATA_FILE_PREFIX + forDate.toString() + ApCo.DATA_FILE_EXT;
         String toDir = ApCo.ROOT_DIR +File.separator+ ApCo.COMPUTE_DIR_NAME +File.separator+ fileName;
 
         LOGGER.info("{} | for:{}", RSI_DATA_FILE_PREFIX, forDate.toString());
@@ -60,20 +58,19 @@ public class RsiCalculator {
 
         // calculate rsi for each s symbol
         List<DeliverySpikeDto> dtos_ToBeSaved = new ArrayList<>();
-        symbolMap.forEach( (key, val) -> {
-            calculateSma(forDate, key, val, dto -> dto.getTdycloseMinusYesclose(), (dto, rsi) -> dto.setTdyCloseRsi10Ema(rsi));
-            calculateSma(forDate, key, val, dto -> dto.getTdylastMinusYeslast(), (dto, rsi) -> dto.setTdyLastRsi10Ema(rsi));
-            calculateSma(forDate, key, val, dto -> dto.getTdyatpMinusYesatp(), (dto, rsi) -> {
-                dto.setTdyAtpRsi10Ema(rsi);
+        symbolMap.forEach( (key, list) -> {
+            calculateSma(forDate, key, list, dto -> dto.getTdycloseMinusYesclose(), (dto, rsi) -> dto.setTdyCloseRsi10Sma(rsi));
+            calculateSma(forDate, key, list, dto -> dto.getTdylastMinusYeslast(), (dto, rsi) -> dto.setTdyLastRsi10Sma(rsi));
+            calculateSma(forDate, key, list, dto -> dto.getTdyatpMinusYesatp(), (dto, rsi) -> { dto.setTdyAtpRsi10Sma(rsi);
                 dtos_ToBeSaved.add(dto);
             });
         });
 
         //
-        if(CalcHelper.validateForSaving(forDate, dtos_ToBeSaved, RSI_DATA_FILE_PREFIX)) {
-            saveToCsv(forDate, dtos_ToBeSaved);
-            saveToDb(forDate, dtos_ToBeSaved);
-        }
+//        if(CalcHelper.validateForSaving(forDate, dtos_ToBeSaved, RSI_DATA_FILE_PREFIX)) {
+//            saveToCsv(forDate, dtos_ToBeSaved);
+//            saveToDb(forDate, dtos_ToBeSaved);
+//        }
     }
 
     public void calculateSma(LocalDate forDate,
@@ -149,12 +146,12 @@ public class RsiCalculator {
 
     }
 
-    private void saveToCsv(LocalDate forDate, List<DeliverySpikeDto> dtos) {
-        String fileName = RSI_DATA_FILE_PREFIX + "-" + forDate + ApCo.DATA_FILE_EXT;
-        String toPath = ApCo.ROOT_DIR + File.separator + ApCo.COMPUTE_DIR_NAME + File.separator + fileName;
-        File file = new File(toPath);
-        RsiData.saveOverWrite(RSI_CSV_HEADER, dtos, toPath, dto -> dto.toString());
-    }
+//    private void saveToCsv(LocalDate forDate, List<DeliverySpikeDto> dtos) {
+//        String fileName = RSI_DATA_FILE_PREFIX + "-" + forDate + ApCo.DATA_FILE_EXT;
+//        String toPath = ApCo.ROOT_DIR + File.separator + ApCo.COMPUTE_DIR_NAME + File.separator + fileName;
+//        File file = new File(toPath);
+//        RsiData.saveOverWrite(RSI_CSV_HEADER, dtos, toPath, dto -> dto.toString());
+//    }
 
     private void saveToDb(LocalDate forDate, List<DeliverySpikeDto> dtos) {
         long dataCtr = dao.dataCount(forDate);
@@ -165,9 +162,9 @@ public class RsiCalculator {
                 tab.setSymbol(dto.getSymbol());
                 tab.setTradeDate(dto.getTradeDate());
 
-                tab.setCloseRsi10Ema(dto.getTdyCloseRsi10Ema());
-                tab.setLastRsi10Ema(dto.getTdyLastRsi10Ema());
-                tab.setAtpRsi10Ema(dto.getTdyAtpRsi10Ema());
+                tab.setCloseRsi10Sma(dto.getTdyCloseRsi10Sma());
+                tab.setLastRsi10Sma(dto.getTdyLastRsi10Sma());
+                tab.setAtpRsi10Sma(dto.getTdyAtpRsi10Sma());
 
                 repository.save(tab);
             });

@@ -32,23 +32,25 @@ public class DownloadManager implements Manager {
         LOGGER.info(".");
         LOGGER.info("____________________ Download Manager");
 
-        cmDownloader.downloadFromLastDate();
-        LOGGER.info("----------");
-        fmDownloader.downloadFromLastDate();
-        LOGGER.info("----------");
-        dmDownloader.downloadFromLastDate();
-        LOGGER.info("----------");
-        bpDownloader.downloadFromLastDate();
-        LOGGER.info("----------");
-        dbcDownloader.downloadFromLastDate();
+//        cmDownloader.downloadFromLastDate();
+//        LOGGER.info("----------");
+//        fmDownloader.downloadFromLastDate();
+//        LOGGER.info("----------");
+//        dmDownloader.downloadFromLastDate();
+//        LOGGER.info("----------");
+//        bpDownloader.downloadFromLastDate();
+//        LOGGER.info("----------");
+//        dbcDownloader.downloadFromLastDate();
 
-//        cmDownloader.downloadFromDefaultDate();
-//        LOGGER.info("----------");
-//        fmDownloader.downloadFromDefaultDate();
-//        LOGGER.info("----------");
-//        dmDownloader.downloadFromDefaultDate();
-//        LOGGER.info("----------");
-//        bpDownloader.downloadFromDefaultDate();
+        cmDownloader.downloadFromDefaultDate();
+        LOGGER.info("----------");
+        fmDownloader.downloadFromDefaultDate();
+        LOGGER.info("----------");
+        dmDownloader.downloadFromDefaultDate();
+        LOGGER.info("----------");
+        bpDownloader.downloadFromDefaultDate();
+        LOGGER.info("----------");
+        dbcDownloader.downloadFromDefaultDate();
 
         LOGGER.info("======================================== Download Manager");
     }

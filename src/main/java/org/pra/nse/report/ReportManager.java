@@ -66,7 +66,7 @@ public class ReportManager implements Manager {
 //        deliverySpikeReport.reportFromLast();
 
         LOGGER.info("--------------------");
-        nseFileUtils.getDatesToBeComputed(()-> ReportConstants.DSRF, ApCo.REPORTS_DIR_NAME_TMP, ApCo.REPORTS_FROM_DATE)
+        nseFileUtils.getDatesToBeComputed(()-> ReportConstants.DSRF, ApCo.REPORTS_DIR_NAME_DSR, ApCo.REPORTS_FROM_DATE)
                 .forEach( forDate -> {
                     LOGGER.info(".");
                     LOGGER.info("report-{} | for:{}", ReportConstants.DSRF, forDate.toString());
@@ -103,7 +103,7 @@ public class ReportManager implements Manager {
 //                    }
 //                });
         pastPresentFutureReport.reportFromLast(10);
-        pastPresentFutureReport.reportFromLast(15);
+        //pastPresentFutureReport.reportFromLast(15);
         pastPresentFutureReport.reportFromLast(20);
 
         LOGGER.info("======================================== Report Manager");

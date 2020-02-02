@@ -5,6 +5,7 @@ import org.pra.nse.db.dao.NseReportsDao;
 import org.pra.nse.db.dto.DeliverySpikeDto;
 import org.pra.nse.email.EmailService;
 import org.pra.nse.util.DateUtils;
+import org.pra.nse.util.DirUtils;
 import org.pra.nse.util.NseFileUtils;
 import org.pra.nse.util.PraFileUtils;
 import org.slf4j.Logger;
@@ -22,6 +23,7 @@ import java.util.stream.Collectors;
 public class DeliverySpikeReporter {
     private static final Logger LOGGER = LoggerFactory.getLogger(DeliverySpikeReporter.class);
 
+    private final String outputDirName = ApCo.REPORTS_DIR_NAME_MANISH;
     private final String DSR = "DeliverySpikeReport";
     private final String DSRF = "DeliverySpikeReportFull";
 
@@ -38,6 +40,7 @@ public class DeliverySpikeReporter {
         this.emailService = emailService;
         this.nseFileUtils = nseFileUtils;
         this.praFileUtils = praFileUtils;
+        DirUtils.ensureFolder(outputDirName);
     }
 
     public void reportFromLast() {
@@ -51,7 +54,7 @@ public class DeliverySpikeReporter {
     public void reportForDate(LocalDate forDate) {
         String fileName = DSR + "-" + forDate.toString() + ApCo.REPORTS_FILE_EXT;
         //String toDir = ApCo.ROOT_DIR +File.separator+ ApCo.REPORTS_DIR_NAME +File.separator+ fileName;
-        String toDir = ApCo.ROOT_DIR +File.separator+ ApCo.REPORTS_DIR_NAME_MANISH +File.separator+ fileName;
+        String toDir = ApCo.ROOT_DIR +File.separator+ outputDirName +File.separator+ fileName;
 
         LOGGER.info("{} | for:{}", DSR, forDate.toString());
         if(nseFileUtils.isFileExist(toDir)) {

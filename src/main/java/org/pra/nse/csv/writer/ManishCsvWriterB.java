@@ -5,6 +5,7 @@ import org.pra.nse.csv.bean.out.ManishBean;
 import org.pra.nse.csv.bean.out.PraBean;
 import org.pra.nse.db.dao.NseViewDao;
 import org.pra.nse.db.dto.PivotOiDto;
+import org.pra.nse.util.DirUtils;
 import org.pra.nse.util.NseFileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,7 +41,10 @@ public class ManishCsvWriterB {
         Map<String, ManishBean> manishBeanMap = convert(praBeans, foExpiryDates);
         List<ManishBean> manishBeans = enrich(manishBeanMap);
 
-        nseFileUtils.createFolder(outputFilePathAndName);
+        //nseFileUtils.createFolder(outputFilePathAndName);
+        //DirUtils.ensureDirPath(outputFilePathAndName);
+        DirUtils.ensureFolder(ApCo.MANISH_DIR_NAME);
+
         //final ICsvBeanWriter beanWriter;
         try (ICsvBeanWriter beanWriter = new CsvBeanWriter(new FileWriter(outputFilePathAndName), CsvPreference.STANDARD_PREFERENCE)) {
             // the header elements are used to map the bean values to each column (names must match)

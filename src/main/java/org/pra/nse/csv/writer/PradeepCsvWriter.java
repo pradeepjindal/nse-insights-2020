@@ -2,6 +2,7 @@ package org.pra.nse.csv.writer;
 
 import org.pra.nse.ApCo;
 import org.pra.nse.csv.bean.out.PraBean;
+import org.pra.nse.util.DirUtils;
 import org.pra.nse.util.NseFileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,7 +33,9 @@ public class PradeepCsvWriter {
     }
 
     public void write(List<PraBean> praBeans, String outputFilePathAndName, TreeSet<LocalDate> foExpiryDates) throws IOException {
-        nseFileUtils.createFolder(outputFilePathAndName);
+        //nseFileUtils.createFolder(outputFilePathAndName);
+        //DirUtils.ensureDirPath(outputFilePathAndName);
+        DirUtils.ensureFolder(ApCo.PRADEEP_DIR_NAME);
         //final ICsvBeanWriter beanWriter;
         try (ICsvBeanWriter beanWriter = new CsvBeanWriter(new FileWriter(outputFilePathAndName), CsvPreference.STANDARD_PREFERENCE)) {
             // the header elements are used to map the bean values to each column (names must match)

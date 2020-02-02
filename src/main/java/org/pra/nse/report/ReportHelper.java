@@ -22,9 +22,9 @@ public class ReportHelper {
             if(tradeDateAndSymbolWise_DoubleMap.containsKey(oldRsi.getTradeDate())) {
                 if(tradeDateAndSymbolWise_DoubleMap.get(oldRsi.getTradeDate()).containsKey(oldRsi.getSymbol())) {
                     DeliverySpikeDto tdyDto = tradeDateAndSymbolWise_DoubleMap.get(oldRsi.getTradeDate()).get(oldRsi.getSymbol());
-                    tdyDto.setTdyCloseRsi10Ema(oldRsi.getCloseRsi10Ema());
-                    tdyDto.setTdyLastRsi10Ema(oldRsi.getLastRsi10Ema());
-                    tdyDto.setTdyAtpRsi10Ema(oldRsi.getAtpRsi10Ema());
+                    tdyDto.setTdyCloseRsi10Sma(oldRsi.getCloseRsi10Sma());
+                    tdyDto.setTdyLastRsi10Sma(oldRsi.getLastRsi10Sma());
+                    tdyDto.setTdyAtpRsi10Sma(oldRsi.getAtpRsi10Sma());
                     // calculating Bells
                     //calculateBells2(tdyDto);
                 } else {
@@ -41,8 +41,8 @@ public class ReportHelper {
             if(tradeDateAndSymbolWise_DoubleMap.containsKey(oldMfi.getTradeDate())) {
                 if(tradeDateAndSymbolWise_DoubleMap.get(oldMfi.getTradeDate()).containsKey(oldMfi.getSymbol())) {
                     DeliverySpikeDto tdyDto = tradeDateAndSymbolWise_DoubleMap.get(oldMfi.getTradeDate()).get(oldMfi.getSymbol());
-                    tdyDto.setVolumeAtpMfi10(oldMfi.getVolumeAtpMfi10());
-                    tdyDto.setDeliveryAtpMfi10(oldMfi.getDeliveryAtpMfi10());
+                    tdyDto.setVolAtpMfi10(oldMfi.getVolAtpMfi10Sma());
+                    tdyDto.setDelAtpMfi10(oldMfi.getDelAtpMfi10Sma());
                 } else {
                     //LOGGER.warn("old rsi | symbol {} not found for tradeDate {}", oldRsi.getSymbol(), oldRsi.getTradeDate());
                 }
@@ -52,33 +52,106 @@ public class ReportHelper {
         });
     }
 
-    public static void enrichCalc(Map<String, CalcAvgTab> calcAvgMap, Map<String, List<DeliverySpikeDto>> symbolMap) {
+    public static void enrichGrowth10(Map<String, CalcAvgTab> calcAvgMap, Map<String, List<DeliverySpikeDto>> symbolMap) {
         BigDecimal hundred = new BigDecimal(100);
         Map.Entry<String, LocalDate> previousDate = new AbstractMap.SimpleEntry<>("tradeDate", LocalDate.now());
+        Map.Entry<String, BigDecimal> sumDelivery = new AbstractMap.SimpleEntry<>("sumDelivery", BigDecimal.ZERO);
         symbolMap.entrySet().forEach( entry -> {
             previousDate.setValue(null);
+            DeliverySpikeDto firstDto = entry.getValue().get(0);
+            BigDecimal atpFixOnePercent = calcAvgMap.get(firstDto.getSymbol()).getAtpAvg10Sma().divide(hundred, 2, RoundingMode.HALF_UP);
+            BigDecimal volFixOnePercent = calcAvgMap.get(firstDto.getSymbol()).getVolAvg10Sma().divide(hundred, 2, RoundingMode.HALF_UP);
+            BigDecimal delFixOnePercent = calcAvgMap.get(firstDto.getSymbol()).getDelAvg10Sma().divide(hundred, 2, RoundingMode.HALF_UP);
+            BigDecimal foiFixOnePercent = calcAvgMap.get(firstDto.getSymbol()).getOiAvg10Sma().divide(hundred, 2, RoundingMode.HALF_UP);
+            //
+            sumDelivery.setValue(BigDecimal.ZERO);
+            BigDecimal totalExpectedDelivery = calcAvgMap.get(firstDto.getSymbol()).getDelAvg10Sma().multiply(new BigDecimal(entry.getValue().size()));
+            BigDecimal onePercentOfExpectedDelivery = totalExpectedDelivery.divide(new BigDecimal(100), 2, RoundingMode.HALF_UP);
             entry.getValue().forEach( dto -> {
-                BigDecimal atpOnePercent = calcAvgMap.get(dto.getSymbol()).getAtpAvg10().divide(hundred, 2, RoundingMode.HALF_UP);
-                BigDecimal volumeOnePercent = calcAvgMap.get(dto.getSymbol()).getVolumeAvg10().divide(hundred, 2, RoundingMode.HALF_UP);
-                BigDecimal deliveryOnePercent = calcAvgMap.get(dto.getSymbol()).getDeliveryAvg10().divide(hundred, 2, RoundingMode.HALF_UP);
-                BigDecimal oiOnePercent = calcAvgMap.get(dto.getSymbol()).getOiAvg10().divide(hundred, 2, RoundingMode.HALF_UP);
+                BigDecimal atpDynOnePercent = calcAvgMap.get(dto.getSymbol()).getAtpAvg10Sma().divide(hundred, 2, RoundingMode.HALF_UP);
+                BigDecimal volDynOnePercent = calcAvgMap.get(dto.getSymbol()).getVolAvg10Sma().divide(hundred, 2, RoundingMode.HALF_UP);
+                BigDecimal delDynOnePercent = calcAvgMap.get(dto.getSymbol()).getDelAvg10Sma().divide(hundred, 2, RoundingMode.HALF_UP);
+                BigDecimal foiDynOnePercent = calcAvgMap.get(dto.getSymbol()).getOiAvg10Sma().divide(hundred, 2, RoundingMode.HALF_UP);
+                //
+                sumDelivery.setValue(sumDelivery.getValue().add(dto.getDelivery()));
+
                 if(previousDate.getValue() == null || previousDate.getValue().isBefore(dto.getTradeDate())) {
                     previousDate.setValue(dto.getTradeDate());
-                    BigDecimal atpGrowth = dto.getAtp().divide(atpOnePercent, 2, RoundingMode.HALF_UP);
-                    dto.setAtpGrowth10(atpGrowth);
-                    BigDecimal volumeGrowth = dto.getVolume().divide(volumeOnePercent, 2, RoundingMode.HALF_UP);
-                    dto.setVolumeGrowth10(volumeGrowth);
-                    BigDecimal deliveryGrowth = dto.getDelivery().divide(deliveryOnePercent, 2, RoundingMode.HALF_UP);
-                    dto.setDeliveryGrowth10(deliveryGrowth);
-                    BigDecimal oiGrowth = dto.getOi().divide(oiOnePercent, 2, RoundingMode.HALF_UP);
-                    dto.setOiGrowth10(oiGrowth);
+                    dto.setDelAccumulation(sumDelivery.getValue().divide(onePercentOfExpectedDelivery, 2, RoundingMode.HALF_UP));
+                    // fix
+                    BigDecimal atpFixGrowth = dto.getAtp().divide(atpFixOnePercent, 2, RoundingMode.HALF_UP);
+                    dto.setAtpFixGrowth(atpFixGrowth);
+                    BigDecimal volFixGrowth = dto.getVolume().divide(volFixOnePercent, 2, RoundingMode.HALF_UP);
+                    dto.setVolFixGrowth(volFixGrowth);
+                    BigDecimal delFixGrowth = dto.getDelivery().divide(delFixOnePercent, 2, RoundingMode.HALF_UP);
+                    dto.setDelFixGrowth(delFixGrowth);
+                    BigDecimal foiFixGrowth = dto.getOi().divide(foiFixOnePercent, 2, RoundingMode.HALF_UP);
+                    dto.setFoiFixGrowth(foiFixGrowth);
+                    // dyn
+                    BigDecimal atpDynGrowth = dto.getAtp().divide(atpDynOnePercent, 2, RoundingMode.HALF_UP);
+                    dto.setAtpDynGrowth(atpDynGrowth);
+                    BigDecimal volDynGrowth = dto.getVolume().divide(volDynOnePercent, 2, RoundingMode.HALF_UP);
+                    dto.setVolDynGrowth(volDynGrowth);
+                    BigDecimal delDynGrowth = dto.getDelivery().divide(delDynOnePercent, 2, RoundingMode.HALF_UP);
+                    dto.setDelDynGrowth(delDynGrowth);
+                    BigDecimal foiDynGrowth = dto.getOi().divide(foiDynOnePercent, 2, RoundingMode.HALF_UP);
+                    dto.setFoiDynGrowth(foiDynGrowth);
                 } else {
-                    LOGGER.warn("unknown condition - previousDate:{}, currentDate:{}", previousDate.getValue(), dto.getTradeDate());
+                    LOGGER.warn("enrichCalc | unknown condition - previousDate:{}, currentDate:{}", previousDate.getValue(), dto.getTradeDate());
                 }
             });
         });
     }
+    public static void enrichGrowth20(Map<String, CalcAvgTab> calcAvgMap, Map<String, List<DeliverySpikeDto>> symbolMap) {
+        BigDecimal hundred = new BigDecimal(100);
+        Map.Entry<String, LocalDate> previousDate = new AbstractMap.SimpleEntry<>("tradeDate", LocalDate.now());
+        Map.Entry<String, BigDecimal> sumDelivery = new AbstractMap.SimpleEntry<>("sumDelivery", BigDecimal.ZERO);
+        symbolMap.entrySet().forEach( entry -> {
+            previousDate.setValue(null);
+            DeliverySpikeDto firstDto = entry.getValue().get(0);
+            BigDecimal atpFixOnePercent = calcAvgMap.get(firstDto.getSymbol()).getAtpAvg20Sma().divide(hundred, 2, RoundingMode.HALF_UP);
+            BigDecimal volFixOnePercent = calcAvgMap.get(firstDto.getSymbol()).getVolAvg20Sma().divide(hundred, 2, RoundingMode.HALF_UP);
+            BigDecimal delFixOnePercent = calcAvgMap.get(firstDto.getSymbol()).getDelAvg20Sma().divide(hundred, 2, RoundingMode.HALF_UP);
+            BigDecimal foiFixOnePercent = calcAvgMap.get(firstDto.getSymbol()).getOiAvg20Sma().divide(hundred, 2, RoundingMode.HALF_UP);
+            //
+            sumDelivery.setValue(BigDecimal.ZERO);
+            BigDecimal totalExpectedDelivery = calcAvgMap.get(firstDto.getSymbol()).getDelAvg20Sma().multiply(new BigDecimal(entry.getValue().size()));
+            BigDecimal onePercentOfExpectedDelivery = totalExpectedDelivery.divide(new BigDecimal(100), 2, RoundingMode.HALF_UP);
+            entry.getValue().forEach( dto -> {
+                BigDecimal atpDynOnePercent = calcAvgMap.get(dto.getSymbol()).getAtpAvg20Sma().divide(hundred, 2, RoundingMode.HALF_UP);
+                BigDecimal volDynOnePercent = calcAvgMap.get(dto.getSymbol()).getVolAvg20Sma().divide(hundred, 2, RoundingMode.HALF_UP);
+                BigDecimal delDynOnePercent = calcAvgMap.get(dto.getSymbol()).getDelAvg20Sma().divide(hundred, 2, RoundingMode.HALF_UP);
+                BigDecimal foiDynOnePercent = calcAvgMap.get(dto.getSymbol()).getOiAvg20Sma().divide(hundred, 2, RoundingMode.HALF_UP);
+                //
+                sumDelivery.setValue(sumDelivery.getValue().add(dto.getDelivery()));
 
+                if(previousDate.getValue() == null || previousDate.getValue().isBefore(dto.getTradeDate())) {
+                    previousDate.setValue(dto.getTradeDate());
+                    dto.setDelAccumulation(sumDelivery.getValue().divide(onePercentOfExpectedDelivery, 2, RoundingMode.HALF_UP));
+                    // fix
+                    BigDecimal atpFixGrowth = dto.getAtp().divide(atpFixOnePercent, 2, RoundingMode.HALF_UP);
+                    dto.setAtpFixGrowth(atpFixGrowth);
+                    BigDecimal volFixGrowth = dto.getVolume().divide(volFixOnePercent, 2, RoundingMode.HALF_UP);
+                    dto.setVolFixGrowth(volFixGrowth);
+                    BigDecimal delFixGrowth = dto.getDelivery().divide(delFixOnePercent, 2, RoundingMode.HALF_UP);
+                    dto.setDelFixGrowth(delFixGrowth);
+                    BigDecimal foiFixGrowth = dto.getOi().divide(foiFixOnePercent, 2, RoundingMode.HALF_UP);
+                    dto.setFoiFixGrowth(foiFixGrowth);
+                    // dyn
+                    BigDecimal atpDynGrowth = dto.getAtp().divide(atpDynOnePercent, 2, RoundingMode.HALF_UP);
+                    dto.setAtpDynGrowth(atpDynGrowth);
+                    BigDecimal volDynGrowth = dto.getVolume().divide(volDynOnePercent, 2, RoundingMode.HALF_UP);
+                    dto.setVolDynGrowth(volDynGrowth);
+                    BigDecimal delDynGrowth = dto.getDelivery().divide(delDynOnePercent, 2, RoundingMode.HALF_UP);
+                    dto.setDelDynGrowth(delDynGrowth);
+                    BigDecimal foiDynGrowth = dto.getOi().divide(foiDynOnePercent, 2, RoundingMode.HALF_UP);
+                    dto.setFoiDynGrowth(foiDynGrowth);
+                } else {
+                    LOGGER.warn("enrichCalc | unknown condition - previousDate:{}, currentDate:{}", previousDate.getValue(), dto.getTradeDate());
+                }
+            });
+        });
+    }
 
     private void calculateBellsMethodOne(DeliverySpikeDto dto) {
         String signal;

@@ -11,6 +11,7 @@ import org.pra.nse.db.repository.CalcMfiRepository;
 import org.pra.nse.db.repository.CalcRsiRepository;
 import org.pra.nse.email.EmailService;
 import org.pra.nse.util.DateUtils;
+import org.pra.nse.util.DirUtils;
 import org.pra.nse.util.NseFileUtils;
 import org.pra.nse.util.PraFileUtils;
 import org.slf4j.Logger;
@@ -30,6 +31,8 @@ import static org.pra.nse.report.ReportConstants.PPF_FULL;
 @Component
 public class PastPresentFutureReporter {
     private static final Logger LOGGER = LoggerFactory.getLogger(PastPresentFutureReporter.class);
+
+    private final String outputDirName = ApCo.REPORTS_DIR_NAME_PPF;
 
     private final CalcRsiRepository calcRsiRepository;
     private final CalcMfiRepository calcMfiRepository;
@@ -54,6 +57,7 @@ public class PastPresentFutureReporter {
         this.nseFileUtils = nseFileUtils;
         this.praFileUtils = praFileUtils;
         this.dataManager = dataManager;
+        DirUtils.ensureFolder(outputDirName);
     }
 
     public void reportFromLast() {
@@ -83,7 +87,7 @@ public class PastPresentFutureReporter {
         String report_name = PPF_FULL.replace("days", forMinusDays.toString());
 
         String fileName = report_name + "-" + forDate.toString() + ApCo.REPORTS_FILE_EXT;
-        String filePath = ApCo.ROOT_DIR + File.separator + ApCo.REPORTS_DIR_NAME_TMP+"-2" + File.separator + fileName;
+        String filePath = ApCo.ROOT_DIR + File.separator + outputDirName + File.separator + fileName;
 
         LOGGER.info("{} | for:{}", report_name, forDate.toString());
         if(nseFileUtils.isFileExist(filePath)) {
@@ -113,7 +117,16 @@ public class PastPresentFutureReporter {
                 .filter( row -> row.getTradeDate().compareTo(minDate) == 0)
                 .collect(Collectors.toMap(row->row.getSymbol(), row-> row));
         Map<String, List<DeliverySpikeDto>> symbolMap = dataManager.getDataBySymbol(forDate, forMinusDays);
-        ReportHelper.enrichCalc(calcAvgMap, symbolMap);
+        //ReportHelper.enrichGrowth10(calcAvgMap, symbolMap);
+        switch (forMinusDays) {
+            case 10: ReportHelper.enrichGrowth10(calcAvgMap, symbolMap); break;
+            case 20: ReportHelper.enrichGrowth20(calcAvgMap, symbolMap); break;
+            default:
+                String errMsg = "enrichGrowth | error - forMinusDays can be either 10 or 20 only (provided forMinusDays:" +forMinusDays+ ")";
+                LOGGER.error(errMsg);
+                throw new RuntimeException(errMsg);
+        }
+
 
         // write report
         writeReport(filePath, symbolMap);

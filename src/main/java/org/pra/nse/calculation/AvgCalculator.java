@@ -1,7 +1,6 @@
 package org.pra.nse.calculation;
 
 import org.pra.nse.ApCo;
-import org.pra.nse.csv.data.AvgData;
 import org.pra.nse.data.DataManager;
 import org.pra.nse.db.dao.GeneralDao;
 import org.pra.nse.db.dao.calc.AvgCalculationDao;
@@ -13,7 +12,6 @@ import org.pra.nse.util.NseFileUtils;
 import org.pra.nse.util.PraFileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Component;
 
 import java.io.File;
 import java.math.BigDecimal;
@@ -25,7 +23,7 @@ import java.util.function.Function;
 
 import static org.pra.nse.calculation.CalcCons.*;
 
-@Component
+//@Component
 public class AvgCalculator {
     private static final Logger LOGGER = LoggerFactory.getLogger(AvgCalculator.class);
 
@@ -55,7 +53,7 @@ public class AvgCalculator {
         LocalDate latestNseDate = praFileUtils.getLatestNseDate();
         if(forDate.isAfter(latestNseDate)) return;
 
-        String fileName = AVG_DATA_FILE_PREFIX + "-" + forDate.toString() + ApCo.DATA_FILE_EXT;
+        String fileName = AVG_DATA_FILE_PREFIX + forDate.toString() + ApCo.DATA_FILE_EXT;
         String toDir = ApCo.ROOT_DIR +File.separator+ ApCo.COMPUTE_DIR_NAME +File.separator+ fileName;
 
         LOGGER.info("{} | for:{}", AVG_DATA_FILE_PREFIX, forDate.toString());
@@ -65,10 +63,51 @@ public class AvgCalculator {
         }
 
         Map<String, List<DeliverySpikeDto>> symbolMap = dataManager.getDataBySymbol(forDate, 10);
-
+        List<DeliverySpikeDto> dtos_ToBeSaved = loopIt(forDate, symbolMap, 10);
+        symbolMap = dataManager.getDataBySymbol(forDate, 20);
+        dtos_ToBeSaved = loopIt(forDate, symbolMap, 20);
         // calculate avg for each s symbol
+//        symbolMap.forEach( (symbol, list)  -> {
+//            calculate(forDate, symbol, list,
+//                    dto -> {
+////                        LOGGER.info("dt:{}, val:{}, del:{}, oi:{}", dto.getTradeDate(), dto.getVolume, dto.getDelivery, oiSumMap.get(dto.getSymbol());
+//                        return dto.getAtp();
+//                    },
+//                    (dto, avg) -> dto.setAtpAvg10(avg)
+//            );
+//            calculate(forDate, symbol, list,
+//                    dto -> {
+//                        return dto.getVolume();
+//                    },
+//                    (dto, avg) -> dto.setVolumeAvg10(avg)
+//            );
+//            calculate(forDate, symbol, list,
+//                    dto -> {
+//                        return dto.getDelivery();
+//                    },
+//                    (dto, avg) -> dto.setDeliveryAvg10(avg)
+//            );
+//            calculate(forDate, symbol, list,
+//                    dto -> {
+//                        return dto.getOi();
+//                    },
+//                    (dto, avg) -> {
+//                        dto.setOiAvg10(avg);
+//                        dtos_ToBeSaved.add(dto);
+//                    }
+//            );
+//        });
+
+        //
+//        if(CalcHelper.validateForSaving(forDate, dtos_ToBeSaved, AVG_DATA_FILE_PREFIX)) {
+//            saveToCsv(forDate, dtos_ToBeSaved);
+//            saveToDb(forDate, dtos_ToBeSaved);
+//        }
+    }
+
+    private List<DeliverySpikeDto> loopIt(LocalDate forDate, Map<String, List<DeliverySpikeDto>> symbolMap, int forDays) {
         List<DeliverySpikeDto> dtos_ToBeSaved = new ArrayList<>();
-        symbolMap.forEach( (symbol, list)  -> {
+        symbolMap.forEach( (symbol, list) -> {
             calculate(forDate, symbol, list,
                     dto -> {
 //                        LOGGER.info("dt:{}, val:{}, del:{}, oi:{}", dto.getTradeDate(), dto.getVolume, dto.getDelivery, oiSumMap.get(dto.getSymbol());
@@ -80,33 +119,28 @@ public class AvgCalculator {
                     dto -> {
                         return dto.getVolume();
                     },
-                    (dto, avg) -> dto.setVolumeAvg10(avg)
+                    (dto, avg) -> dto.setVolAvg10(avg)
             );
             calculate(forDate, symbol, list,
                     dto -> {
                         return dto.getDelivery();
                     },
-                    (dto, avg) -> dto.setDeliveryAvg10(avg)
+                    (dto, avg) -> dto.setDelAvg10(avg)
             );
             calculate(forDate, symbol, list,
                     dto -> {
                         return dto.getOi();
                     },
                     (dto, avg) -> {
-                        dto.setOiAvg10(avg);
+                        dto.setFoiAvg10(avg);
                         dtos_ToBeSaved.add(dto);
                     }
             );
         });
-
-        //
-        if(CalcHelper.validateForSaving(forDate, dtos_ToBeSaved, AVG_DATA_FILE_PREFIX)) {
-            saveToCsv(forDate, dtos_ToBeSaved);
-            saveToDb(forDate, dtos_ToBeSaved);
-        }
+        return dtos_ToBeSaved;
     }
 
-    public void calculate(LocalDate forDate,
+    private void calculate(LocalDate forDate,
                             String symbol,
                             List<DeliverySpikeDto> deliverySpikeDtoList,
                             Function<DeliverySpikeDto, BigDecimal> functionSupplier,
@@ -118,10 +152,6 @@ public class AvgCalculator {
         short ctr = 0;
         BigDecimal sum = BigDecimal.ZERO;
         DeliverySpikeDto latestDto = null;
-
-//        if("EXIDEIND".equals(symbol)) {
-//            LOGGER.info("");
-//        }
         for(DeliverySpikeDto dsDto:deliverySpikeDtoList) {
             //LOGGER.info("loopDto = {}", dsDto.toFullCsvString());
             if(dsDto.getTradeDate().compareTo(forDate)  == 0) {
@@ -142,7 +172,6 @@ public class AvgCalculator {
         }
 
         //LOGGER.info("latestDto = {}", latestDto.toFullCsvString());
-
         BigDecimal ten = new BigDecimal(ctr);
         BigDecimal avg;
         avg = sum.divide(ctr == 0 ? BigDecimal.ONE : ten, 2, RoundingMode.HALF_UP);
@@ -153,7 +182,7 @@ public class AvgCalculator {
         //LOGGER.info("for symbol = {}, avg = {}", symbol, avg);
     }
 
-    public void calculateEma(List<LocalDate> latestTenDates,
+    private void calculateEma(List<LocalDate> latestTenDates,
                                     String symbol,
                                     List<DeliverySpikeDto> deliverySpikeDtoList,
                                     Function<DeliverySpikeDto, BigDecimal> functionSupplier,
@@ -162,12 +191,12 @@ public class AvgCalculator {
     }
 
 
-    private void saveToCsv(LocalDate forDate, List<DeliverySpikeDto> dtos) {
-        String fileName = AVG_DATA_FILE_PREFIX + "-" + forDate + ApCo.DATA_FILE_EXT;
-        String toPath = ApCo.ROOT_DIR + File.separator + ApCo.COMPUTE_DIR_NAME + File.separator + fileName;
-        File file = new File(toPath);
-        AvgData.saveOverWrite(AVG_CSV_HEADER, dtos, toPath, dto -> dto.toString());
-    }
+//    private void saveToCsv(LocalDate forDate, List<DeliverySpikeDto> dtos) {
+//        String fileName = AVG_DATA_FILE_PREFIX + "-" + forDate + ApCo.DATA_FILE_EXT;
+//        String toPath = ApCo.ROOT_DIR + File.separator + ApCo.COMPUTE_DIR_NAME + File.separator + fileName;
+//        File file = new File(toPath);
+//        AvgData.saveOverWrite(AVG_CSV_HEADER, dtos, toPath, dto -> dto.toString());
+//    }
 
     private void saveToDb(LocalDate forDate, List<DeliverySpikeDto> dtos) {
         long dataCtr = dao.dataCount(forDate);
@@ -178,10 +207,10 @@ public class AvgCalculator {
                 tab.setSymbol(dto.getSymbol());
                 tab.setTradeDate(dto.getTradeDate());
 
-                tab.setAtpAvg10(dto.getAtpAvg10());
-                tab.setVolumeAvg10(dto.getVolumeAvg10());
-                tab.setDeliveryAvg10(dto.getDeliveryAvg10());
-                tab.setOiAvg10(dto.getOiAvg10());
+                tab.setAtpAvg10Sma(dto.getAtpAvg10());
+                tab.setVolAvg10Sma(dto.getVolAvg10());
+                tab.setDelAvg10Sma(dto.getDelAvg10());
+                tab.setOiAvg10Sma(dto.getFoiAvg10());
 
                 repository.save(tab);
             });
