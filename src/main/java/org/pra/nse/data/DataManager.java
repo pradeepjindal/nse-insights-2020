@@ -11,6 +11,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -55,6 +57,7 @@ public class DataManager implements Manager {
         LocalDate latestNseDate = praFileUtils.getLatestNseDate();
         if(dbResults == null || latestNseDate.isAfter(latestDbDate)) {
             bootUpData();
+            fillTheOhlc();
             fillTheOi();
             fillTheNext();
         }
@@ -87,6 +90,7 @@ public class DataManager implements Manager {
         LocalDate latestNseDate = praFileUtils.getLatestNseDate();
         if(dbResults == null || latestNseDate.isAfter(latestDbDate)) {
             bootUpData();
+            fillTheOhlc();
             fillTheOi();
             fillTheNext();
         }
@@ -171,6 +175,14 @@ public class DataManager implements Manager {
         return symbol.toUpperCase().equals(dto.getSymbol());
     }
 
+    private void fillTheOhlc() {
+        BigDecimal four = new BigDecimal(4);
+        dbResults.forEach( row-> {
+            BigDecimal ohlc = row.getOpen().add(row.getHigh()).add(row.getLow()).add(row.getClose());
+            row.setOhlc(ohlc.divide(four, 2, RoundingMode.HALF_UP));
+        });
+    }
+
     private void fillTheOi() {
         //LocalDate minDate = minDate(latestDbDate, 20);
         Predicate<DeliverySpikeDto> predicate = dto -> true;
@@ -195,7 +207,6 @@ public class DataManager implements Manager {
 //                //LOGGER.info("tradeDate-symbol | tradeDate {}", filteredRow.getTradeDate());
 //            }
 //        });
-
 
         dbResults.forEach( row -> {
             try {

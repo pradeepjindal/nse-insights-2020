@@ -72,8 +72,8 @@ public class ApCo {
 
 
     public static final String DEFAULT_FILE_EXT = ".csv";
-    public static final String DATA_FILE_EXT = ".csv";
-    public static final String REPORTS_FILE_EXT = ".csv";
+    public static final String DATA_FILE_EXT = DEFAULT_FILE_EXT;
+    public static final String REPORTS_FILE_EXT = DEFAULT_FILE_EXT;
 
 
     public static final String PRADEEP_FILE_NAME = "pradeepData";

@@ -22,7 +22,7 @@ public class ReportConstants {
 
     static final String PPF_CSV_HEADER =
             "symbol,trade_date," +
-            "open,high,low,hlp,close,last,closingBell,closeToLastPct,atp,hlm," +
+            "open,high,low,hlp,close,last,closingBell,closeToLastPct,atp,hlm,ohlc," +
 
             "calcAtpFixGrowth,calcAtpDynGrowth,atpChgPct," +
             "calcVolFixGrowth,calcVolDynGrowth,volChgPct," +
@@ -36,4 +36,5 @@ public class ReportConstants {
 
     static final List<String> SHUVI_TICKERS =
             List.of("ASIANPAINTS", "COLPAL", "DABUR", "ICICIPRULI", "JUBLIENTFOOD", "PIDILITE", "RELIANCE", "SBIN", "TITAN", "UBL");
+
 }

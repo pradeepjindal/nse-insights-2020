@@ -80,6 +80,7 @@ public class DeliverySpikeDto {
     private BigDecimal foiAvg20;
 
     private BigDecimal delAccumulation;
+    private BigDecimal ohlc;
 
     public String toCsvString() {
         return  symbol + ","
@@ -179,6 +180,7 @@ public class DeliverySpikeDto {
                 + closeToLastPercent + ","
                 + atp + ","
                 + highLowMid + ","
+                + ohlc + ","
 
                 + atpFixGrowth + ","
                 + atpDynGrowth + ","
@@ -712,6 +714,14 @@ public class DeliverySpikeDto {
 
     public void setDelAccumulation(BigDecimal delAccumulation) {
         this.delAccumulation = delAccumulation;
+    }
+
+    public BigDecimal getOhlc() {
+        return ohlc;
+    }
+
+    public void setOhlc(BigDecimal ohlc) {
+        this.ohlc = ohlc;
     }
 
 }
