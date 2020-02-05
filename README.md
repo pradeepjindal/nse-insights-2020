@@ -26,3 +26,6 @@ BATAINDIA,
 MFI
 MFI generally favors the bulls when the indicator is above 50 and the bears when below 50.
 If the underlying price makes a new high or low that isn't confirmed by the MFI (20, 80), this divergence can signal a price reversal.
+
+add adx
+add macd
