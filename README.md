@@ -29,3 +29,15 @@ If the underlying price makes a new high or low that isn't confirmed by the MFI 
 
 add adx
 add macd
+add rsi change
+add mfi change
+
+50pn
+del fall by 10%
+atp is down
+rsi is weak
+stock is in falling trend in chart
+
+50pp
+pick only positive rsi chg
+pick only above rsi 60

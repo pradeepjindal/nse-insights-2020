@@ -5,6 +5,12 @@ import org.pra.nse.db.dao.NseReportsDao;
 import org.pra.nse.db.dao.nse.OiDao;
 import org.pra.nse.db.dto.DeliverySpikeDto;
 import org.pra.nse.db.dto.OiDto;
+import org.pra.nse.db.model.CalcMfiTab;
+import org.pra.nse.db.model.CalcRsiTab;
+import org.pra.nse.db.repository.CalcAvgRepository;
+import org.pra.nse.db.repository.CalcMfiRepository;
+import org.pra.nse.db.repository.CalcRsiRepository;
+import org.pra.nse.report.ReportHelper;
 import org.pra.nse.service.TradeDateService;
 import org.pra.nse.util.PraFileUtils;
 import org.slf4j.Logger;
@@ -28,9 +34,14 @@ public class DataManager implements Manager {
     private final OiDao oiDao;
     private final TradeDateService tradeDateService;
 
+    private final CalcRsiRepository calcRsiRepository;
+    private final CalcMfiRepository calcMfiRepository;
+    private final CalcAvgRepository calcAvgRepository;
+
     private final NavigableMap<Integer, LocalDate>  tradeDates_NavigableMap = new TreeMap<>();
     private final List<LocalDate>                   tradeDates_Desc_LinkedList = new LinkedList<>();
     private final Map<LocalDate, LocalDate>         nextDateMap = new TreeMap<>();
+    private final Map<LocalDate, LocalDate>         backDateMap = new TreeMap<>();
 
     private List<DeliverySpikeDto> dbResults = null;
 
@@ -40,11 +51,15 @@ public class DataManager implements Manager {
 
 
     public DataManager(PraFileUtils praFileUtils, NseReportsDao nseReportsDao, OiDao oiDao,
-                       TradeDateService tradeDateService) {
+                       TradeDateService tradeDateService,
+                       CalcRsiRepository calcRsiRepository, CalcMfiRepository calcMfiRepository, CalcAvgRepository calcAvgRepository) {
         this.praFileUtils = praFileUtils;
         this.nseReportsDao = nseReportsDao;
         this.oiDao = oiDao;
         this.tradeDateService = tradeDateService;
+        this.calcRsiRepository = calcRsiRepository;
+        this.calcMfiRepository = calcMfiRepository;
+        this.calcAvgRepository = calcAvgRepository;
     }
 
 
@@ -57,9 +72,10 @@ public class DataManager implements Manager {
         LocalDate latestNseDate = praFileUtils.getLatestNseDate();
         if(dbResults == null || latestNseDate.isAfter(latestDbDate)) {
             bootUpData();
-            fillTheOhlc();
+            fillTheCalcFields();
             fillTheOi();
             fillTheNext();
+            fillTheIndicators();
         }
         if(forDate.isAfter(latestDbDate))
             return null;
@@ -90,9 +106,10 @@ public class DataManager implements Manager {
         LocalDate latestNseDate = praFileUtils.getLatestNseDate();
         if(dbResults == null || latestNseDate.isAfter(latestDbDate)) {
             bootUpData();
-            fillTheOhlc();
+            fillTheCalcFields();
             fillTheOi();
             fillTheNext();
+            fillTheIndicators();
         }
         if(forDate.isAfter(latestDbDate))
             return null;
@@ -131,7 +148,12 @@ public class DataManager implements Manager {
         //tradeDates_SortedLinkedList.reverse();
 
         initializeTradeDates();
+        initializeBackTradeDates();
         initializeNextTradeDates();
+
+        dbResults.forEach( row-> {
+            row.setBackDate(backDateMap.get(row.getTradeDate()));
+        });
     }
 
     private void initializeTradeDates() {
@@ -147,6 +169,13 @@ public class DataManager implements Manager {
         latest20Dates = list.stream().limit(20).collect(Collectors.toList());
     }
 
+    private void initializeBackTradeDates() {
+        for(int i = 0; i < tradeDates_Desc_LinkedList.size() - 1; i++) {
+            //LOGGER.info("tdy: {}, nxt:{}", i+1, i);
+            backDateMap.put(tradeDates_Desc_LinkedList.get(i), tradeDates_Desc_LinkedList.get(i+1));
+            //LOGGER.info("tdy: {}, nxt:{}", tradeDates_Desc_LinkedList.get(i+1), tradeDates_Desc_LinkedList.get(i));
+        }
+    }
     private void initializeNextTradeDates() {
         for(int i = 0; i < tradeDates_Desc_LinkedList.size() - 1; i++) {
             //LOGGER.info("tdy: {}, nxt:{}", i+1, i);
@@ -175,15 +204,52 @@ public class DataManager implements Manager {
         return symbol.toUpperCase().equals(dto.getSymbol());
     }
 
-    private void fillTheOhlc() {
-        BigDecimal four = new BigDecimal(4);
-        dbResults.forEach( row-> {
-            BigDecimal ohlc = row.getOpen().add(row.getHigh()).add(row.getLow()).add(row.getClose());
-            row.setOhlc(ohlc.divide(four, 2, RoundingMode.HALF_UP));
-        });
+    private void fillTheCalcFields() {
+        LOGGER.info("DataManager - fillTheCalcFields");
+        BigDecimal TWO = new BigDecimal(2);
+        BigDecimal FOUR = new BigDecimal(4);
+        BigDecimal HUNDRED = new BigDecimal(100);
+        BigDecimal onePercent = null;
+
+        BigDecimal ohlcSum = null;
+        BigDecimal diff = null;
+        BigDecimal highLowDiffByHalf = null;
+        BigDecimal biggerValue = null;
+        BigDecimal smallerValue = null;
+        for(DeliverySpikeDto row:dbResults) {
+            //ohlc
+            ohlcSum = row.getOpen().add(row.getHigh()).add(row.getLow()).add(row.getClose());
+            row.setOhlc(ohlcSum.divide(FOUR, 2, RoundingMode.HALF_UP));
+            //hlm
+            diff = row.getHigh().subtract(row.getLow());
+            highLowDiffByHalf = diff.divide(TWO, 2, RoundingMode.HALF_UP);
+            row.setHighLowMid(row.getLow().add(highLowDiffByHalf));
+            //hlp
+            onePercent = row.getOpen().divide(HUNDRED, 2, RoundingMode.HALF_UP);
+            row.setHighLowPct(diff.divide(onePercent, 2, RoundingMode.HALF_UP));
+            //closeToLastPct
+
+            if(row.getLast().compareTo(row.getClose()) == 1) {
+                biggerValue = row.getLast();
+                smallerValue = row.getClose();
+                    onePercent = smallerValue.divide(HUNDRED, 2, RoundingMode.HALF_UP);
+                    diff = biggerValue.subtract(smallerValue);
+                    row.setCloseToLastPercent(diff.divide(onePercent, 2, RoundingMode.HALF_UP));
+            } else if (row.getClose().compareTo(row.getLast()) == 1) {
+                biggerValue = row.getLast();
+                smallerValue = row.getClose();
+                    onePercent = smallerValue.divide(HUNDRED, 2, RoundingMode.HALF_UP);
+                    diff = biggerValue.subtract(smallerValue);
+                    row.setCloseToLastPercent(diff.divide(onePercent, 2, RoundingMode.HALF_UP));
+            } else {
+                row.setCloseToLastPercent(BigDecimal.ZERO);
+            }
+
+        }
     }
 
     private void fillTheOi() {
+        LOGGER.info("DataManager - fillTheOi");
         //LocalDate minDate = minDate(latestDbDate, 20);
         Predicate<DeliverySpikeDto> predicate = dto -> true;
         Map<LocalDate, Map<String, DeliverySpikeDto>> tradeDateAndSymbolMap = prepareDataByTradeDateAndSymbol(predicate);
@@ -218,6 +284,7 @@ public class DataManager implements Manager {
     }
 
     private void fillTheNext() {
+        LOGGER.info("DataManager - fillTheNext");
         LocalDate minDate = minDate(latestDbDate, 20);
         Predicate<DeliverySpikeDto> predicate = dto -> filterDate(dto, minDate, latestDbDate);
         Map<LocalDate, Map<String, DeliverySpikeDto>> tradeDateAndSymbolMap = prepareDataByTradeDateAndSymbol(predicate);
@@ -240,6 +307,100 @@ public class DataManager implements Manager {
                 }).count();
     }
 
+//    private void fillTheIndicators() {
+//        LocalDate minDate = minDate(latestDbDate, 21);
+//        Predicate<DeliverySpikeDto> predicate = dto -> filterDate(dto, minDate, latestDbDate);
+//        Map<LocalDate, Map<String, DeliverySpikeDto>> tradeDateAndSymbolMap = prepareDataByTradeDateAndSymbol(predicate);
+//
+//        //load old Rsi
+//        List<CalcRsiTab> oldRsiList = calcRsiRepository.findAll();
+//        ReportHelper.enrichRsi(oldRsiList, tradeDateAndSymbolMap);
+//
+//        //load old Mfi
+//        List<CalcMfiTab> oldMfiList = calcMfiRepository.findAll();
+//        ReportHelper.enrichMfi(oldMfiList, tradeDateAndSymbolMap);
+//
+//        BigDecimal HUNDRED = new BigDecimal(100);
+////        LocalDate minDate = minDate(latestDbDate, 20);
+////        Predicate<DeliverySpikeDto> predicate = dto -> filterDate(dto, minDate, latestDbDate);
+////        Map<LocalDate, Map<String, DeliverySpikeDto>> tradeDateAndSymbolMap = prepareDataByTradeDateAndSymbol(predicate);
+//        //TODO use tradeDateAndSymbolMap instead of dbResults BUT dbResults keep the order while map not
+//        long ctr = dbResults.stream()
+//                .filter( row -> row.getTradeDate().isAfter(tradeDates_Desc_LinkedList.get(20)))
+//                .map( filteredRow -> {
+//                    LocalDate backDate = backDateMap.get(filteredRow.getTradeDate());
+//                    DeliverySpikeDto backDto = null;
+//                    if(tradeDateAndSymbolMap.containsKey(backDate))
+//                        backDto = tradeDateAndSymbolMap.get(backDate).get(filteredRow.getSymbol());
+//                    if (backDto == null) {
+//                        LOGGER.warn("{} - backDto is null for: {}", filteredRow.getSymbol(), backDate);
+//                    } else if (backDto.getDelAtpMfi() == null) {
+//                        LOGGER.warn("{} - DelAtpMfi is null for: {}", filteredRow.getSymbol(), backDate);
+//                    } else if (backDto.getAtpRsi() == null) {
+//                        LOGGER.warn("{} - AtpRsi is null for: {}", filteredRow.getSymbol(), backDate);
+//                    } else {
+//                        filteredRow.setDelAtpMfiChg(
+//                                filteredRow.getDelAtpMfi().divide(
+//                                        backDto.getDelAtpMfi().divide(HUNDRED, 2, RoundingMode.HALF_UP),
+//                                        2, RoundingMode.HALF_UP
+//                                )
+//                        );
+//                        filteredRow.setAtpRsiChg(
+//                                filteredRow.getAtpRsi().divide(
+//                                        backDto.getAtpRsi().divide(HUNDRED, 2, RoundingMode.HALF_UP),
+//                                        2, RoundingMode.HALF_UP
+//                                )
+//                        );
+//                    }
+//                    return true;
+//                }).count();
+//    }
+    private void fillTheIndicators() {
+        LOGGER.info("DataManager - fillTheIndicators");
+        LocalDate minDate = minDate(latestDbDate, 21);
+        Predicate<DeliverySpikeDto> predicate = dto -> filterDate(dto, minDate, latestDbDate);
+        Map<LocalDate, Map<String, DeliverySpikeDto>> tradeDateAndSymbolMap = prepareDataByTradeDateAndSymbol(predicate);
+
+        //load old Rsi
+        List<CalcRsiTab> oldRsiList = calcRsiRepository.findAll();
+        ReportHelper.enrichRsi(oldRsiList, tradeDateAndSymbolMap);
+
+        //load old Mfi
+        List<CalcMfiTab> oldMfiList = calcMfiRepository.findAll();
+        ReportHelper.enrichMfi(oldMfiList, tradeDateAndSymbolMap);
+
+        BigDecimal HUNDRED = new BigDecimal(100);
+        LocalDate backDate = null;
+        DeliverySpikeDto backDto = null;
+        BigDecimal onePercent = null;
+        BigDecimal diff = null;
+        BigDecimal chg = null;
+        for(DeliverySpikeDto dto:dbResults) {
+            if(dto.getTradeDate().isAfter(tradeDates_Desc_LinkedList.get(20))) {
+                backDto = null;
+                backDate = backDateMap.get(dto.getTradeDate());
+                if(tradeDateAndSymbolMap.containsKey(backDate))
+                    backDto = tradeDateAndSymbolMap.get(backDate).get(dto.getSymbol());
+                if (backDto == null) {
+                    LOGGER.warn("{} - backDto is null for: {}", dto.getSymbol(), backDate);
+                } else if (backDto.getDelAtpMfi() == null) {
+                    LOGGER.warn("{} - DelAtpMfi is null for: {}", dto.getSymbol(), backDate);
+                } else if (backDto.getAtpRsi() == null) {
+                    LOGGER.warn("{} - AtpRsi is null for: {}", dto.getSymbol(), backDate);
+                } else {
+                    onePercent = backDto.getDelAtpMfi().divide(HUNDRED, 2, RoundingMode.HALF_UP);
+                    diff = dto.getDelAtpMfi().divide(onePercent, 2, RoundingMode.HALF_UP);
+                    chg = diff.subtract(HUNDRED);
+                    dto.setDelAtpMfiChg(chg);
+
+                    onePercent = backDto.getAtpRsi().divide(HUNDRED, 2, RoundingMode.HALF_UP);
+                    diff = dto.getAtpRsi().divide(onePercent, 2, RoundingMode.HALF_UP);
+                    chg = diff.subtract(HUNDRED);
+                    dto.setAtpRsiChg(chg);
+                }
+            }
+        }
+    }
 
     private Map<String, List<DeliverySpikeDto>> prepareDataBySymbol(Predicate<DeliverySpikeDto> filterPredicate) {
         // aggregate trade by symbols

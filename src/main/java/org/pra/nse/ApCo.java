@@ -14,7 +14,7 @@ public class ApCo {
     public static final LocalDate EMAIL_FROM_DATE = LocalDate.of(2020,2,1);
 
 
-    public static final boolean EMAIL_ENABLED = true;
+    public static final boolean EMAIL_ENABLED = false;
     public static final boolean EMAIL_ENABLED_FOR_MANISH = true;
     public static final boolean EMAIL_ENABLED_FOR_PRADEEP = true;
     public static final boolean EMAIL_ENABLED_FOR_SHUVI = false;
@@ -32,7 +32,10 @@ public class ApCo {
         public static final String REPORTS_DIR_NAME = "reports-data";
         public static final String REPORTS_DIR_NAME_TMP = "reports-tmp";
         public static final String REPORTS_DIR_NAME_DSR = "reports-dsr";
-        public static final String REPORTS_DIR_NAME_PPF = "reports-ppf";
+
+//    public static final String REPORTS_DIR_NAME_PPF = "reports-ppf";
+    public static final String REPORTS_DIR_NAME_PPF = "reports-ppf-tmp";
+
         public static final String REPORTS_DIR_NAME_MANISH = "reports-manish";
         public static final String REPORTS_DIR_NAME_SHUVI = "reports-shuvi";
 

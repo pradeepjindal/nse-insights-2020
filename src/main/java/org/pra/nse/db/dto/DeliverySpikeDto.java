@@ -6,17 +6,17 @@ import java.time.LocalDate;
 public class DeliverySpikeDto {
     private String symbol;
     private LocalDate tradeDate;
+    private LocalDate backDate;
 
     private BigDecimal previousClose;
     private BigDecimal open;
     private BigDecimal high;
     private BigDecimal low;
-    private BigDecimal highLowPct;
     private BigDecimal close;
     private BigDecimal last;
     private BigDecimal atp;
     private BigDecimal highLowMid;
-    private BigDecimal highLowPrcnt;
+    private BigDecimal highLowPct;
     private String closingBell;
     private BigDecimal closeToLastPercent;
 
@@ -31,10 +31,10 @@ public class DeliverySpikeDto {
     private BigDecimal atpDynGrowth;
     private BigDecimal volFixGrowth;
     private BigDecimal volDynGrowth;
-    private BigDecimal tradedChgPrcnt;
+    private BigDecimal volumeChgPrcnt;
     private BigDecimal delFixGrowth;
     private BigDecimal delDynGrowth;
-    private BigDecimal deliveredChgPrcnt;
+    private BigDecimal deliveryChgPrcnt;
     private BigDecimal foiFixGrowth;
     private BigDecimal foiDynGrowth;
     private BigDecimal oiChgPrcnt;
@@ -57,27 +57,19 @@ public class DeliverySpikeDto {
     private BigDecimal delivery;
     private BigDecimal oi;
 
-    private BigDecimal volAtpMfi10;
-    private BigDecimal delAtpMfi10;
+    private BigDecimal volAtpMfi;
+    private BigDecimal delAtpMfi;
+    private BigDecimal delAtpMfiChg;
 
-    private BigDecimal tdyCloseRsi10Sma;
-    private BigDecimal tdyLastRsi10Sma;
-    private BigDecimal tdyAtpRsi10Sma;
+    private BigDecimal atpRsi;
+    private BigDecimal atpRsiChg;
+    private BigDecimal closeRsi;
+    private BigDecimal lastRsi;
 
     private BigDecimal nxtCloseToOpenPercent;
     private BigDecimal nxtOptoHighPrcnt;
     private BigDecimal nxtOptoLowPrcnt;
     private BigDecimal nxtOptoAtpPrcnt;
-
-    private BigDecimal atpAvg10;
-    private BigDecimal volAvg10;
-    private BigDecimal delAvg10;
-    private BigDecimal foiAvg10;
-
-    private BigDecimal atpAvg20;
-    private BigDecimal volAvg20;
-    private BigDecimal delAvg20;
-    private BigDecimal foiAvg20;
 
     private BigDecimal delAccumulation;
     private BigDecimal ohlc;
@@ -90,8 +82,8 @@ public class DeliverySpikeDto {
                 + high + ","
                 + low + ","
                 + close + ","
-                + tradedChgPrcnt + ","
-                + deliveredChgPrcnt + ","
+                + volumeChgPrcnt + ","
+                + deliveryChgPrcnt + ","
                 + othighPrcnt + ","
                 + otlowPrcnt;
     }
@@ -115,8 +107,8 @@ public class DeliverySpikeDto {
                 + lastChgPrcnt + ","
                 + atpChgPrcnt + ","
 
-                + tradedChgPrcnt + ","
-                + deliveredChgPrcnt + ","
+                + volumeChgPrcnt + ","
+                + deliveryChgPrcnt + ","
                 + oiChgPrcnt + ","
                 + premium + ","
 
@@ -130,9 +122,9 @@ public class DeliverySpikeDto {
 //                + tdylastMinusYeslast + ","
 //                + tdyatpMinusYesatp + ","
 
-                + tdyCloseRsi10Sma + ","
-                + tdyLastRsi10Sma + ","
-                + tdyAtpRsi10Sma;
+                + closeRsi + ","
+                + lastRsi + ","
+                + atpRsi;
     }
 
     public String toPpfString() {
@@ -149,8 +141,8 @@ public class DeliverySpikeDto {
                 + atp + ","
                 + highLowMid + ","
 
-                + tradedChgPrcnt + ","
-                + deliveredChgPrcnt + ","
+                + volumeChgPrcnt + ","
+                + deliveryChgPrcnt + ","
                 + oiChgPrcnt + ","
                 + premium + ","
                 + openingBell + ","
@@ -159,11 +151,11 @@ public class DeliverySpikeDto {
                 + otlowPrcnt + ","
                 + otatpPrcnt + ","
 
-                + volAtpMfi10 + ","
-                + delAtpMfi10 + ","
-                + tdyCloseRsi10Sma + ","
-                + tdyLastRsi10Sma + ","
-                + tdyAtpRsi10Sma;
+                + volAtpMfi + ","
+                + delAtpMfi + ","
+                + closeRsi + ","
+                + lastRsi + ","
+                + atpRsi;
     }
 
     public String toPpfString2() {
@@ -173,28 +165,31 @@ public class DeliverySpikeDto {
                 + open + ","
                 + high + ","
                 + low + ","
-                + highLowPct + ","
                 + close + ","
                 + last + ","
-                + closingBell + ","
-                + closeToLastPercent + ","
+//                + closingBell + ","
                 + atp + ","
-                + highLowMid + ","
+
+                //calculated fields
                 + ohlc + ","
+                + highLowMid + ","
+                + highLowPct + ","
+                + closeToLastPercent + ","
 
                 + atpFixGrowth + ","
-                + atpDynGrowth + ","
+//                + atpDynGrowth + ","
                 + atpChgPrcnt + ","
                 + volFixGrowth + ","
-                + volDynGrowth + ","
-                + tradedChgPrcnt + ","
+//                + volDynGrowth + ","
+                + volumeChgPrcnt + ","
 
                 + delAccumulation + ","
+
                 + delFixGrowth + ","
-                + delDynGrowth + ","
-                + deliveredChgPrcnt + ","
+//                + delDynGrowth + ","
+                + deliveryChgPrcnt + ","
                 + foiFixGrowth + ","
-                + foiDynGrowth + ","
+//                + foiDynGrowth + ","
                 + oiChgPrcnt + ","
 
                 + premium + ","
@@ -205,11 +200,14 @@ public class DeliverySpikeDto {
                 + nxtOptoLowPrcnt + ","
                 + nxtOptoAtpPrcnt + ","
 
-                + volAtpMfi10 + ","
-                + delAtpMfi10 + ","
-                + tdyCloseRsi10Sma + ","
-                + tdyLastRsi10Sma + ","
-                + tdyAtpRsi10Sma;
+                + volAtpMfi + ","
+                + delAtpMfi + ","
+                + delAtpMfiChg + ","
+
+                + atpRsi + ","
+                + atpRsiChg + ","
+                + closeRsi + ","
+                + lastRsi;
     }
 
     public String getSymbol() {
@@ -300,14 +298,6 @@ public class DeliverySpikeDto {
         this.highLowMid = highLowMid;
     }
 
-    public BigDecimal getHighLowPrcnt() {
-        return highLowPrcnt;
-    }
-
-    public void setHighLowPrcnt(BigDecimal highLowPrcnt) {
-        this.highLowPrcnt = highLowPrcnt;
-    }
-
     public String getClosingBell() {
         return closingBell;
     }
@@ -388,12 +378,12 @@ public class DeliverySpikeDto {
         this.volFixGrowth = volFixGrowth;
     }
 
-    public BigDecimal getTradedChgPrcnt() {
-        return tradedChgPrcnt;
+    public BigDecimal getVolumeChgPrcnt() {
+        return volumeChgPrcnt;
     }
 
-    public void setTradedChgPrcnt(BigDecimal tradedChgPrcnt) {
-        this.tradedChgPrcnt = tradedChgPrcnt;
+    public void setVolumeChgPrcnt(BigDecimal volumeChgPrcnt) {
+        this.volumeChgPrcnt = volumeChgPrcnt;
     }
 
     public BigDecimal getDelFixGrowth() {
@@ -404,12 +394,12 @@ public class DeliverySpikeDto {
         this.delFixGrowth = delFixGrowth;
     }
 
-    public BigDecimal getDeliveredChgPrcnt() {
-        return deliveredChgPrcnt;
+    public BigDecimal getDeliveryChgPrcnt() {
+        return deliveryChgPrcnt;
     }
 
-    public void setDeliveredChgPrcnt(BigDecimal deliveredChgPrcnt) {
-        this.deliveredChgPrcnt = deliveredChgPrcnt;
+    public void setDeliveryChgPrcnt(BigDecimal deliveryChgPrcnt) {
+        this.deliveryChgPrcnt = deliveryChgPrcnt;
     }
 
     public BigDecimal getFoiFixGrowth() {
@@ -540,44 +530,44 @@ public class DeliverySpikeDto {
         this.oi = oi;
     }
 
-    public BigDecimal getVolAtpMfi10() {
-        return volAtpMfi10;
+    public BigDecimal getVolAtpMfi() {
+        return volAtpMfi;
     }
 
-    public void setVolAtpMfi10(BigDecimal volAtpMfi10) {
-        this.volAtpMfi10 = volAtpMfi10;
+    public void setVolAtpMfi(BigDecimal volAtpMfi) {
+        this.volAtpMfi = volAtpMfi;
     }
 
-    public BigDecimal getDelAtpMfi10() {
-        return delAtpMfi10;
+    public BigDecimal getDelAtpMfi() {
+        return delAtpMfi;
     }
 
-    public void setDelAtpMfi10(BigDecimal delAtpMfi10) {
-        this.delAtpMfi10 = delAtpMfi10;
+    public void setDelAtpMfi(BigDecimal delAtpMfi) {
+        this.delAtpMfi = delAtpMfi;
     }
 
-    public BigDecimal getTdyCloseRsi10Sma() {
-        return tdyCloseRsi10Sma;
+    public BigDecimal getCloseRsi() {
+        return closeRsi;
     }
 
-    public void setTdyCloseRsi10Sma(BigDecimal tdyCloseRsi10Sma) {
-        this.tdyCloseRsi10Sma = tdyCloseRsi10Sma;
+    public void setCloseRsi(BigDecimal closeRsi) {
+        this.closeRsi = closeRsi;
     }
 
-    public BigDecimal getTdyLastRsi10Sma() {
-        return tdyLastRsi10Sma;
+    public BigDecimal getLastRsi() {
+        return lastRsi;
     }
 
-    public void setTdyLastRsi10Sma(BigDecimal tdyLastRsi10Sma) {
-        this.tdyLastRsi10Sma = tdyLastRsi10Sma;
+    public void setLastRsi(BigDecimal lastRsi) {
+        this.lastRsi = lastRsi;
     }
 
-    public BigDecimal getTdyAtpRsi10Sma() {
-        return tdyAtpRsi10Sma;
+    public BigDecimal getAtpRsi() {
+        return atpRsi;
     }
 
-    public void setTdyAtpRsi10Sma(BigDecimal tdyAtpRsi10Sma) {
-        this.tdyAtpRsi10Sma = tdyAtpRsi10Sma;
+    public void setAtpRsi(BigDecimal atpRsi) {
+        this.atpRsi = atpRsi;
     }
 
     public BigDecimal getNxtCloseToOpenPercent() {
@@ -610,70 +600,6 @@ public class DeliverySpikeDto {
 
     public void setNxtOptoAtpPrcnt(BigDecimal nxtOptoAtpPrcnt) {
         this.nxtOptoAtpPrcnt = nxtOptoAtpPrcnt;
-    }
-
-    public BigDecimal getAtpAvg10() {
-        return atpAvg10;
-    }
-
-    public void setAtpAvg10(BigDecimal atpAvg10) {
-        this.atpAvg10 = atpAvg10;
-    }
-
-    public BigDecimal getVolAvg10() {
-        return volAvg10;
-    }
-
-    public void setVolAvg10(BigDecimal volAvg10) {
-        this.volAvg10 = volAvg10;
-    }
-
-    public BigDecimal getDelAvg10() {
-        return delAvg10;
-    }
-
-    public void setDelAvg10(BigDecimal delAvg10) {
-        this.delAvg10 = delAvg10;
-    }
-
-    public BigDecimal getFoiAvg10() {
-        return foiAvg10;
-    }
-
-    public void setFoiAvg10(BigDecimal foiAvg10) {
-        this.foiAvg10 = foiAvg10;
-    }
-
-    public BigDecimal getAtpAvg20() {
-        return atpAvg20;
-    }
-
-    public void setAtpAvg20(BigDecimal atpAvg20) {
-        this.atpAvg20 = atpAvg20;
-    }
-
-    public BigDecimal getVolAvg20() {
-        return volAvg20;
-    }
-
-    public void setVolAvg20(BigDecimal volAvg20) {
-        this.volAvg20 = volAvg20;
-    }
-
-    public BigDecimal getDelAvg20() {
-        return delAvg20;
-    }
-
-    public void setDelAvg20(BigDecimal delAvg20) {
-        this.delAvg20 = delAvg20;
-    }
-
-    public BigDecimal getFoiAvg20() {
-        return foiAvg20;
-    }
-
-    public void setFoiAvg20(BigDecimal foiAvg20) {
-        this.foiAvg20 = foiAvg20;
     }
 
     public BigDecimal getAtpDynGrowth() {
@@ -724,4 +650,27 @@ public class DeliverySpikeDto {
         this.ohlc = ohlc;
     }
 
+    public LocalDate getBackDate() {
+        return backDate;
+    }
+
+    public void setBackDate(LocalDate backDate) {
+        this.backDate = backDate;
+    }
+
+    public BigDecimal getDelAtpMfiChg() {
+        return delAtpMfiChg;
+    }
+
+    public void setDelAtpMfiChg(BigDecimal delAtpMfiChg) {
+        this.delAtpMfiChg = delAtpMfiChg;
+    }
+
+    public BigDecimal getAtpRsiChg() {
+        return atpRsiChg;
+    }
+
+    public void setAtpRsiChg(BigDecimal atpRsiChg) {
+        this.atpRsiChg = atpRsiChg;
+    }
 }

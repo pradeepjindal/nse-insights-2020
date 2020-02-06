@@ -8,6 +8,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDate;
+
 /**
  * polymorphism is not letting me share the data in base class
  * inheritance letting me share the common code, constants but not the date from base
@@ -46,15 +48,18 @@ public class ReportManager implements Manager {
     private final DeliverySpikeReporterFull deliverySpikeReportFull;
     private final PastPresentFutureReporter pastPresentFutureReport;
 
+    private final Statisian statisian;
+
     public ReportManager(NseFileUtils nseFileUtils,
                          NseReportsDao nseReportsDao, DeliverySpikeReporter deliverySpikeReport,
                          DeliverySpikeReporterFull deliverySpikeReportFull,
-                         PastPresentFutureReporter pastPresentFutureReport) {
+                         PastPresentFutureReporter pastPresentFutureReport, Statisian statisian) {
         this.nseFileUtils = nseFileUtils;
         this.nseReportsDao = nseReportsDao;
         this.deliverySpikeReport = deliverySpikeReport;
         this.deliverySpikeReportFull = deliverySpikeReportFull;
         this.pastPresentFutureReport = pastPresentFutureReport;
+        this.statisian = statisian;
     }
 
     @Override
@@ -105,6 +110,9 @@ public class ReportManager implements Manager {
         pastPresentFutureReport.reportFromLast(10);
         //pastPresentFutureReport.reportFromLast(15);
         pastPresentFutureReport.reportFromLast(20);
+
+        //
+        //statisian.stats(LocalDate.of(2020, 2, 4), 10);
 
         LOGGER.info("======================================== Report Manager");
     }

@@ -22,9 +22,9 @@ public class ReportHelper {
             if(tradeDateAndSymbolWise_DoubleMap.containsKey(oldRsi.getTradeDate())) {
                 if(tradeDateAndSymbolWise_DoubleMap.get(oldRsi.getTradeDate()).containsKey(oldRsi.getSymbol())) {
                     DeliverySpikeDto tdyDto = tradeDateAndSymbolWise_DoubleMap.get(oldRsi.getTradeDate()).get(oldRsi.getSymbol());
-                    tdyDto.setTdyCloseRsi10Sma(oldRsi.getCloseRsi10Sma());
-                    tdyDto.setTdyLastRsi10Sma(oldRsi.getLastRsi10Sma());
-                    tdyDto.setTdyAtpRsi10Sma(oldRsi.getAtpRsi10Sma());
+                    tdyDto.setCloseRsi(oldRsi.getCloseRsi10Sma());
+                    tdyDto.setLastRsi(oldRsi.getLastRsi10Sma());
+                    tdyDto.setAtpRsi(oldRsi.getAtpRsi10Sma());
                     // calculating Bells
                     //calculateBells2(tdyDto);
                 } else {
@@ -41,8 +41,8 @@ public class ReportHelper {
             if(tradeDateAndSymbolWise_DoubleMap.containsKey(oldMfi.getTradeDate())) {
                 if(tradeDateAndSymbolWise_DoubleMap.get(oldMfi.getTradeDate()).containsKey(oldMfi.getSymbol())) {
                     DeliverySpikeDto tdyDto = tradeDateAndSymbolWise_DoubleMap.get(oldMfi.getTradeDate()).get(oldMfi.getSymbol());
-                    tdyDto.setVolAtpMfi10(oldMfi.getVolAtpMfi10Sma());
-                    tdyDto.setDelAtpMfi10(oldMfi.getDelAtpMfi10Sma());
+                    tdyDto.setVolAtpMfi(oldMfi.getVolAtpMfi10Sma());
+                    tdyDto.setDelAtpMfi(oldMfi.getDelAtpMfi10Sma());
                 } else {
                     //LOGGER.warn("old rsi | symbol {} not found for tradeDate {}", oldRsi.getSymbol(), oldRsi.getTradeDate());
                 }

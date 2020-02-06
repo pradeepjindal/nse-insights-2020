@@ -85,9 +85,9 @@ public class DeliverySpikeReporterFull {
             if(tradeDateAndSymbolWise_DoubleMap.containsKey(oldRsi.getTradeDate())) {
                 if(tradeDateAndSymbolWise_DoubleMap.get(oldRsi.getTradeDate()).containsKey(oldRsi.getSymbol())) {
                     DeliverySpikeDto tdyDto = tradeDateAndSymbolWise_DoubleMap.get(oldRsi.getTradeDate()).get(oldRsi.getSymbol());
-                    tdyDto.setTdyCloseRsi10Sma(oldRsi.getCloseRsi10Sma());
-                    tdyDto.setTdyLastRsi10Sma(oldRsi.getLastRsi10Sma());
-                    tdyDto.setTdyAtpRsi10Sma(oldRsi.getAtpRsi10Sma());
+                    tdyDto.setCloseRsi(oldRsi.getCloseRsi10Sma());
+                    tdyDto.setLastRsi(oldRsi.getLastRsi10Sma());
+                    tdyDto.setAtpRsi(oldRsi.getAtpRsi10Sma());
                 } else {
                     //LOGGER.warn("old rsi | symbol {} not found for tradeDate {}", oldRsi.getSymbol(), oldRsi.getTradeDate());
                 }

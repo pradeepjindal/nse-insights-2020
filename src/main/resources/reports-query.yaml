@@ -2,15 +2,14 @@ sqlDeliverySpike: >
   SELECT
     tdy.symbol symbol,
     tdy.one_trade_date trade_date,
+
     tdy.cmclose_prev previous_close,
     tdy.cmopen open,
     tdy.cmhigh high,
     tdy.cmlow low,
-    round((tdy.cmhigh-tdy.cmlow)/(tdy.cmopen/100), 2) as high_low_pct,
     tdy.cmclose as close,
     tdy.cmlast as last,
     tdy.cmatp atp,
-    round((tdy.cmhigh+tdy.cmlow)/2, 2) as high_low_mid,
 
     round(tdy.cmopen / (yes.cmopen/100),2) - 100 as open_chg_prcnt,
     round(tdy.cmhigh / (yes.cmhigh/100),2) - 100 as high_chg_prcnt,
@@ -19,8 +18,8 @@ sqlDeliverySpike: >
     round(tdy.cmlast / (yes.cmlast/100),2) - 100 as last_chg_prcnt,
     round(tdy.cmatp / (yes.cmatp/100),2) - 100 as atp_chg_prcnt,
 
-    round(tdy.traded_qty / (yes.traded_qty/100),2) - 100 as traded_chg_prcnt,
-    round(tdy.delivered_qty / (yes.delivered_qty/100),2) - 100 as delivered_chg_prcnt,
+    round(tdy.traded_qty / (yes.traded_qty/100),2) - 100 as volume_chg_prcnt,
+    round(tdy.delivered_qty / (yes.delivered_qty/100),2) - 100 as delivery_chg_prcnt,
     round(tdy.oi / (yes.oi/100),2) - 100 as oi_chg_prcnt,
     tdy.premium,
     round(tdy.cmopen / (tdy.cmclose_prev/100), 2) - 100 as close_to_open_percent,
@@ -33,7 +32,9 @@ sqlDeliverySpike: >
     tdy.cmclose-yes.cmclose tdyclose_minus_yesclose,
     tdy.cmlast-yes.cmlast tdylast_minus_yeslast,
     tdy.cmatp-yes.cmatp tdyatp_minus_yesatp,
-    tdy.traded_qty volume, tdy.delivered_qty delivery
+
+    tdy.traded_qty volume,
+    tdy.delivered_qty delivery
   FROM
     (
       select *
@@ -60,14 +61,15 @@ sqlPastPresentFuture: >
       tdy.cmatp atp,
       round((tdy.cmhigh+tdy.cmlow)/2, 2) as high_low_mid,
 
-      round(tdy.traded_qty / (yes.traded_qty/100),2) - 100 as traded_chg_prcnt,
-      round(tdy.delivered_qty / (yes.delivered_qty/100),2) - 100 as delivered_chg_prcnt,
+      round(tdy.traded_qty / (yes.traded_qty/100),2) - 100 as volume_chg_prcnt,
+      round(tdy.delivered_qty / (yes.delivered_qty/100),2) - 100 as delivery_chg_prcnt,
       round(tdy.oi / (yes.oi/100),2) - 100 as oi_chg_prcnt,
       tdy.premium,
       round(tmr.cmhigh / (tmr.cmopen/100), 2) - 100 as othigh_prcnt,
   	  round(tmr.cmlow / (tmr.cmopen/100), 2) - 100 as otlow_prcnt,
       round(tmr.cmatp / (tmr.cmopen/100), 2) - 100 as otatp_prcnt,
-      tdy.volume, tdy.delivery
+      tdy.volume,
+      tdy.delivery
     FROM
     (
       select *
