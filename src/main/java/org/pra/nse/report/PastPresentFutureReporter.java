@@ -1,7 +1,7 @@
 package org.pra.nse.report;
 
 import org.pra.nse.ApCo;
-import org.pra.nse.data.DataManager;
+import org.pra.nse.service.DataService;
 import org.pra.nse.db.dto.DeliverySpikeDto;
 import org.pra.nse.db.model.CalcAvgTab;
 import org.pra.nse.db.model.CalcMfiTab;
@@ -10,6 +10,7 @@ import org.pra.nse.db.repository.CalcAvgRepository;
 import org.pra.nse.db.repository.CalcMfiRepository;
 import org.pra.nse.db.repository.CalcRsiRepository;
 import org.pra.nse.email.EmailService;
+import org.pra.nse.service.DateService;
 import org.pra.nse.util.DateUtils;
 import org.pra.nse.util.DirUtils;
 import org.pra.nse.util.NseFileUtils;
@@ -41,7 +42,8 @@ public class PastPresentFutureReporter {
     private final NseFileUtils nseFileUtils;
     private final PraFileUtils praFileUtils;
 
-    private final DataManager dataManager;
+    private final DataService dataService;
+    private final DateService dateService;
 
     PastPresentFutureReporter(CalcRsiRepository calcRsiRepository,
                               CalcMfiRepository calcMfiRepository,
@@ -49,14 +51,15 @@ public class PastPresentFutureReporter {
                               EmailService emailService,
                               NseFileUtils nseFileUtils,
                               PraFileUtils praFileUtils,
-                              DataManager dataManager) {
+                              DataService dataService, DateService dateService) {
         this.calcRsiRepository = calcRsiRepository;
         this.calcMfiRepository = calcMfiRepository;
         this.calcAvgRepository = calcAvgRepository;
         this.emailService = emailService;
         this.nseFileUtils = nseFileUtils;
         this.praFileUtils = praFileUtils;
-        this.dataManager = dataManager;
+        this.dataService = dataService;
+        this.dateService = dateService;
         DirUtils.ensureFolder(outputDirName);
     }
 
@@ -100,7 +103,7 @@ public class PastPresentFutureReporter {
 
     private void produceReport(LocalDate forDate, int forMinusDays, String filePath) {
         // aggregate trade by symbols
-        Map<LocalDate, Map<String, DeliverySpikeDto>> tradeDateAndSymbolWise_DoubleMap = dataManager.getDataByTradeDateAndSymbol(forDate, forMinusDays);
+        Map<LocalDate, Map<String, DeliverySpikeDto>> tradeDateAndSymbolWise_DoubleMap = dataService.getRichDataByTradeDateAndSymbol(forDate, forMinusDays);
 
         //load old Rsi
         List<CalcRsiTab> oldRsiList = calcRsiRepository.findAll();
@@ -111,12 +114,12 @@ public class PastPresentFutureReporter {
         ReportHelper.enrichMfi(oldMfiList, tradeDateAndSymbolWise_DoubleMap);
 
         // load avg
-        LocalDate minDate = dataManager.getMinDate(forDate, forMinusDays);
+        LocalDate minDate = dateService.getMinTradeDate(forDate, forMinusDays);
         List<CalcAvgTab> calcAvgTabs = calcAvgRepository.findAll();
         Map<String, CalcAvgTab> calcAvgMap = calcAvgTabs.stream()
                 .filter( row -> row.getTradeDate().compareTo(minDate) == 0)
                 .collect(Collectors.toMap(row->row.getSymbol(), row-> row));
-        Map<String, List<DeliverySpikeDto>> symbolMap = dataManager.getDataBySymbol(forDate, forMinusDays);
+        Map<String, List<DeliverySpikeDto>> symbolMap = dataService.getRichDataBySymbol(forDate, forMinusDays);
         //ReportHelper.enrichGrowth10(calcAvgMap, symbolMap);
         switch (forMinusDays) {
             case 10: ReportHelper.enrichGrowth10(calcAvgMap, symbolMap); break;

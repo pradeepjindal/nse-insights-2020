@@ -2,7 +2,7 @@ package org.pra.nse.calculation;
 
 import org.pra.nse.ApCo;
 import org.pra.nse.Manager;
-import org.pra.nse.data.DataManager;
+import org.pra.nse.service.DataService;
 import org.pra.nse.db.dao.NseReportsDao;
 import org.pra.nse.util.NseFileUtils;
 import org.slf4j.Logger;
@@ -20,7 +20,7 @@ public class CalculationManager implements Manager {
     private final NseFileUtils nseFileUtils;
     private final NseReportsDao nseReportsDao;
 
-    private final DataManager dataManager;
+    private final DataService dataService;
 
     private final AvgCalculatorNew avgCalculator;
     private final RsiCalculatorNew rsiCalculator;
@@ -29,11 +29,11 @@ public class CalculationManager implements Manager {
 
 
     public CalculationManager(NseFileUtils nseFileUtils, NseReportsDao nseReportsDao,
-                              DataManager dataManager,
+                              DataService dataService,
                               AvgCalculatorNew avgCalculator, RsiCalculatorNew rsiCalculator, MfiCalculatorNew mfiCalculator) {
         this.nseFileUtils = nseFileUtils;
         this.nseReportsDao = nseReportsDao;
-        this.dataManager = dataManager;
+        this.dataService = dataService;
         this.avgCalculator = avgCalculator;
         this.rsiCalculator = rsiCalculator;
         this.mfiCalculator = mfiCalculator;

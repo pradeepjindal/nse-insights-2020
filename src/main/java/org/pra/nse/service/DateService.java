@@ -15,8 +15,8 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @Component
-public class TradeDateService {
-    private static final Logger LOGGER = LoggerFactory.getLogger(TradeDateService.class);
+public class DateService {
+    private static final Logger LOGGER = LoggerFactory.getLogger(DateService.class);
 
     private final GeneralDao generalDao;
     private final PraFileUtils praFileUtils;
@@ -25,7 +25,7 @@ public class TradeDateService {
     private List<LocalDate> dbDatesListDesc;
     private Map<LocalDate, Long> dbDatesMap;
 
-    public TradeDateService(GeneralDao generalDao, PraFileUtils praFileUtils) {
+    public DateService(GeneralDao generalDao, PraFileUtils praFileUtils) {
         this.generalDao = generalDao;
         this.praFileUtils = praFileUtils;
     }

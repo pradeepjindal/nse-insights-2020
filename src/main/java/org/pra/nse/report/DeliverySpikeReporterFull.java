@@ -1,7 +1,7 @@
 package org.pra.nse.report;
 
 import org.pra.nse.ApCo;
-import org.pra.nse.data.DataManager;
+import org.pra.nse.service.DataService;
 import org.pra.nse.db.dto.DeliverySpikeDto;
 import org.pra.nse.db.model.CalcRsiTab;
 import org.pra.nse.db.repository.CalcRsiRepository;
@@ -33,18 +33,18 @@ public class DeliverySpikeReporterFull {
     private final NseFileUtils nseFileUtils;
     private final PraFileUtils praFileUtils;
 
-    private final DataManager dataManager;
+    private final DataService dataService;
 
     DeliverySpikeReporterFull(CalcRsiRepository calcRsiRepository,
                               EmailService emailService,
                               NseFileUtils nseFileUtils,
                               PraFileUtils praFileUtils,
-                              DataManager dataManager) {
+                              DataService dataService) {
         this.calcRsiRepository = calcRsiRepository;
         this.emailService = emailService;
         this.nseFileUtils = nseFileUtils;
         this.praFileUtils = praFileUtils;
-        this.dataManager = dataManager;
+        this.dataService = dataService;
         DirUtils.ensureFolder(outputDirName);
     }
 
@@ -76,7 +76,7 @@ public class DeliverySpikeReporterFull {
     private void produceTenDayReportFull(LocalDate forDate, int forMinusDays, String filePath) {
         // aggregate trade by symbols
         Map<String, List<DeliverySpikeDto>> symbolMap = new HashMap<>();
-        Map<LocalDate, Map<String, DeliverySpikeDto>> tradeDateAndSymbolWise_DoubleMap = dataManager.getDataByTradeDateAndSymbol(forDate, forMinusDays);
+        Map<LocalDate, Map<String, DeliverySpikeDto>> tradeDateAndSymbolWise_DoubleMap = dataService.getRichDataByTradeDateAndSymbol(forDate, forMinusDays);
 
         //loadRsiOld(dateMap);
         List<CalcRsiTab> oldRsiList = calcRsiRepository.findAll();

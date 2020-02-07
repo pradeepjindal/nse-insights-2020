@@ -21,7 +21,7 @@ public class ReportConstants {
     static final String abc = "Tally,Growth,Spike,Bell";
 
     static final String PPF_CSV_HEADER =
-            "symbol,trade_date," +
+            "symbol,trade_date,day," +
 //            "open,high,low,hlp,close,last,closingBell,closeToLastPct,atp,hlm,ohlc," +
             "open,high,low,close,last,atp,ohlc,hlm,hlp,cToL_Pct," +
 

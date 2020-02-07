@@ -4,13 +4,13 @@ import org.pra.nse.ApCo;
 import org.pra.nse.csv.data.AvgBean;
 import org.pra.nse.csv.data.AvgCao;
 import org.pra.nse.csv.data.CalcBean;
-import org.pra.nse.data.DataManager;
+import org.pra.nse.service.DataService;
 import org.pra.nse.db.dao.GeneralDao;
 import org.pra.nse.db.dao.calc.AvgCalculationDao;
 import org.pra.nse.db.dto.DeliverySpikeDto;
 import org.pra.nse.db.model.CalcAvgTab;
 import org.pra.nse.db.repository.CalcAvgRepository;
-import org.pra.nse.service.TradeDateService;
+import org.pra.nse.service.DateService;
 import org.pra.nse.util.NseFileUtils;
 import org.pra.nse.util.PraFileUtils;
 import org.slf4j.Logger;
@@ -41,21 +41,21 @@ public class AvgCalculatorNew {
     private final GeneralDao generalDao;
     private final AvgCalculationDao dao;
     private final CalcAvgRepository repository;
-    private final DataManager dataManager;
-    private final TradeDateService tradeDateService;
+    private final DataService dataService;
+    private final DateService dateService;
 
     public AvgCalculatorNew(NseFileUtils nseFileUtils, PraFileUtils praFileUtils,
                             GeneralDao generalDao, AvgCalculationDao avgCalculationDao,
                             CalcAvgRepository calcAvgRepository,
-                            DataManager dataManager,
-                            TradeDateService tradeDateService) {
+                            DataService dataService,
+                            DateService dateService) {
         this.nseFileUtils = nseFileUtils;
         this.praFileUtils = praFileUtils;
         this.generalDao = generalDao;
         this.dao = avgCalculationDao;
         this.repository = calcAvgRepository;
-        this.dataManager = dataManager;
-        this.tradeDateService = tradeDateService;
+        this.dataService = dataService;
+        this.dateService = dateService;
     }
 
     public void calculateAndSave(LocalDate forDate) {
@@ -73,7 +73,7 @@ public class AvgCalculatorNew {
 
         LOGGER.info("{} calculating for 20 days", AVG_DATA_FILE_PREFIX);
         Map<String, List<DeliverySpikeDto>> symbolMap;
-        symbolMap = dataManager.getDataBySymbol(forDate, 20);
+        symbolMap = dataService.getRawDataBySymbol(forDate, 20);
 
             Map<String, AvgBean> beansMap = new HashMap<>();
             symbolMap.values().forEach( list -> {
@@ -95,7 +95,7 @@ public class AvgCalculatorNew {
         );
 
         LOGGER.info("{} calculating for 10 days", AVG_DATA_FILE_PREFIX);
-        symbolMap = dataManager.getDataBySymbol(forDate, 10);
+        symbolMap = dataService.getRawDataBySymbol(forDate, 10);
         loopIt(forDate, symbolMap,
                 (dto, avg) -> beansMap.get(dto.getSymbol()).setAtpAvg10(avg),
                 (dto, avg) -> beansMap.get(dto.getSymbol()).setVolAvg10(avg),

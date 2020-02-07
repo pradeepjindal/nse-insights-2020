@@ -2,12 +2,13 @@ package org.pra.nse.calculation;
 
 import org.pra.nse.ApCo;
 import org.pra.nse.csv.data.*;
-import org.pra.nse.data.DataManager;
+import org.pra.nse.service.DataService;
 import org.pra.nse.db.dao.calc.RsiCalculationDao;
 import org.pra.nse.db.dto.DeliverySpikeDto;
 import org.pra.nse.db.model.CalcRsiTab;
 import org.pra.nse.db.repository.CalcRsiRepository;
 import org.pra.nse.util.NseFileUtils;
+import org.pra.nse.util.NumberUtils;
 import org.pra.nse.util.PraFileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,15 +37,15 @@ public class RsiCalculatorNew {
     private final PraFileUtils praFileUtils;
     private final RsiCalculationDao dao;
     private final CalcRsiRepository repository;
-    private final DataManager dataManager;
+    private final DataService dataService;
 
     RsiCalculatorNew(NseFileUtils nseFileUtils, PraFileUtils praFileUtils,
-                     RsiCalculationDao rsiCalculationDao, CalcRsiRepository calcRsiRepository, DataManager dataManager) {
+                     RsiCalculationDao rsiCalculationDao, CalcRsiRepository calcRsiRepository, DataService dataService) {
         this.nseFileUtils = nseFileUtils;
         this.praFileUtils = praFileUtils;
         this.dao = rsiCalculationDao;
         this.repository = calcRsiRepository;
-        this.dataManager = dataManager;
+        this.dataService = dataService;
     }
 
     public void calculateAndSave(LocalDate forDate) {
@@ -62,7 +63,7 @@ public class RsiCalculatorNew {
 
         LOGGER.info("{} calculating for 20 days", RSI_DATA_FILE_PREFIX);
         Map<String, List<DeliverySpikeDto>> symbolMap;
-        symbolMap = dataManager.getDataBySymbol(forDate, 20);
+        symbolMap = dataService.getRawDataBySymbol(forDate, 20);
 
             Map<String, RsiBean> beansMap = new HashMap<>();
             symbolMap.values().forEach( list -> {
@@ -83,7 +84,7 @@ public class RsiCalculatorNew {
         );
 
         LOGGER.info("{} calculating for 10 days", RSI_DATA_FILE_PREFIX);
-        symbolMap = dataManager.getDataBySymbol(forDate, 10);
+        symbolMap = dataService.getRawDataBySymbol(forDate, 10);
         loopIt(forDate, symbolMap,
                 (dto, rsi) -> beansMap.get(dto.getSymbol()).setAtpRsi10(rsi),
                 (dto, rsi) -> beansMap.get(dto.getSymbol()).setCloseRsi10(rsi),
@@ -183,10 +184,9 @@ public class RsiCalculatorNew {
         //(1 + rs)
         BigDecimal rsi = rs.add(BigDecimal.ONE);
         //(100 / (1 + rs)
-        BigDecimal hundred = new BigDecimal(100);
-        rsi = hundred.divide(rsi, 2, RoundingMode.HALF_UP);
+        rsi = NumberUtils.HUNDRED.divide(rsi, 2, RoundingMode.HALF_UP);
         //100 - (100 / (1 + rs))
-        rsi = hundred.subtract(rsi);
+        rsi = NumberUtils.HUNDRED.subtract(rsi);
         //===========================================
 
         if(latestDto != null) biConsumer.accept(latestDto, rsi);

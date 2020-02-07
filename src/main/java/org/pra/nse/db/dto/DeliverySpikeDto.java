@@ -161,6 +161,7 @@ public class DeliverySpikeDto {
     public String toPpfString2() {
         return  symbol + ","
                 + tradeDate + ","
+                + tradeDate.getDayOfWeek() + ","
 
                 + open + ","
                 + high + ","

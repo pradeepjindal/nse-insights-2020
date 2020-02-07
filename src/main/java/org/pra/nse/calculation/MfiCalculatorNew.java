@@ -4,12 +4,13 @@ import org.pra.nse.ApCo;
 import org.pra.nse.csv.data.CalcBean;
 import org.pra.nse.csv.data.MfiBean;
 import org.pra.nse.csv.data.MfiCao;
-import org.pra.nse.data.DataManager;
+import org.pra.nse.service.DataService;
 import org.pra.nse.db.dao.calc.MfiCalculationDao;
 import org.pra.nse.db.dto.DeliverySpikeDto;
 import org.pra.nse.db.model.CalcMfiTab;
 import org.pra.nse.db.repository.CalcMfiRepository;
 import org.pra.nse.util.NseFileUtils;
+import org.pra.nse.util.NumberUtils;
 import org.pra.nse.util.PraFileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,15 +39,15 @@ public class MfiCalculatorNew {
     private final PraFileUtils praFileUtils;
     private final MfiCalculationDao dao;
     private final CalcMfiRepository repository;
-    private final DataManager dataManager;
+    private final DataService dataService;
 
     public MfiCalculatorNew(NseFileUtils nseFileUtils, PraFileUtils praFileUtils,
-                            MfiCalculationDao mfiCalculationDao, CalcMfiRepository calcMfiRepository, DataManager dataManager) {
+                            MfiCalculationDao mfiCalculationDao, CalcMfiRepository calcMfiRepository, DataService dataService) {
         this.nseFileUtils = nseFileUtils;
         this.praFileUtils = praFileUtils;
         this.dao = mfiCalculationDao;
         this.repository = calcMfiRepository;
-        this.dataManager = dataManager;
+        this.dataService = dataService;
     }
 
     public void calculateAndSave(LocalDate forDate) {
@@ -64,7 +65,7 @@ public class MfiCalculatorNew {
 
         LOGGER.info("{} calculating for 20 days", MFI_DATA_FILE_PREFIX);
         Map<String, List<DeliverySpikeDto>> symbolMap;
-        symbolMap = dataManager.getDataBySymbol(forDate, 20);
+        symbolMap = dataService.getRawDataBySymbol(forDate, 20);
 
             Map<String, MfiBean> beansMap = new HashMap<>();
             symbolMap.values().forEach( list -> {
@@ -84,7 +85,7 @@ public class MfiCalculatorNew {
         );
 
         LOGGER.info("{} calculating for 10 days", MFI_DATA_FILE_PREFIX);
-        symbolMap = dataManager.getDataBySymbol(forDate, 10);
+        symbolMap = dataService.getRawDataBySymbol(forDate, 10);
         loopIt(forDate, symbolMap,
                 (dto, mfi) -> beansMap.get(dto.getSymbol()).setVolMfi10(mfi),
                 (dto, mfi) -> beansMap.get(dto.getSymbol()).setDelMfi10(mfi)
@@ -191,10 +192,10 @@ public class MfiCalculatorNew {
         //(1 + rs)
         BigDecimal mfi = moneyFlowRatio.add(BigDecimal.ONE);
         //(100 / (1 + rs)
-        BigDecimal hundred = new BigDecimal(100);
-        mfi = hundred.divide(mfi, 2, RoundingMode.HALF_UP);
+
+        mfi = NumberUtils.HUNDRED.divide(mfi, 2, RoundingMode.HALF_UP);
         //100 - (100 / (1 + rs))
-        mfi = hundred.subtract(mfi);
+        mfi = NumberUtils.HUNDRED.subtract(mfi);
         //===========================================
 
         if(latestDto != null) biConsumer.accept(latestDto, mfi);

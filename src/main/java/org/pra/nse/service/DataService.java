@@ -1,4 +1,4 @@
-package org.pra.nse.data;
+package org.pra.nse.service;
 
 import org.pra.nse.Manager;
 import org.pra.nse.db.dao.NseReportsDao;
@@ -11,7 +11,7 @@ import org.pra.nse.db.repository.CalcAvgRepository;
 import org.pra.nse.db.repository.CalcMfiRepository;
 import org.pra.nse.db.repository.CalcRsiRepository;
 import org.pra.nse.report.ReportHelper;
-import org.pra.nse.service.TradeDateService;
+import org.pra.nse.util.NumberUtils;
 import org.pra.nse.util.PraFileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,13 +26,13 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 @Component
-public class DataManager implements Manager {
-    private static final Logger LOGGER = LoggerFactory.getLogger(DataManager.class);
+public class DataService implements Manager {
+    private static final Logger LOGGER = LoggerFactory.getLogger(DataService.class);
 
     private final PraFileUtils praFileUtils;
     private final NseReportsDao nseReportsDao;
     private final OiDao oiDao;
-    private final TradeDateService tradeDateService;
+    private final DateService dateService;
 
     private final CalcRsiRepository calcRsiRepository;
     private final CalcMfiRepository calcMfiRepository;
@@ -48,15 +48,15 @@ public class DataManager implements Manager {
     private LocalDate       latestDbDate = null;
     private List<LocalDate> latest10Dates = null;
     private List<LocalDate> latest20Dates = null;
+    private boolean isDataInRawState = true;
 
-
-    public DataManager(PraFileUtils praFileUtils, NseReportsDao nseReportsDao, OiDao oiDao,
-                       TradeDateService tradeDateService,
+    public DataService(PraFileUtils praFileUtils, NseReportsDao nseReportsDao, OiDao oiDao,
+                       DateService dateService,
                        CalcRsiRepository calcRsiRepository, CalcMfiRepository calcMfiRepository, CalcAvgRepository calcAvgRepository) {
         this.praFileUtils = praFileUtils;
         this.nseReportsDao = nseReportsDao;
         this.oiDao = oiDao;
-        this.tradeDateService = tradeDateService;
+        this.dateService = dateService;
         this.calcRsiRepository = calcRsiRepository;
         this.calcMfiRepository = calcMfiRepository;
         this.calcAvgRepository = calcAvgRepository;
@@ -68,48 +68,74 @@ public class DataManager implements Manager {
         LOGGER.info("Data Manger - Shop is open..........");
     }
 
-    public LocalDate getMinDate(LocalDate forDate, int forMinusDays) {
-        LocalDate latestNseDate = praFileUtils.getLatestNseDate();
-        if(dbResults == null || latestNseDate.isAfter(latestDbDate)) {
-            bootUpData();
-            fillTheCalcFields();
-            fillTheOi();
-            fillTheNext();
-            fillTheIndicators();
-        }
-        if(forDate.isAfter(latestDbDate))
-            return null;
-        else
-            return minDate(forDate, forMinusDays);
+//    public LocalDate getMinDate(LocalDate forDate, int forMinusDays) {
+//        LocalDate latestNseDate = praFileUtils.getLatestNseDate();
+//        if(dbResults == null || latestNseDate.isAfter(latestDbDate)) {
+//            bootUpData();
+//            fillTheCalcFields();
+//            fillTheOi();
+//            fillTheNext();
+//            fillTheIndicators();
+//        }
+//        if(forDate.isAfter(latestDbDate))
+//            return null;
+//        else
+//            return minDate(forDate, forMinusDays);
+//    }
+
+    public Map<String, List<DeliverySpikeDto>> getRawDataBySymbol(LocalDate forDate, int forMinusDays) {
+        return getRawDataBySymbol(forDate, forMinusDays, null);
+    }
+    public Map<String, List<DeliverySpikeDto>> getRawDataBySymbol(LocalDate forDate, int forMinusDays, String forSymbol) {
+        Predicate<DeliverySpikeDto> predicate = initializeRawData(forDate, forMinusDays, forSymbol);
+        return predicate == null ? Collections.EMPTY_MAP : prepareDataBySymbol(predicate);
     }
 
-
-
-    public Map<String, List<DeliverySpikeDto>> getDataBySymbol(LocalDate forDate, int forMinusDays) {
-        return getDataBySymbol(forDate, forMinusDays, null);
+    public Map<String, List<DeliverySpikeDto>> getRichDataBySymbol(LocalDate forDate, int forMinusDays) {
+        return getRichDataBySymbol(forDate, forMinusDays, null);
     }
-    public Map<String, List<DeliverySpikeDto>> getDataBySymbol(LocalDate forDate, int forMinusDays, String forSymbol) {
+    public Map<String, List<DeliverySpikeDto>> getRichDataBySymbol(LocalDate forDate, int forMinusDays, String forSymbol) {
         Predicate<DeliverySpikeDto> predicate =  initializeData(forDate, forMinusDays, forSymbol);
         return predicate == null ? Collections.EMPTY_MAP : prepareDataBySymbol(predicate);
     }
 
-    public Map<LocalDate, Map<String, DeliverySpikeDto>> getDataByTradeDateAndSymbol(LocalDate forDate, int forMinusDays) {
-        return getDataByTradeDateAndSymbol(forDate, forMinusDays, null);
+    public Map<LocalDate, Map<String, DeliverySpikeDto>> getRichDataByTradeDateAndSymbol(LocalDate forDate, int forMinusDays) {
+        return getRichDataByTradeDateAndSymbol(forDate, forMinusDays, null);
     }
-    public Map<LocalDate, Map<String, DeliverySpikeDto>> getDataByTradeDateAndSymbol(LocalDate forDate, int forMinusDays, String forSymbol) {
+    public Map<LocalDate, Map<String, DeliverySpikeDto>> getRichDataByTradeDateAndSymbol(LocalDate forDate, int forMinusDays, String forSymbol) {
         Predicate<DeliverySpikeDto> predicate =  initializeData(forDate, forMinusDays, forSymbol);
         return predicate == null ? Collections.EMPTY_MAP : prepareDataByTradeDateAndSymbol(predicate);
     }
 
-    private Predicate<DeliverySpikeDto> initializeData(LocalDate forDate, int forMinusDays, String forSymbol) {
-        if(!tradeDateService.validateTradeDate(forDate)) return null;
+    private Predicate<DeliverySpikeDto> initializeRawData(LocalDate forDate, int forMinusDays, String forSymbol) {
+        if(!dateService.validateTradeDate(forDate)) return null;
         LocalDate latestNseDate = praFileUtils.getLatestNseDate();
         if(dbResults == null || latestNseDate.isAfter(latestDbDate)) {
             bootUpData();
+//            fillTheCalcFields();
+//            fillTheOi();
+//            fillTheNext();
+//            fillTheIndicators();
+        }
+        if(forDate.isAfter(latestDbDate))
+            return null;
+        else
+            return predicateIt(forDate, forMinusDays, forSymbol);
+    }
+
+    private Predicate<DeliverySpikeDto> initializeData(LocalDate forDate, int forMinusDays, String forSymbol) {
+        if(!dateService.validateTradeDate(forDate)) return null;
+        LocalDate latestNseDate = praFileUtils.getLatestNseDate();
+        if(dbResults == null || latestNseDate.isAfter(latestDbDate)) {
+            bootUpData();
+            isDataInRawState = true;
+        }
+        if (isDataInRawState) {
             fillTheCalcFields();
             fillTheOi();
             fillTheNext();
             fillTheIndicators();
+            isDataInRawState = false;
         }
         if(forDate.isAfter(latestDbDate))
             return null;
@@ -369,7 +395,6 @@ public class DataManager implements Manager {
         List<CalcMfiTab> oldMfiList = calcMfiRepository.findAll();
         ReportHelper.enrichMfi(oldMfiList, tradeDateAndSymbolMap);
 
-        BigDecimal HUNDRED = new BigDecimal(100);
         LocalDate backDate = null;
         DeliverySpikeDto backDto = null;
         BigDecimal onePercent = null;
@@ -388,14 +413,14 @@ public class DataManager implements Manager {
                 } else if (backDto.getAtpRsi() == null) {
                     LOGGER.warn("{} - AtpRsi is null for: {}", dto.getSymbol(), backDate);
                 } else {
-                    onePercent = backDto.getDelAtpMfi().divide(HUNDRED, 2, RoundingMode.HALF_UP);
+                    onePercent = backDto.getDelAtpMfi().divide(NumberUtils.HUNDRED, 2, RoundingMode.HALF_UP);
                     diff = dto.getDelAtpMfi().divide(onePercent, 2, RoundingMode.HALF_UP);
-                    chg = diff.subtract(HUNDRED);
+                    chg = diff.subtract(NumberUtils.HUNDRED);
                     dto.setDelAtpMfiChg(chg);
 
-                    onePercent = backDto.getAtpRsi().divide(HUNDRED, 2, RoundingMode.HALF_UP);
+                    onePercent = backDto.getAtpRsi().divide(NumberUtils.HUNDRED, 2, RoundingMode.HALF_UP);
                     diff = dto.getAtpRsi().divide(onePercent, 2, RoundingMode.HALF_UP);
-                    chg = diff.subtract(HUNDRED);
+                    chg = diff.subtract(NumberUtils.HUNDRED);
                     dto.setAtpRsiChg(chg);
                 }
             }
@@ -445,10 +470,6 @@ public class DataManager implements Manager {
                 })
                 .count();
         return localMap;
-    }
-
-    private void fillTheGrowth() {
-
     }
 
 }
