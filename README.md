@@ -39,5 +39,9 @@ rsi is weak
 stock is in falling trend in chart
 
 50pp
-pick only positive rsi chg
+pick only positive rsi chg by at least 1
 pick only above rsi 60
+
+find scrip which drops for 50p daily or rise by 50p daily
+
+find when mfi rise more then rsi, means scrip is going to rise
