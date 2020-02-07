@@ -14,7 +14,7 @@ public class ApCo {
     public static final LocalDate EMAIL_FROM_DATE = LocalDate.of(2020,2,1);
 
 
-    public static final boolean EMAIL_ENABLED = false;
+    public static final boolean EMAIL_ENABLED = true;
     public static final boolean EMAIL_ENABLED_FOR_MANISH = true;
     public static final boolean EMAIL_ENABLED_FOR_PRADEEP = true;
     public static final boolean EMAIL_ENABLED_FOR_SHUVI = false;
