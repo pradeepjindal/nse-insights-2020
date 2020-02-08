@@ -45,3 +45,8 @@ Tech Debt
 separate DeliverySpikeDto into ppfDto
 file validator - csv files and db dates
 data validator - csv rows and db rows
+
+
+sbi
+buy 2 rs down from open and 5 rs down from open
+sell 3 rs high from open

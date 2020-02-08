@@ -1,5 +1,6 @@
 package org.pra.nse.statistics;
 
+import org.pra.nse.refdata.RefData;
 import org.pra.nse.service.DataService;
 import org.pra.nse.db.dto.DeliverySpikeDto;
 import org.slf4j.Logger;
@@ -48,15 +49,21 @@ public class Statisian {
         BigDecimal swing = null;
         int rowCtr = 0;
         LOGGER.info("summarizeHalfPercentMinus");
+        String symbol = null;
+        long lotSize = 0L;
         for(List<DeliverySpikeDto> dtos:symbolMap.values()) {
-            if("INDUSINDBK".equals(dtos.get(0).getSymbol())) {
+
+            symbol = dtos.get(0).getSymbol();
+            lotSize = RefData.getLotSize(symbol);
+            if("INDUSINDBK".equals(symbol)) {
                 LOGGER.info("");
             }
             int oldRowCtr = rowCtr;
             float oldConditionMatched = conditionMatched;
             float oldProfitableTrades = profitableTrades;
+
             for(DeliverySpikeDto dto:dtos) {
-                if(dto.getNxtOptoHighPrcnt() == null) continue;
+                //if(dto.getNxtOptoHighPrcnt() == null) continue;
                 rowCtr++;
                 chg = dto.getOpen().subtract(dto.getLow());
                 halfPct = dto.getOpen().divide(TWO_HUNDRED, 2, RoundingMode.HALF_UP);
@@ -65,14 +72,19 @@ public class Statisian {
                 if(chg.compareTo(halfPct) == 1) {
                     profitableTrades++;
                 }
+//                else if( lotSize > 999 && chg.compareTo(BigDecimal.ONE) == 1) {
+//                    profitableTrades++;
+//                }
             }
-            LOGGER.info("");
-            LOGGER.info("symbol:{}", dtos.get(0).getSymbol());
-            LOGGER.info("total rows: {}", rowCtr - oldRowCtr);
-            LOGGER.info("condition matched: {}", conditionMatched - oldConditionMatched);
-            LOGGER.info("profitable trades: {}", profitableTrades - oldProfitableTrades);
             float pct = (profitableTrades-oldProfitableTrades) / ((conditionMatched-oldConditionMatched) / 100);
-            LOGGER.info("profitable percentage: {}", pct) ;
+            if(pct > 90) {
+                LOGGER.info("");
+                LOGGER.info("symbol:{}, lotsize: {}", symbol, lotSize);
+                LOGGER.info("total rows: {}", rowCtr - oldRowCtr);
+                LOGGER.info("condition matched: {}", conditionMatched - oldConditionMatched);
+                LOGGER.info("profitable trades: {}", profitableTrades - oldProfitableTrades);
+                LOGGER.info("profitable percentage: {}", pct);
+            }
         }
         LOGGER.info("total rows: {}", rowCtr);
         LOGGER.info("condition matched: {}", conditionMatched);

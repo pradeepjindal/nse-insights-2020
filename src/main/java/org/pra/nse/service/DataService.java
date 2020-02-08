@@ -112,10 +112,7 @@ public class DataService implements Manager {
         LocalDate latestNseDate = praFileUtils.getLatestNseDate();
         if(dbResults == null || latestNseDate.isAfter(latestDbDate)) {
             bootUpData();
-//            fillTheCalcFields();
-//            fillTheOi();
-//            fillTheNext();
-//            fillTheIndicators();
+            //backFill();
         }
         if(forDate.isAfter(latestDbDate))
             return null;
@@ -131,16 +128,20 @@ public class DataService implements Manager {
             isDataInRawState = true;
         }
         if (isDataInRawState) {
-            fillTheCalcFields();
-            fillTheOi();
-            fillTheNext();
-            fillTheIndicators();
+            backFill();
             isDataInRawState = false;
         }
         if(forDate.isAfter(latestDbDate))
             return null;
         else
             return predicateIt(forDate, forMinusDays, forSymbol);
+    }
+
+    private void backFill() {
+        fillTheCalcFields();
+        fillTheOi();
+        fillTheNext();
+        fillTheIndicators();
     }
 
     private Predicate<DeliverySpikeDto> predicateIt(LocalDate forDate, int forMinusDays, String forSymbol) {
