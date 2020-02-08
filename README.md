@@ -38,3 +38,10 @@ pick only above rsi 60
 find when mfi rise more then rsi, means scrip is going to rise
 
 find scrip which drops for 50p daily or rise by 50p daily
+
+3day continue fall report, 3day continue rise report
+
+Tech Debt
+separate DeliverySpikeDto into ppfDto
+file validator - csv files and db dates
+data validator - csv rows and db rows

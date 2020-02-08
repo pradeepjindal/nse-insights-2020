@@ -179,6 +179,7 @@ public class DataService implements Manager {
 
         dbResults.forEach( row-> {
             row.setBackDate(backDateMap.get(row.getTradeDate()));
+            row.setNextDate(nextDateMap.get(row.getTradeDate()));
         });
     }
 
@@ -245,28 +246,28 @@ public class DataService implements Manager {
         for(DeliverySpikeDto row:dbResults) {
             //ohlc
             ohlcSum = row.getOpen().add(row.getHigh()).add(row.getLow()).add(row.getClose());
-            row.setOhlc(ohlcSum.divide(FOUR, 2, RoundingMode.HALF_UP));
+            row.setOhlc(NumberUtils.divide(ohlcSum, FOUR));
             //hlm
             diff = row.getHigh().subtract(row.getLow());
-            highLowDiffByHalf = diff.divide(TWO, 2, RoundingMode.HALF_UP);
+            highLowDiffByHalf = NumberUtils.divide(diff, TWO);
             row.setHighLowMid(row.getLow().add(highLowDiffByHalf));
             //hlp
-            onePercent = row.getOpen().divide(HUNDRED, 2, RoundingMode.HALF_UP);
-            row.setHighLowPct(diff.divide(onePercent, 2, RoundingMode.HALF_UP));
+            onePercent = NumberUtils.onePercent(row.getOpen());
+            row.setHighLowPct(NumberUtils.divide(diff, onePercent));
             //closeToLastPct
 
             if(row.getLast().compareTo(row.getClose()) == 1) {
                 biggerValue = row.getLast();
                 smallerValue = row.getClose();
-                    onePercent = smallerValue.divide(HUNDRED, 2, RoundingMode.HALF_UP);
+                    onePercent = NumberUtils.onePercent(smallerValue);
                     diff = biggerValue.subtract(smallerValue);
-                    row.setCloseToLastPercent(diff.divide(onePercent, 2, RoundingMode.HALF_UP));
+                    row.setCloseToLastPercent(NumberUtils.divide(diff, onePercent));
             } else if (row.getClose().compareTo(row.getLast()) == 1) {
                 biggerValue = row.getLast();
                 smallerValue = row.getClose();
-                    onePercent = smallerValue.divide(HUNDRED, 2, RoundingMode.HALF_UP);
+                    onePercent = NumberUtils.onePercent(smallerValue);
                     diff = biggerValue.subtract(smallerValue);
-                    row.setCloseToLastPercent(diff.divide(onePercent, 2, RoundingMode.HALF_UP));
+                    row.setCloseToLastPercent(NumberUtils.divide(diff, onePercent));
             } else {
                 row.setCloseToLastPercent(BigDecimal.ZERO);
             }
@@ -311,13 +312,33 @@ public class DataService implements Manager {
 
     private void fillTheNext() {
         LOGGER.info("DataManager - fillTheNext");
+        Predicate<DeliverySpikeDto> predicate = dto -> true;
+        Map<LocalDate, Map<String, DeliverySpikeDto>> tradeDateAndSymbolMap = prepareDataByTradeDateAndSymbol(predicate);
+        for(DeliverySpikeDto dto:dbResults) {
+            LocalDate nextDate = nextDateMap.get(dto.getTradeDate());
+            //if(nextDate.compareTo(latestDbDate) == 1) continue;
+            if(nextDate == null) continue;
+            DeliverySpikeDto nextDto = tradeDateAndSymbolMap.get(nextDate).get(dto.getSymbol());
+            if (nextDto == null) {
+                LOGGER.warn("{} - no next data for: {} (may be symbol has phased out of fno)", dto.getSymbol(), nextDate);
+            } else {
+                dto.setNxtCloseToOpenPercent(nextDto.getCloseToOpenPercent());
+                dto.setNxtOptoHighPrcnt(nextDto.getOthighPrcnt());
+                dto.setNxtOptoLowPrcnt(nextDto.getOtlowPrcnt());
+                dto.setNxtOptoAtpPrcnt(nextDto.getOtatpPrcnt());
+            }
+        }
+    }
+
+    private void fillTheNextOld() {
+        LOGGER.info("DataManager - fillTheNext");
         LocalDate minDate = minDate(latestDbDate, 20);
         Predicate<DeliverySpikeDto> predicate = dto -> filterDate(dto, minDate, latestDbDate);
         Map<LocalDate, Map<String, DeliverySpikeDto>> tradeDateAndSymbolMap = prepareDataByTradeDateAndSymbol(predicate);
         //TODO use tradeDateAndSymbolMap instead of dbResults BUT dbResults keep the order while map not
-        long ctr = dbResults.stream().filter( row -> row.getTradeDate().isAfter(tradeDates_Desc_LinkedList.get(20))
-                && row.getTradeDate().isBefore(tradeDates_Desc_LinkedList.get(0))
-        )
+        long ctr = dbResults.stream()
+                .filter( row -> row.getTradeDate().isAfter(tradeDates_Desc_LinkedList.get(20))
+                && row.getTradeDate().isBefore(tradeDates_Desc_LinkedList.get(0)))
                 .map( filteredRow -> {
                     LocalDate nextDate = nextDateMap.get(filteredRow.getTradeDate());
                     DeliverySpikeDto nextDto = tradeDateAndSymbolMap.get(nextDate).get(filteredRow.getSymbol());

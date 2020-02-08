@@ -58,14 +58,19 @@ public class RsiCalcUploader extends BaseUploader {
 
         //
         int dataCtr = dao.dataCount(forDate);
-        List<RsiBean> beans = calculator.calculateAndReturn(forDate);
+//        List<RsiBean> beans = calculator.calculateAndReturn(forDate);
+//        if (dataCtr == 0) {
+//            LOGGER.info("{} upload | uploading | for date:[{}]", calc_name, forDate);
+//            upload(beans);
+//        } else if (dataCtr == beans.size()) {
+//            LOGGER.info("{} | upload skipped, already uploaded", calc_name);
+//        } else {
+//            LOGGER.warn("{} | upload skipped, discrepancy in data dbRecords={}, dtoSize={}", calc_name, dataCtr, beans.size());
+//        }
         if (dataCtr == 0) {
             LOGGER.info("{} upload | uploading | for date:[{}]", calc_name, forDate);
+            List<RsiBean> beans = calculator.calculateAndReturn(forDate);
             upload(beans);
-        } else if (dataCtr == beans.size()) {
-            LOGGER.info("{} | upload skipped, already uploaded", calc_name);
-        } else {
-            LOGGER.warn("{} | upload skipped, discrepancy in data dbRecords={}, dtoSize={}", calc_name, dataCtr, beans.size());
         }
     }
 
