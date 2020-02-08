@@ -51,11 +51,11 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-aop</artifactId>
 		</dependency>
-        <dependency>
-            <groupId>org.fusesource.jansi</groupId>
-            <artifactId>jansi</artifactId>
-            <version>1.18</version>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>org.fusesource.jansi</groupId>-->
+<!--            <artifactId>jansi</artifactId>-->
+<!--            <version>1.18</version>-->
+<!--        </dependency>-->
 
 		<dependency>
 			<groupId>systems.manifold</groupId>
@@ -108,11 +108,11 @@
             <version>2.4.0</version>
         </dependency>
 
-		<dependency>
-			<groupId>org.simpleflatmapper</groupId>
-			<artifactId>sfm-csv</artifactId>
-			<version>8.2.1</version>
-		</dependency>
+<!--		<dependency>-->
+<!--			<groupId>org.simpleflatmapper</groupId>-->
+<!--			<artifactId>sfm-csv</artifactId>-->
+<!--			<version>8.2.1</version>-->
+<!--		</dependency>-->
 
 		<!-- jpa, crud repository -->
 		<dependency>
@@ -128,12 +128,6 @@
 		</dependency>
 
 
-<!--		<dependency>-->
-<!--			<groupId>org.teiid</groupId>-->
-<!--			<artifactId>teiid-spring-boot-starter</artifactId>-->
-<!--			<version>1.3.0</version>-->
-<!--		</dependency>-->
-<!--		<dependency>-->
 <!--			<groupId>com.h2database</groupId>-->
 <!--			<artifactId>h2</artifactId>-->
 <!--			<scope>runtime</scope>-->

@@ -1,6 +1,6 @@
 package org.pra.nse;
 
-import org.fusesource.jansi.AnsiConsole;
+//import org.fusesource.jansi.AnsiConsole;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
@@ -11,7 +11,7 @@ public class NseApplication {
 	private static final Logger LOGGER = LoggerFactory.getLogger(NseApplication.class);
 
 	public static void main(String[] args) {
-		AnsiConsole.systemInstall();
+		//AnsiConsole.systemInstall();
 
 		SpringApplication.run(NseApplication.class, args);
 
@@ -24,6 +24,6 @@ public class NseApplication {
 		LOGGER.info(System.getProperty("user.home"));
 		LOGGER.info(System.getProperty("user.dir"));
 
-		AnsiConsole.systemUninstall();
+		//AnsiConsole.systemUninstall();
 	}
 }

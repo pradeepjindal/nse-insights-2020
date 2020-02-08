@@ -50,3 +50,13 @@ data validator - csv rows and db rows
 sbi
 buy 2 rs down from open and 5 rs down from open
 sell 3 rs high from open
+
+
+Design
+favor composition over inheritance
+
+Scala has support for Mixins as well. In Scala those are called Traits. 
+Traits are Mixins just with some slightly different properties from a programming language designers point of view 
+like Mixins require linearization while Traits are flattened and Traits traditionally don’t contain states. 
+But that shouldn’t worry you too much. For the sake of simplicity we can say Mixins and Traits are the same.
+Ruby's Mixins and Scala's Traits support state and behavior, while Java and Kotlin's interfaces only support behavior.
