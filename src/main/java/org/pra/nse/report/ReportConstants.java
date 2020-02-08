@@ -31,7 +31,7 @@ public class ReportConstants {
 //            "calcFoiFixGrowth,calcFoiDynGrowth,foiChgPct," +
                     "calcAtpFixGrowth,atpChgPct," +
                     "calcVolFixGrowth,volChgPct," +
-                    "delTally,calcDelFixGrowth,delChgPct," +
+                    "sumDel,calcDelFixGrowth,delChgPct," +
                     "calcFoiFixGrowth,foiChgPct," +
 
             "premium,openingBell," +

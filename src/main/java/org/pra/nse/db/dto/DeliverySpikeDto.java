@@ -7,6 +7,7 @@ public class DeliverySpikeDto {
     private String symbol;
     private LocalDate tradeDate;
     private LocalDate backDate;
+    private LocalDate nextDate;
 
     private BigDecimal previousClose;
     private BigDecimal open;
@@ -657,6 +658,14 @@ public class DeliverySpikeDto {
 
     public void setBackDate(LocalDate backDate) {
         this.backDate = backDate;
+    }
+
+    public LocalDate getNextDate() {
+        return nextDate;
+    }
+
+    public void setNextDate(LocalDate nextDate) {
+        this.nextDate = nextDate;
     }
 
     public BigDecimal getDelAtpMfiChg() {

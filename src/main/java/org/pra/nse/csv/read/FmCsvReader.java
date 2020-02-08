@@ -68,7 +68,7 @@ public class FmCsvReader {
             MappingIterator<FmBean> it = mapper.readerFor(FmBean.class).with(schema).readValues(csvFile);
             //return it.readAll();
             beans = new ArrayList<>();
-            LOGGER.warn("OPTIDX and OPTSTK are disbled, hence would be loaded");
+            LOGGER.warn("OPTIDX and OPTSTK are disbled, hence would not be loaded");
             while (it.hasNextValue()) {
                 FmBean fmBean = it.nextValue();
                 if("FUTSTK".equals(fmBean.getInstrument().trim()) || "FUTIDX".equals(fmBean.getInstrument().trim())) {

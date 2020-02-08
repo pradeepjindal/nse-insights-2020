@@ -1,7 +1,7 @@
 package org.pra.nse.db.upload;
 
 import org.pra.nse.ApCo;
-import org.pra.nse.NseCo;
+import org.pra.nse.NseCons;
 import org.pra.nse.csv.bean.in.FmBean;
 import org.pra.nse.csv.read.FmCsvReader;
 import org.pra.nse.db.dao.nse.FutureMarketDao;
@@ -40,7 +40,7 @@ public class FutureMarketUploader extends BaseUploader {
                                 NseFileUtils nseFileUtils,
                                 PraFileUtils praFileUtils,
                                 FmCsvReader fmCsvReader) {
-        super(praFileUtils, NseCo.FM_DIR_NAME, ApCo.PRA_FM_FILE_PREFIX);
+        super(praFileUtils, NseCons.FM_DIR_NAME, ApCo.PRA_FM_FILE_PREFIX);
         this.futureMarketRepository = nseFutureMarketRepository;
         this.optionMarketRepository = nseOptionMarketRepository;
         this.dao = futureMarketDao;
@@ -58,11 +58,11 @@ public class FutureMarketUploader extends BaseUploader {
             LOGGER.info("FM-upload | uploading | for date:[{}]", forDate);
         }
 
-        String fromFile = NseCo.FM_FILES_PATH + File.separator+ ApCo.PRA_FM_FILE_PREFIX +forDate+ ApCo.REPORTS_FILE_EXT;
+        String fromFile = NseCons.FM_FILES_PATH + File.separator+ ApCo.PRA_FM_FILE_PREFIX +forDate+ ApCo.DATA_FILE_EXT;
         //LOGGER.info("FM-upload | looking for file Name along with path:[{}]",fromFile);
 
         if(!nseFileUtils.isFileExist(fromFile)) {
-            LOGGER.info("FM-upload | file does not exist: [{}]", fromFile);
+            LOGGER.warn("FM-upload | file does not exist: [{}]", fromFile);
             return;
         }
         Map<FmBean, FmBean> foBeanMap = csvReader.read(null, fromFile);

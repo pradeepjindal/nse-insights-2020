@@ -9,9 +9,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
-import static org.pra.nse.calculation.CalcCons.RSI_DATA_FILE_PREFIX;
-import static org.pra.nse.calculation.CalcCons.MFI_DATA_FILE_PREFIX;
-import static org.pra.nse.calculation.CalcCons.AVG_DATA_FILE_PREFIX;
+import static org.pra.nse.calculation.CalcCons.RSI_FILE_PREFIX;
+import static org.pra.nse.calculation.CalcCons.MFI_FILE_PREFIX;
+import static org.pra.nse.calculation.CalcCons.AVG_FILE_PREFIX;
 
 @Component
 public class CalculationManager implements Manager {
@@ -46,10 +46,10 @@ public class CalculationManager implements Manager {
 
         //Map<String, List<DeliverySpikeDto>> symbolMap = dataManager.getLatest10DataBySymbol();
 
-        nseFileUtils.getDatesToBeComputed(()-> AVG_DATA_FILE_PREFIX, ApCo.AVG_DIR_NAME, ApCo.CALC_FROM_DATE)
+        nseFileUtils.getDatesToBeComputed(()-> AVG_FILE_PREFIX, ApCo.AVG_DIR_NAME, ApCo.CALC_FROM_DATE)
                 .forEach( forDate -> {
                     LOGGER.info(".");
-                    LOGGER.info("calc-{} | for:{}", AVG_DATA_FILE_PREFIX, forDate.toString());
+                    LOGGER.info("calc-{} | for:{}", AVG_FILE_PREFIX, forDate.toString());
                     try {
                         avgCalculator.calculateAndSave(forDate);
                     } catch (Exception e) {
@@ -58,10 +58,10 @@ public class CalculationManager implements Manager {
                 });
 
         LOGGER.info("----------");
-        nseFileUtils.getDatesToBeComputed(()-> RSI_DATA_FILE_PREFIX, ApCo.RSI_DIR_NAME, ApCo.CALC_FROM_DATE)
+        nseFileUtils.getDatesToBeComputed(()-> RSI_FILE_PREFIX, ApCo.RSI_DIR_NAME, ApCo.CALC_FROM_DATE)
                 .forEach( forDate -> {
                     LOGGER.info(".");
-                    LOGGER.info("calc-{} | for:{}", RSI_DATA_FILE_PREFIX, forDate.toString());
+                    LOGGER.info("calc-{} | for:{}", RSI_FILE_PREFIX, forDate.toString());
                     try {
                         rsiCalculator.calculateAndSave(forDate);
                     } catch (Exception e) {
@@ -70,10 +70,10 @@ public class CalculationManager implements Manager {
                 });
 
         LOGGER.info("----------");
-        nseFileUtils.getDatesToBeComputed(()-> MFI_DATA_FILE_PREFIX, ApCo.MFI_DIR_NAME, ApCo.CALC_FROM_DATE)
+        nseFileUtils.getDatesToBeComputed(()-> MFI_FILE_PREFIX, ApCo.MFI_DIR_NAME, ApCo.CALC_FROM_DATE)
                 .forEach( forDate -> {
                     LOGGER.info(".");
-                    LOGGER.info("calc-{} | for:{}", MFI_DATA_FILE_PREFIX, forDate.toString());
+                    LOGGER.info("calc-{} | for:{}", MFI_FILE_PREFIX, forDate.toString());
                     try {
                         mfiCalculator.calculateAndSave(forDate);
                     } catch (Exception e) {

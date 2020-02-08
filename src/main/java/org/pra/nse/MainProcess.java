@@ -3,7 +3,8 @@ package org.pra.nse;
 import org.pra.nse.calculation.CalculationManager;
 import org.pra.nse.csv.download.DownloadManager;
 import org.pra.nse.csv.transformation.TransformationManager;
-import org.pra.nse.db.upload.UploadManager;
+import org.pra.nse.db.upload.CalcUploadManager;
+import org.pra.nse.db.upload.NseUploadManager;
 import org.pra.nse.processor.*;
 import org.pra.nse.report.ReportManager;
 import org.pra.nse.util.DirUtils;
@@ -22,23 +23,25 @@ public class MainProcess implements ApplicationRunner {
 
     private final DownloadManager downloadManager;
     private final TransformationManager transformationManager;
-    private final UploadManager uploadManager;
+    private final NseUploadManager nseUploadManager;
     private final CalculationManager calculationManager;
+    private final CalcUploadManager calcUploadManager;
     private final ProcessManager processManager;
     private final ReportManager reportManager;
 
     public MainProcess(PraFileUtils praFileUtils,
                        DownloadManager downloadManager,
                        TransformationManager transformationManager,
-                       UploadManager uploadManager,
+                       NseUploadManager nseUploadManager,
                        CalculationManager calculationManager,
-                       ProcessManager processManager,
+                       CalcUploadManager calcUploadManager, ProcessManager processManager,
                        ReportManager reportManager) {
         this.praFileUtils = praFileUtils;
         this.downloadManager = downloadManager;
         this.transformationManager = transformationManager;
-        this.uploadManager = uploadManager;
+        this.nseUploadManager = nseUploadManager;
         this.calculationManager = calculationManager;
+        this.calcUploadManager = calcUploadManager;
         this.processManager = processManager;
         this.reportManager = reportManager;
     }
@@ -52,9 +55,10 @@ public class MainProcess implements ApplicationRunner {
             DirUtils.createRootFolder();
             downloadManager.execute();
             transformationManager.execute();
-            uploadManager.execute();
+            nseUploadManager.execute();
             if(praFileUtils.validateDownload() != null) {
                 calculationManager.execute();
+                calcUploadManager.execute();
                 processManager.execute();
                 reportManager.execute();
             }

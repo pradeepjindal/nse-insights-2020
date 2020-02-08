@@ -1,7 +1,7 @@
 package org.pra.nse.csv.transformation;
 
 import org.pra.nse.ApCo;
-import org.pra.nse.NseCo;
+import org.pra.nse.NseCons;
 import org.pra.nse.util.DateUtils;
 import org.pra.nse.util.NseFileUtils;
 import org.pra.nse.util.PraFileUtils;
@@ -19,7 +19,7 @@ import java.util.Map;
 public class FmTransformer extends BaseTransformer {
     private static final Logger LOGGER = LoggerFactory.getLogger(FmTransformer.class);
 
-    private final String Data_Dir = ApCo.ROOT_DIR + File.separator + NseCo.FM_DIR_NAME;
+    private final String Data_Dir = ApCo.ROOT_DIR + File.separator + NseCons.FM_DIR_NAME;
 
 
     public FmTransformer(TransformationHelper transformationHelper, NseFileUtils nseFileUtils, PraFileUtils praFileUtils) {
@@ -46,9 +46,9 @@ public class FmTransformer extends BaseTransformer {
     private Map<String, String> prepare(LocalDate fromDate) {
         List<String> sourceFileNames = nseFileUtils.constructFileNames(
                             fromDate,
-                            NseCo.NSE_FM_FILE_NAME_DATE_FORMAT,
-                            NseCo.NSE_FM_FILE_PREFIX,
-                    NseCo.NSE_FM_FILE_SUFFIX + NseCo.NSE_FM_FILE_EXT);
+                            NseCons.NSE_FM_FILE_NAME_DATE_FORMAT,
+                            NseCons.NSE_FM_FILE_PREFIX,
+                    NseCons.NSE_FM_FILE_SUFFIX + NseCons.NSE_FM_FILE_EXT);
         //filesToBeDownloaded.removeAll(nseFileUtils.fetchFileNames(dataDir, null, null));
         //
         Map<String, String> filePairMap = new HashMap<>();
@@ -60,7 +60,7 @@ public class FmTransformer extends BaseTransformer {
 //            filePairMap.put(sourceFileName, targetFileName);
 //        });
         filePairMap = TransformationHelper.prepareFileNames(sourceFileNames,
-                NseCo.NSE_FM_FILE_NAME_DATE_REGEX, NseCo.NSE_FM_FILE_NAME_DATE_FORMAT,
+                NseCons.NSE_FM_FILE_NAME_DATE_REGEX, NseCons.NSE_FM_FILE_NAME_DATE_FORMAT,
                 ApCo.PRA_FM_FILE_PREFIX, ApCo.REPORTS_FILE_EXT, ApCo.yyyyMMdd_DTF);
         return filePairMap;
     }

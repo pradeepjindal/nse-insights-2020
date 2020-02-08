@@ -5,20 +5,17 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
-import java.time.LocalDate;
-
 @Component
-public class UploadManager implements Manager {
-    private static final Logger LOGGER = LoggerFactory.getLogger(UploadManager.class);
+public class NseUploadManager implements Manager {
+    private static final Logger LOGGER = LoggerFactory.getLogger(NseUploadManager.class);
 
     private final CashMarketUploader cashMarketUploader;
     private final FutureMarketUploader futureMarketUploader;
     private final DeliveryMarketUploader deliveryMarketUploader;
-    //private final BpDownloader bpDownloader;
 
-    public UploadManager(CashMarketUploader cashMarketUploader,
-                         FutureMarketUploader futureMarketUploader,
-                         DeliveryMarketUploader deliveryMarketUploader) {
+    public NseUploadManager(CashMarketUploader cashMarketUploader,
+                            FutureMarketUploader futureMarketUploader,
+                            DeliveryMarketUploader deliveryMarketUploader) {
         this.cashMarketUploader = cashMarketUploader;
         this.futureMarketUploader = futureMarketUploader;
         this.deliveryMarketUploader = deliveryMarketUploader;
@@ -27,7 +24,7 @@ public class UploadManager implements Manager {
     @Override
     public void execute() {
         LOGGER.info(".");
-        LOGGER.info("____________________ Upload Manager");
+        LOGGER.info("____________________ NSE - Upload Manager");
 
         cashMarketUploader.uploadFromLastDate();
         LOGGER.info("----------");
@@ -41,7 +38,7 @@ public class UploadManager implements Manager {
 //        LOGGER.info("----------");
 //        deliveryMarketUploader.uploadFromDefaultDate();
 
-        LOGGER.info("======================================== Upload Manager");
+        LOGGER.info("======================================== NSE - Upload Manager");
     }
 
 

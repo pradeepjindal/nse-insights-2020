@@ -1,7 +1,7 @@
 package org.pra.nse.db.upload;
 
 import org.pra.nse.ApCo;
-import org.pra.nse.NseCo;
+import org.pra.nse.NseCons;
 import org.pra.nse.csv.bean.in.CmBean;
 import org.pra.nse.csv.read.CmCsvReader;
 import org.pra.nse.db.dao.nse.CashMarketDao;
@@ -36,7 +36,7 @@ public class CashMarketUploader extends BaseUploader {
                               NseFileUtils nseFileUtils,
                               PraFileUtils praFileUtils,
                               CmCsvReader cmCsvReader ) {
-        super(praFileUtils, NseCo.CM_DIR_NAME, ApCo.PRA_CM_FILE_PREFIX);
+        super(praFileUtils, NseCons.CM_DIR_NAME, ApCo.PRA_CM_FILE_PREFIX);
         this.repository = nseCashMarketRepository;
         this.dao = cashMarketDao;
         this.nseFileUtils = nseFileUtils;
@@ -54,11 +54,11 @@ public class CashMarketUploader extends BaseUploader {
             LOGGER.info("CM-upload | uploading | for date:[{}]", forDate);
         }
 
-        String fromFile = NseCo.CM_FILES_PATH + File.separator+ ApCo.PRA_CM_FILE_PREFIX +forDate+ ApCo.REPORTS_FILE_EXT;
+        String fromFile = NseCons.CM_FILES_PATH + File.separator+ ApCo.PRA_CM_FILE_PREFIX +forDate+ ApCo.DATA_FILE_EXT;
         //LOGGER.info("CM-upload | looking for file Name along with path:[{}]",fromFile);
 
         if(!nseFileUtils.isFileExist(fromFile)) {
-            LOGGER.info("CM-upload | file does not exist: [{}]", fromFile);
+            LOGGER.warn("CM-upload | file does not exist: [{}]", fromFile);
             return;
         }
         Map<String, CmBean> latestBeanMap = csvReader.read(fromFile);

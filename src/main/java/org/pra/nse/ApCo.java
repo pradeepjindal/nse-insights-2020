@@ -9,8 +9,9 @@ public class ApCo {
 
     public static final LocalTime DAILY_DOWNLOAD_TIME = LocalTime.of(18,0,0,0);
     public static final LocalDate DOWNLOAD_FROM_DATE = LocalDate.of(2020,2,1);
+    public static final LocalDate UPLOAD_FROM_DATE = DOWNLOAD_FROM_DATE;
     public static final LocalDate REPORTS_FROM_DATE = LocalDate.of(2020,2,1);
-    public static final LocalDate CALC_FROM_DATE = LocalDate.of(2020,2,1);
+    public static final LocalDate CALC_FROM_DATE = LocalDate.of(2020,2,7);
     public static final LocalDate EMAIL_FROM_DATE = LocalDate.of(2020,2,1);
 
 

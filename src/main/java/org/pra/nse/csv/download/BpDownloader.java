@@ -1,7 +1,7 @@
 package org.pra.nse.csv.download;
 
 import org.pra.nse.ApCo;
-import org.pra.nse.NseCo;
+import org.pra.nse.NseCons;
 import org.pra.nse.util.DateUtils;
 import org.pra.nse.util.NseFileUtils;
 import org.pra.nse.util.PraFileUtils;
@@ -25,13 +25,13 @@ import java.util.stream.Stream;
 public class BpDownloader {
     private static final Logger LOGGER = LoggerFactory.getLogger(BpDownloader.class);
 
-    private final String Base_Url = NseCo.BP_BASE_URL;
-    private final String Data_Dir = ApCo.ROOT_DIR + File.separator + NseCo.BP_DIR_NAME;
-    private final String File_Prefix = NseCo.NSE_BP_FILE_PREFIX;
-    private final String File_Suffix = NseCo.NSE_BP_FILE_SUFFIX;
-    private final String File_Ext = NseCo.NSE_BP_FILE_EXT;
-    private final String File_Date_Regex = NseCo.NSE_BP_FILE_NAME_DATE_REGEX;
-    private final String File_Date_Format = NseCo.NSE_BP_FILE_NAME_DATE_FORMAT;
+    private final String Base_Url = NseCons.BP_BASE_URL;
+    private final String Data_Dir = ApCo.ROOT_DIR + File.separator + NseCons.BP_DIR_NAME;
+    private final String File_Prefix = NseCons.NSE_BP_FILE_PREFIX;
+    private final String File_Suffix = NseCons.NSE_BP_FILE_SUFFIX;
+    private final String File_Ext = NseCons.NSE_BP_FILE_EXT;
+    private final String File_Date_Regex = NseCons.NSE_BP_FILE_NAME_DATE_REGEX;
+    private final String File_Date_Format = NseCons.NSE_BP_FILE_NAME_DATE_FORMAT;
     //private final DateTimeFormatter File_Date_Dtf = ApCo.BP_FILE_NAME_DTF;
     private final String Data_Date_Regex = null;
     private final String Data_Date_Format = null;
@@ -112,7 +112,7 @@ public class BpDownloader {
         String csvFileName = ApCo.PRA_BP_FILE_PREFIX
                 + DateUtils.transformDate(downloadedDirAndFileName.substring(firstIndex+1, firstIndex+9))
                 + ApCo.REPORTS_FILE_EXT;
-        String toFile = ApCo.ROOT_DIR + File.separator + NseCo.BP_DIR_NAME + File.separator + csvFileName;
+        String toFile = ApCo.ROOT_DIR + File.separator + NseCons.BP_DIR_NAME + File.separator + csvFileName;
         AtomicInteger atomicInteger = new AtomicInteger();
         File csvOutputFile = new File(toFile);
         try (PrintWriter pw = new PrintWriter(csvOutputFile)) {

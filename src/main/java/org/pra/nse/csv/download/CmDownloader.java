@@ -1,7 +1,7 @@
 package org.pra.nse.csv.download;
 
 import org.pra.nse.ApCo;
-import org.pra.nse.NseCo;
+import org.pra.nse.NseCons;
 import org.pra.nse.util.DateUtils;
 import org.pra.nse.util.NseFileUtils;
 import org.pra.nse.util.PraFileUtils;
@@ -18,14 +18,14 @@ import java.util.List;
 public class CmDownloader {
     private static final Logger LOGGER = LoggerFactory.getLogger(CmDownloader.class);
 
-    private final String Base_Url = NseCo.CM_BASE_URL;
-    private final String Data_Dir = ApCo.ROOT_DIR + File.separator + NseCo.CM_DIR_NAME;
-    private final String File_Prefix = NseCo.NSE_CM_FILE_PREFIX;
-    private final String File_Suffix = NseCo.NSE_CM_FILE_SUFFIX;
-    private final String File_Ext = NseCo.NSE_CM_FILE_EXT;
-    private final String File_Date_Regex = NseCo.NSE_CM_FILE_NAME_DATE_REGEX;
-    private final String File_Date_Format = NseCo.NSE_CM_FILE_NAME_DATE_FORMAT;
-    private final DateTimeFormatter File_Date_Dtf = NseCo.CM_FILE_NAME_DTF;
+    private final String Base_Url = NseCons.CM_BASE_URL;
+    private final String Data_Dir = ApCo.ROOT_DIR + File.separator + NseCons.CM_DIR_NAME;
+    private final String File_Prefix = NseCons.NSE_CM_FILE_PREFIX;
+    private final String File_Suffix = NseCons.NSE_CM_FILE_SUFFIX;
+    private final String File_Ext = NseCons.NSE_CM_FILE_EXT;
+    private final String File_Date_Regex = NseCons.NSE_CM_FILE_NAME_DATE_REGEX;
+    private final String File_Date_Format = NseCons.NSE_CM_FILE_NAME_DATE_FORMAT;
+    private final DateTimeFormatter File_Date_Dtf = NseCons.CM_FILE_NAME_DTF;
     private final String Data_Date_Regex = null;
     private final String Data_Date_Format = null;
     private final DateTimeFormatter Data_Date_Dtf = null;

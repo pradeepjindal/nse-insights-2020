@@ -112,7 +112,7 @@ public class ReportManager implements Manager {
         pastPresentFutureReport.reportFromLast(20);
 
         //
-        //statisian.stats(LocalDate.of(2020, 2, 4), 10);
+        //statisian.stats(LocalDate.of(2020, 2, 5), 10);
 
         LOGGER.info("======================================== Report Manager");
     }

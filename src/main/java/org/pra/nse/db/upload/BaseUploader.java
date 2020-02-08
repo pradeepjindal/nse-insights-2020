@@ -25,7 +25,7 @@ public abstract class BaseUploader {
 
 
     public void uploadFromDefaultDate() {
-        uploadFromDate(ApCo.DOWNLOAD_FROM_DATE);
+        uploadFromDate(ApCo.UPLOAD_FROM_DATE);
     }
     public void uploadFromDate(LocalDate fromDate) {
         looper(fromDate);
@@ -33,7 +33,7 @@ public abstract class BaseUploader {
 
     public void uploadFromLastDate() {
         String dataDir = ApCo.ROOT_DIR + File.separator + fileDirName;
-        String str = praFileUtils.getLatestFileNameFor(dataDir, filePrefix, ApCo.REPORTS_FILE_EXT, 1);
+        String str = praFileUtils.getLatestFileNameFor(dataDir, filePrefix, ApCo.DATA_FILE_EXT, 1);
         LocalDate dt = str == null ? LocalDate.now() : DateUtils.getLocalDateFromPath(str);
         looper(dt);
     }

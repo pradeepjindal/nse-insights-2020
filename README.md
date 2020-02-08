@@ -6,8 +6,6 @@ ToDo
 generate a FILTERED delivery spike report separately
 generate a FILTERED oi spike report separately
 
-add volumeSum, deliverySum columns
-
 add VDR
 
 add open = low
@@ -37,6 +35,6 @@ stock is in falling trend in chart
 pick only positive rsi chg by at least 1
 pick only above rsi 60
 
-find scrip which drops for 50p daily or rise by 50p daily
-
 find when mfi rise more then rsi, means scrip is going to rise
+
+find scrip which drops for 50p daily or rise by 50p daily

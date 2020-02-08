@@ -18,18 +18,16 @@ import java.io.File;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
-
-import static org.pra.nse.calculation.CalcCons.*;
 
 @Component
 public class RsiCalculatorNew {
     private static final Logger LOGGER = LoggerFactory.getLogger(RsiCalculatorNew.class);
+
+    private final String calc_name = CalcCons.RSI_FILE_PREFIX;
+    private final String csv_header = CalcCons.RSI_CSV_HEADER;
 
     private final String computeFolderName = ApCo.RSI_DIR_NAME;
 
@@ -48,34 +46,63 @@ public class RsiCalculatorNew {
         this.dataService = dataService;
     }
 
-    public void calculateAndSave(LocalDate forDate) {
-        LocalDate latestNseDate = praFileUtils.getLatestNseDate();
-        if(forDate.isAfter(latestNseDate)) return;
 
-//        String fileName = RSI_DATA_FILE_PREFIX + forDate.toString() + ApCo.DATA_FILE_EXT;
-//        String computFilePath = ApCo.ROOT_DIR +File.separator+ computeFolderName +File.separator+ fileName;
+    public List<RsiBean> calculateAndReturn(LocalDate forDate) {
+        Map<String, RsiBean> beansMap = prepareData(forDate);
+        List<CalcBean> calcBeanList = new ArrayList<>();
+        List<RsiBean> rsiBeanList = new ArrayList<>();
+        beansMap.values().forEach( bean -> {
+            calcBeanList.add(bean);
+            rsiBeanList.add(bean);
+        });
+        if(CalcHelper.validateForSaving(forDate, calcBeanList, calc_name)) {
+            return rsiBeanList;
+        } else {
+            return Collections.emptyList();
+        }
+    }
+
+    public void calculateAndSave(LocalDate forDate) {
         String computeFilePath = getComputeOutputPath(forDate);
-        LOGGER.info("{} | for:{}", RSI_DATA_FILE_PREFIX, forDate.toString());
+        LOGGER.info("{} | for:{}", calc_name, forDate.toString());
         if(nseFileUtils.isFileExist(computeFilePath)) {
-            LOGGER.warn("{} already present (calculation and saving would be skipped): {}", RSI_DATA_FILE_PREFIX, computeFilePath);
+            LOGGER.warn("{} already present (calculation and saving would be skipped): {}", calc_name, computeFilePath);
             return;
         }
 
-        LOGGER.info("{} calculating for 20 days", RSI_DATA_FILE_PREFIX);
+        Map<String, RsiBean> beansMap = prepareData(forDate);
+        List<CalcBean> calcBeanList = new ArrayList<>();
+        List<RsiBean> rsiBeanList = new ArrayList<>();
+        beansMap.values().forEach( bean -> {
+            calcBeanList.add(bean);
+            rsiBeanList.add(bean);
+        });
+        if(CalcHelper.validateForSaving(forDate, calcBeanList, calc_name)) {
+            saveToCsv(forDate, rsiBeanList);
+            //saveToDb(forDate, rsiBeanList);
+        }
+    }
+
+
+    private Map<String, RsiBean> prepareData(LocalDate forDate) {
+        LocalDate latestNseDate = praFileUtils.getLatestNseDate();
+        if(forDate.isAfter(latestNseDate)) return Collections.emptyMap();
+
+        LOGGER.info("{} calculating for 20 days", calc_name);
         Map<String, List<DeliverySpikeDto>> symbolMap;
         symbolMap = dataService.getRawDataBySymbol(forDate, 20);
 
-            Map<String, RsiBean> beansMap = new HashMap<>();
-            symbolMap.values().forEach( list -> {
-                list.forEach( dto -> {
-                    if (dto.getTradeDate().compareTo(forDate) == 0) {
-                        RsiBean bean = new RsiBean();
-                        bean.setSymbol(dto.getSymbol());
-                        bean.setTradeDate(dto.getTradeDate());
-                        beansMap.put(dto.getSymbol(), bean);
-                    }
-                });
+        Map<String, RsiBean> beansMap = new HashMap<>();
+        symbolMap.values().forEach( list -> {
+            list.forEach( dto -> {
+                if (dto.getTradeDate().compareTo(forDate) == 0) {
+                    RsiBean bean = new RsiBean();
+                    bean.setSymbol(dto.getSymbol());
+                    bean.setTradeDate(dto.getTradeDate());
+                    beansMap.put(dto.getSymbol(), bean);
+                }
             });
+        });
 
         loopIt(forDate, symbolMap,
                 (dto, rsi) -> beansMap.get(dto.getSymbol()).setAtpRsi20(rsi),
@@ -83,7 +110,7 @@ public class RsiCalculatorNew {
                 (dto, rsi) -> beansMap.get(dto.getSymbol()).setLastRsi20(rsi)
         );
 
-        LOGGER.info("{} calculating for 10 days", RSI_DATA_FILE_PREFIX);
+        LOGGER.info("{} calculating for 10 days", calc_name);
         symbolMap = dataService.getRawDataBySymbol(forDate, 10);
         loopIt(forDate, symbolMap,
                 (dto, rsi) -> beansMap.get(dto.getSymbol()).setAtpRsi10(rsi),
@@ -91,15 +118,7 @@ public class RsiCalculatorNew {
                 (dto, rsi) -> beansMap.get(dto.getSymbol()).setLastRsi10(rsi)
         );
 
-        //
-        List<CalcBean> calcBeanList = new ArrayList<>();
-        beansMap.values().forEach(bean -> calcBeanList.add(bean));
-        if(CalcHelper.validateForSaving(forDate, calcBeanList, RSI_DATA_FILE_PREFIX)) {
-            List<RsiBean> beansList = new ArrayList<>();
-            beansMap.values().forEach(bean -> beansList.add(bean));
-            saveToCsv(forDate, beansList);
-            saveToDb(forDate, beansList);
-        }
+        return beansMap;
     }
 
     private void loopIt(LocalDate forDate,
@@ -195,11 +214,9 @@ public class RsiCalculatorNew {
     }
 
     private void saveToCsv(LocalDate forDate, List<RsiBean> dtos) {
-//        String fileName = RSI_DATA_FILE_PREFIX + forDate + ApCo.DATA_FILE_EXT;
-//        String toPath = ApCo.ROOT_DIR + File.separator + computeFolderName + File.separator + fileName;
         String computeToFilePath = getComputeOutputPath(forDate);
-        RsiCao.saveOverWrite(RSI_CSV_HEADER, dtos, computeToFilePath, dto -> dto.toCsvString());
-        LOGGER.info("{} | saved on disk ({})", RSI_DATA_FILE_PREFIX, computeToFilePath);
+        RsiCao.saveOverWrite(csv_header, dtos, computeToFilePath, dto -> dto.toCsvString());
+        LOGGER.info("{} | saved on disk ({})", calc_name, computeToFilePath);
     }
 
     private void saveToDb(LocalDate forDate, List<RsiBean> dtos) {
@@ -221,16 +238,16 @@ public class RsiCalculatorNew {
 
                 repository.save(tab);
             });
-            LOGGER.info("{} | uploaded", RSI_DATA_FILE_PREFIX);
+            LOGGER.info("{} | uploaded", calc_name);
         } else if (dataCtr == dtos.size()) {
-            LOGGER.info("{} | upload skipped, already uploaded", RSI_DATA_FILE_PREFIX);
+            LOGGER.info("{} | upload skipped, already uploaded", calc_name);
         } else {
-            LOGGER.warn("{} | upload skipped, discrepancy in data dbRecords={}, dtoSize={}", RSI_DATA_FILE_PREFIX, dataCtr, dtos.size());
+            LOGGER.warn("{} | upload skipped, discrepancy in data dbRecords={}, dtoSize={}", calc_name, dataCtr, dtos.size());
         }
     }
 
     private String getComputeOutputPath(LocalDate forDate) {
-        String computeFileName = RSI_DATA_FILE_PREFIX + forDate + ApCo.DATA_FILE_EXT;
+        String computeFileName = calc_name + forDate + ApCo.DATA_FILE_EXT;
         String computePath = ApCo.ROOT_DIR + File.separator + computeFolderName + File.separator + computeFileName;
         return computePath;
     }

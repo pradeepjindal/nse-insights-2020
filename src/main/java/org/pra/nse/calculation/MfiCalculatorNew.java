@@ -20,18 +20,16 @@ import java.io.File;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
-
-import static org.pra.nse.calculation.CalcCons.*;
 
 @Component
 public class MfiCalculatorNew {
     private static final Logger LOGGER = LoggerFactory.getLogger(MfiCalculatorNew.class);
+
+    private final String calc_name = CalcCons.MFI_FILE_PREFIX;
+    private final String csv_header = CalcCons.MFI_CSV_HEADER;
 
     private final String computeFolderName = ApCo.MFI_DIR_NAME;
 
@@ -50,56 +48,76 @@ public class MfiCalculatorNew {
         this.dataService = dataService;
     }
 
-    public void calculateAndSave(LocalDate forDate) {
-        LocalDate latestNseDate = praFileUtils.getLatestNseDate();
-        if(forDate.isAfter(latestNseDate)) return;
 
-//        String fileName = MFI_DATA_FILE_PREFIX + "-" + forDate.toString() + ApCo.DATA_FILE_EXT;
-//        String toDir = ApCo.ROOT_DIR +File.separator+ computeFolderName +File.separator+ fileName;
+    public List<MfiBean> calculateAndReturn(LocalDate forDate) {
+        Map<String, MfiBean> beansMap = prepareData(forDate);
+        List<CalcBean> calcBeanList = new ArrayList<>();
+        List<MfiBean> mfiBeanList = new ArrayList<>();
+        beansMap.values().forEach( bean -> {
+            calcBeanList.add(bean);
+            mfiBeanList.add(bean);
+        });
+        if(CalcHelper.validateForSaving(forDate, calcBeanList, calc_name)) {
+            return mfiBeanList;
+        } else {
+            return Collections.emptyList();
+        }
+    }
+
+    public void calculateAndSave(LocalDate forDate) {
         String computeFilePath = getComputeOutputPath(forDate);
-        LOGGER.info("{} | for:{}", MFI_DATA_FILE_PREFIX, forDate.toString());
+        LOGGER.info("{} | for:{}", calc_name, forDate.toString());
         if(nseFileUtils.isFileExist(computeFilePath)) {
-            LOGGER.warn("{} already present (calculation and saving would be skipped): {}", MFI_DATA_FILE_PREFIX, computeFilePath);
+            LOGGER.warn("{} already present (calculation and saving would be skipped): {}", calc_name, computeFilePath);
             return;
         }
 
-        LOGGER.info("{} calculating for 20 days", MFI_DATA_FILE_PREFIX);
+        Map<String, MfiBean> beansMap = prepareData(forDate);
+        List<CalcBean> calcBeanList = new ArrayList<>();
+        List<MfiBean> mfiBeanList = new ArrayList<>();
+        beansMap.values().forEach( bean -> {
+            calcBeanList.add(bean);
+            mfiBeanList.add(bean);
+        });
+        if(CalcHelper.validateForSaving(forDate, calcBeanList, calc_name)) {
+            saveToCsv(forDate, mfiBeanList);
+            //saveToDb(forDate, mfiBeanList);
+        }
+    }
+
+    private Map<String, MfiBean> prepareData(LocalDate forDate) {
+        LocalDate latestNseDate = praFileUtils.getLatestNseDate();
+        if(forDate.isAfter(latestNseDate)) return Collections.emptyMap();
+
+        LOGGER.info("{} calculating for 20 days", calc_name);
         Map<String, List<DeliverySpikeDto>> symbolMap;
         symbolMap = dataService.getRawDataBySymbol(forDate, 20);
 
-            Map<String, MfiBean> beansMap = new HashMap<>();
-            symbolMap.values().forEach( list -> {
-                list.forEach( dto -> {
-                    if (dto.getTradeDate().compareTo(forDate) == 0) {
-                        MfiBean bean = new MfiBean();
-                        bean.setSymbol(dto.getSymbol());
-                        bean.setTradeDate(dto.getTradeDate());
-                        beansMap.put(dto.getSymbol(), bean);
-                    }
-                });
+        Map<String, MfiBean> beansMap = new HashMap<>();
+        symbolMap.values().forEach( list -> {
+            list.forEach( dto -> {
+                if (dto.getTradeDate().compareTo(forDate) == 0) {
+                    MfiBean bean = new MfiBean();
+                    bean.setSymbol(dto.getSymbol());
+                    bean.setTradeDate(dto.getTradeDate());
+                    beansMap.put(dto.getSymbol(), bean);
+                }
             });
+        });
 
         loopIt(forDate, symbolMap,
                 (dto, mfi) -> beansMap.get(dto.getSymbol()).setVolMfi20(mfi),
                 (dto, mfi) -> beansMap.get(dto.getSymbol()).setDelMfi20(mfi)
         );
 
-        LOGGER.info("{} calculating for 10 days", MFI_DATA_FILE_PREFIX);
+        LOGGER.info("{} calculating for 10 days", calc_name);
         symbolMap = dataService.getRawDataBySymbol(forDate, 10);
         loopIt(forDate, symbolMap,
                 (dto, mfi) -> beansMap.get(dto.getSymbol()).setVolMfi10(mfi),
                 (dto, mfi) -> beansMap.get(dto.getSymbol()).setDelMfi10(mfi)
         );
 
-        //
-        List<CalcBean> calcBeanList = new ArrayList<>();
-        beansMap.values().forEach(bean -> calcBeanList.add(bean));
-        if(CalcHelper.validateForSaving(forDate, calcBeanList, MFI_DATA_FILE_PREFIX)) {
-            List<MfiBean> beansList = new ArrayList<>();
-            beansMap.values().forEach(bean -> beansList.add(bean));
-            saveToCsv(forDate, beansList);
-            saveToDb(forDate, beansList);
-        }
+        return beansMap;
     }
 
     private void loopIt(LocalDate forDate,
@@ -204,11 +222,11 @@ public class MfiCalculatorNew {
     }
 
     private void saveToCsv(LocalDate forDate, List<MfiBean> dtos) {
-//        String fileName = MFI_DATA_FILE_PREFIX + forDate + ApCo.DATA_FILE_EXT;
+//        String fileName = calc_name + forDate + ApCo.DATA_FILE_EXT;
 //        String toPath = ApCo.ROOT_DIR + File.separator + computeFolderName + File.separator + fileName;
         String computeToFilePath = getComputeOutputPath(forDate);
-        MfiCao.saveOverWrite(MFI_CSV_HEADER, dtos, computeToFilePath, dto -> dto.toCsvString());
-        LOGGER.info("{} | saved on disk ({})", MFI_DATA_FILE_PREFIX, computeToFilePath);
+        MfiCao.saveOverWrite(csv_header, dtos, computeToFilePath, dto -> dto.toCsvString());
+        LOGGER.info("{} | saved on disk ({})", calc_name, computeToFilePath);
     }
 
     private void saveToDb(LocalDate forDate, List<MfiBean> dtos) {
@@ -228,17 +246,17 @@ public class MfiCalculatorNew {
 
                 repository.save(tab);
             });
-            LOGGER.info("{} | uploaded", MFI_DATA_FILE_PREFIX);
+            LOGGER.info("{} | uploaded", calc_name);
         } else if (dataCtr == dtos.size()) {
-            LOGGER.info("{} | upload skipped, already uploaded", MFI_DATA_FILE_PREFIX);
+            LOGGER.info("{} | upload skipped, already uploaded", calc_name);
         } else {
-            LOGGER.warn("{} | upload skipped, discrepancy in data dbRecords={}, dtoSize={}", MFI_DATA_FILE_PREFIX, dataCtr, dtos.size());
+            LOGGER.warn("{} | upload skipped, discrepancy in data dbRecords={}, dtoSize={}", calc_name, dataCtr, dtos.size());
         }
     }
 
 
     private String getComputeOutputPath(LocalDate forDate) {
-        String computeFileName = MFI_DATA_FILE_PREFIX + forDate + ApCo.DATA_FILE_EXT;
+        String computeFileName = calc_name + forDate + ApCo.DATA_FILE_EXT;
         String computePath = ApCo.ROOT_DIR + File.separator + computeFolderName + File.separator + computeFileName;
         return computePath;
     }

@@ -5,7 +5,6 @@ import org.pra.nse.csv.data.AvgBean;
 import org.pra.nse.csv.data.AvgCao;
 import org.pra.nse.csv.data.CalcBean;
 import org.pra.nse.service.DataService;
-import org.pra.nse.db.dao.GeneralDao;
 import org.pra.nse.db.dao.calc.AvgCalculationDao;
 import org.pra.nse.db.dto.DeliverySpikeDto;
 import org.pra.nse.db.model.CalcAvgTab;
@@ -21,71 +20,92 @@ import java.io.File;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
-
-import static org.pra.nse.calculation.CalcCons.*;
 
 @Component
 public class AvgCalculatorNew {
     private static final Logger LOGGER = LoggerFactory.getLogger(AvgCalculatorNew.class);
 
+    private final String calc_name = CalcCons.AVG_FILE_PREFIX;
+    private final String csv_header = CalcCons.AVG_CSV_HEADER;
+
     private final String computeFolderName = ApCo.AVG_DIR_NAME;
 
     private final NseFileUtils nseFileUtils;
     private final PraFileUtils praFileUtils;
-    private final GeneralDao generalDao;
     private final AvgCalculationDao dao;
     private final CalcAvgRepository repository;
     private final DataService dataService;
     private final DateService dateService;
 
     public AvgCalculatorNew(NseFileUtils nseFileUtils, PraFileUtils praFileUtils,
-                            GeneralDao generalDao, AvgCalculationDao avgCalculationDao,
-                            CalcAvgRepository calcAvgRepository,
-                            DataService dataService,
+                            AvgCalculationDao avgCalculationDao, CalcAvgRepository calcAvgRepository, DataService dataService,
                             DateService dateService) {
         this.nseFileUtils = nseFileUtils;
         this.praFileUtils = praFileUtils;
-        this.generalDao = generalDao;
         this.dao = avgCalculationDao;
         this.repository = calcAvgRepository;
         this.dataService = dataService;
         this.dateService = dateService;
     }
 
-    public void calculateAndSave(LocalDate forDate) {
-        LocalDate latestNseDate = praFileUtils.getLatestNseDate();
-        if(forDate.isAfter(latestNseDate)) return;
+    public List<AvgBean> calculateAndReturn(LocalDate forDate) {
+        Map<String, AvgBean> beansMap = prepareData(forDate);
+        List<CalcBean> calcBeanList = new ArrayList<>();
+        List<AvgBean> avgBeanList = new ArrayList<>();
+        beansMap.values().forEach( bean -> {
+            calcBeanList.add(bean);
+            avgBeanList.add(bean);
+        });
+        if(CalcHelper.validateForSaving(forDate, calcBeanList, calc_name)) {
+            return avgBeanList;
+        } else {
+            return Collections.emptyList();
+        }
+    }
 
-//        String fileName = AVG_DATA_FILE_PREFIX + "-" + forDate.toString() + ApCo.DATA_FILE_EXT;
-//        String toDir = ApCo.ROOT_DIR +File.separator+ computeFolderName +File.separator+ fileName;
+    public void calculateAndSave(LocalDate forDate) {
         String computeFilePath = getComputeOutputPath(forDate);
-        LOGGER.info("{} | for:{}", AVG_DATA_FILE_PREFIX, forDate.toString());
+        LOGGER.info("{} | for:{}", calc_name, forDate.toString());
         if(nseFileUtils.isFileExist(computeFilePath)) {
-            LOGGER.warn("{} already present (calculation and saving would be skipped): {}", AVG_DATA_FILE_PREFIX, computeFilePath);
+            LOGGER.warn("{} already present (calculation and saving would be skipped): {}", calc_name, computeFilePath);
             return;
         }
 
-        LOGGER.info("{} calculating for 20 days", AVG_DATA_FILE_PREFIX);
+        Map<String, AvgBean> beansMap = prepareData(forDate);
+        List<CalcBean> calcBeanList = new ArrayList<>();
+        List<AvgBean> avgBeanList = new ArrayList<>();
+        beansMap.values().forEach( bean -> {
+            calcBeanList.add(bean);
+            avgBeanList.add(bean);
+        });
+        if(CalcHelper.validateForSaving(forDate, calcBeanList, calc_name)) {
+            saveToCsv(forDate, avgBeanList);
+            //saveToDb(forDate, avgBeanList);
+        }
+    }
+
+    private Map<String, AvgBean> prepareData(LocalDate forDate) {
+        LocalDate latestNseDate = praFileUtils.getLatestNseDate();
+        if(forDate.isAfter(latestNseDate)) return Collections.emptyMap();
+
+        LOGGER.info("{} calculating for 20 days", calc_name);
         Map<String, List<DeliverySpikeDto>> symbolMap;
         symbolMap = dataService.getRawDataBySymbol(forDate, 20);
 
-            Map<String, AvgBean> beansMap = new HashMap<>();
-            symbolMap.values().forEach( list -> {
-                list.forEach( dto -> {
-                    if (dto.getTradeDate().compareTo(forDate) == 0) {
-                        AvgBean bean = new AvgBean();
-                        bean.setSymbol(dto.getSymbol());
-                        bean.setTradeDate(dto.getTradeDate());
-                        beansMap.put(dto.getSymbol(), bean);
-                    }
-                });
+        Map<String, AvgBean> beansMap = new HashMap<>();
+        symbolMap.values().forEach( list -> {
+            list.forEach( dto -> {
+                if (dto.getTradeDate().compareTo(forDate) == 0) {
+                    AvgBean bean = new AvgBean();
+                    bean.setSymbol(dto.getSymbol());
+                    bean.setTradeDate(dto.getTradeDate());
+                    beansMap.put(dto.getSymbol(), bean);
+                }
             });
+        });
 
         loopIt(forDate, symbolMap,
                 (dto, avg) -> beansMap.get(dto.getSymbol()).setAtpAvg20(avg),
@@ -94,7 +114,7 @@ public class AvgCalculatorNew {
                 (dto, avg) -> beansMap.get(dto.getSymbol()).setFoiAvg20(avg)
         );
 
-        LOGGER.info("{} calculating for 10 days", AVG_DATA_FILE_PREFIX);
+        LOGGER.info("{} calculating for 10 days", calc_name);
         symbolMap = dataService.getRawDataBySymbol(forDate, 10);
         loopIt(forDate, symbolMap,
                 (dto, avg) -> beansMap.get(dto.getSymbol()).setAtpAvg10(avg),
@@ -102,17 +122,8 @@ public class AvgCalculatorNew {
                 (dto, avg) -> beansMap.get(dto.getSymbol()).setDelAvg10(avg),
                 (dto, avg) -> beansMap.get(dto.getSymbol()).setFoiAvg10(avg)
         );
-        // calculate avg for each s symbol
 
-        //
-        List<CalcBean> calcBeanList = new ArrayList<>();
-        beansMap.values().forEach(bean -> calcBeanList.add(bean));
-        if(CalcHelper.validateForSaving(forDate, calcBeanList, AVG_DATA_FILE_PREFIX)) {
-            List<AvgBean> avgBeanList = new ArrayList<>();
-            beansMap.values().forEach(bean -> avgBeanList.add(bean));
-            saveToCsv(forDate, avgBeanList);
-            saveToDb(forDate, avgBeanList);
-        }
+        return beansMap;
     }
 
     private void loopIt(LocalDate forDate,
@@ -197,8 +208,8 @@ public class AvgCalculatorNew {
 //        String fileName = AVG_DATA_FILE_PREFIX + forDate + ApCo.DATA_FILE_EXT;
 //        String toPath = ApCo.ROOT_DIR + File.separator + computeFolderName + File.separator + fileName;
         String computeToFilePath = getComputeOutputPath(forDate);
-        AvgCao.saveOverWrite(AVG_CSV_HEADER, dtos, computeToFilePath, dto -> dto.toCsvString());
-        LOGGER.info("{} | saved on disk ({})", AVG_DATA_FILE_PREFIX, computeToFilePath);
+        AvgCao.saveOverWrite(csv_header, dtos, computeToFilePath, dto -> dto.toCsvString());
+        LOGGER.info("{} | saved on disk ({})", calc_name, computeToFilePath);
     }
 
     private void saveToDb(LocalDate forDate, List<AvgBean> dtos) {
@@ -222,17 +233,17 @@ public class AvgCalculatorNew {
 
                 repository.save(tab);
             });
-            LOGGER.info("{} | uploaded", AVG_DATA_FILE_PREFIX);
+            LOGGER.info("{} | uploaded", calc_name);
         } else if (dataCtr == dtos.size()) {
-            LOGGER.info("{} | upload skipped, already uploaded", AVG_DATA_FILE_PREFIX);
+            LOGGER.info("{} | upload skipped, already uploaded", calc_name);
         } else {
-            LOGGER.warn("{} | upload skipped, discrepancy in data dbRecords={}, dtoSize={}", AVG_DATA_FILE_PREFIX, dataCtr, dtos.size());
+            LOGGER.warn("{} | upload skipped, discrepancy in data dbRecords={}, dtoSize={}", calc_name, dataCtr, dtos.size());
         }
     }
 
 
     private String getComputeOutputPath(LocalDate forDate) {
-        String computeFileName = AVG_DATA_FILE_PREFIX + forDate + ApCo.DATA_FILE_EXT;
+        String computeFileName = calc_name + forDate + ApCo.DATA_FILE_EXT;
         String computePath = ApCo.ROOT_DIR + File.separator + computeFolderName + File.separator + computeFileName;
         return computePath;
     }

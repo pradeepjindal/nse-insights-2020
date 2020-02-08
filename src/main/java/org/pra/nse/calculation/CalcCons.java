@@ -1,9 +1,30 @@
 package org.pra.nse.calculation;
 
+import org.pra.nse.ApCo;
+
+import java.io.File;
+
 public class CalcCons {
-    public static final String RSI_DATA_FILE_PREFIX = "rsi-";
-    public static final String MFI_DATA_FILE_PREFIX = "mfi-";
-    public static final String AVG_DATA_FILE_PREFIX = "avg-";
+
+    public static final String CALC_FOLDER_NAME = "calc";
+    public static final String CALC_DIR_PREFIX = CALC_FOLDER_NAME + "-";
+
+    public static final String AVG_DATA_NAME = "avg";
+    public static final String RSI_DATA_NAME = "rsi";
+    public static final String MFI_DATA_NAME = "mfi";
+
+    public static final String AVG_DIR_NAME = CALC_DIR_PREFIX + AVG_DATA_NAME;
+    public static final String RSI_DIR_NAME = CALC_DIR_PREFIX + RSI_DATA_NAME;
+    public static final String MFI_DIR_NAME = CALC_DIR_PREFIX + MFI_DATA_NAME;
+
+    public static final String AVG_FILE_PREFIX = AVG_DATA_NAME + "-";
+    public static final String RSI_FILE_PREFIX = RSI_DATA_NAME + "-";
+    public static final String MFI_FILE_PREFIX = MFI_DATA_NAME + "-";
+
+    public static final String AVG_FILES_PATH = ApCo.ROOT_DIR +File.separator+ AVG_DIR_NAME;
+    public static final String RSI_FILES_PATH = ApCo.ROOT_DIR +File.separator+ RSI_DIR_NAME;
+    public static final String MFI_FILES_PATH = ApCo.ROOT_DIR +File.separator+ MFI_DIR_NAME;
+
 
     public static final String RSI_CSV_HEADER
             = "symbol,trade_date," +

@@ -1,7 +1,7 @@
 package org.pra.nse.csv.merge;
 
 import org.pra.nse.ApCo;
-import org.pra.nse.NseCo;
+import org.pra.nse.NseCons;
 import org.pra.nse.csv.bean.in.DmBean;
 import org.pra.nse.csv.bean.out.PraBean;
 import org.pra.nse.csv.read.DmCsvReader;
@@ -30,10 +30,10 @@ public class DmMerger {
         LOGGER.info("MT-Merge | for date:[{}]", forDate);
         String fromFile;
         //fromFile = fileUtils.getLatestFileNameForMat(1);
-        fromFile = praFileUtils.getLatestFileNameFor(NseCo.DM_FILES_PATH, ApCo.PRA_DM_FILE_PREFIX, ApCo.REPORTS_FILE_EXT,1, forDate);
+        fromFile = praFileUtils.getLatestFileNameFor(NseCons.DM_FILES_PATH, ApCo.PRA_DM_FILE_PREFIX, ApCo.REPORTS_FILE_EXT,1, forDate);
         Map<String, DmBean> mtLatestBeanMap = csvReader.read(fromFile);
         //fromFile = fileUtils.getLatestFileNameForMat(2);
-        fromFile = praFileUtils.getLatestFileNameFor(NseCo.DM_FILES_PATH, ApCo.PRA_DM_FILE_PREFIX, ApCo.REPORTS_FILE_EXT,2, forDate);
+        fromFile = praFileUtils.getLatestFileNameFor(NseCons.DM_FILES_PATH, ApCo.PRA_DM_FILE_PREFIX, ApCo.REPORTS_FILE_EXT,2, forDate);
         Map<String, DmBean> matPreviousBeanMap = csvReader.read(fromFile);
         praBeans.forEach(praBean -> {
             if(mtLatestBeanMap.containsKey(praBean.getSymbol()) && matPreviousBeanMap.containsKey(praBean.getSymbol())) {

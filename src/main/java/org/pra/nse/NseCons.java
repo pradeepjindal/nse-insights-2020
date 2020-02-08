@@ -3,7 +3,7 @@ package org.pra.nse;
 import java.io.File;
 import java.time.format.DateTimeFormatter;
 
-public class NseCo {
+public class NseCons {
 
     //https://www.nseindia.com/content/historical/EQUITIES/2019/SEP/cm10SEP2019bhav.csv.zip
 //    public static final String CM_BASE_URL = "https://www.nseindia.com/content/historical/EQUITIES";
@@ -32,13 +32,29 @@ public class NseCo {
     public static final String DBC_BASE_URL = "https://archives.nseindia.com/products/content";
 
 
-    public static final String CM_DIR_NAME = "nse-cm";
-    public static final String FM_DIR_NAME = "nse-fm";
-    public static final String DM_DIR_NAME = "nse-dm";
+    public static final String NSE_FOLDER_NAME = "nse";
+    public static final String NSE_DIR_PREFIX = NSE_FOLDER_NAME + "-";
+
+    public static final String CM_DATA_NAME = "cm";
+    public static final String DM_DATA_NAME = "dm";
+    public static final String FM_DATA_NAME = "fm";
+
+    public static final String CM_DIR_NAME = NSE_DIR_PREFIX + CM_DATA_NAME;
+    public static final String DM_DIR_NAME = NSE_DIR_PREFIX + DM_DATA_NAME;
+    public static final String FM_DIR_NAME = NSE_DIR_PREFIX + FM_DATA_NAME;
+
+    public static final String CM_FILE_PREFIX = CM_DATA_NAME + "-";
+    public static final String DM_FILE_PREFIX = DM_DATA_NAME + "-";
+    public static final String FM_FILE_PREFIX = FM_DATA_NAME + "-";
+
+    public static final String CM_FILES_PATH = ApCo.ROOT_DIR + File.separator + CM_DIR_NAME;
+    public static final String DM_FILES_PATH = ApCo.ROOT_DIR + File.separator + DM_DIR_NAME;
+    public static final String FM_FILES_PATH = ApCo.ROOT_DIR + File.separator + FM_DIR_NAME;
 
     public static final String BP_DIR_NAME = "nse-bp";
     public static final String AB_DIR_NAME = "nse-ab"; //amiBroker
     public static final String DBC_DIR_NAME = "nse-dbc"; //dailyBhavCopy
+
 
 
     public static final String CM_FILE_NAME_REGEX = "";
@@ -89,18 +105,10 @@ public class NseCo {
     public static final String AB_FILE_EXT = ".txt";
 
 
-
     public static final DateTimeFormatter CM_FILE_NAME_DTF = DateTimeFormatter.ofPattern(NSE_CM_FILE_NAME_DATE_FORMAT);
-    public static final String CM_FILES_PATH = ApCo.ROOT_DIR + File.separator + CM_DIR_NAME;
-
     public static final DateTimeFormatter FM_FILE_NAME_DTF = DateTimeFormatter.ofPattern(NSE_FM_FILE_NAME_DATE_FORMAT);
-    public static final String FM_FILES_PATH = ApCo.ROOT_DIR + File.separator + FM_DIR_NAME;
-
     public static final DateTimeFormatter DM_FILE_NAME_DTF = DateTimeFormatter.ofPattern(NSE_DM_FILE_NAME_DATE_FORMAT);
-    public static final String DM_FILES_PATH = ApCo.ROOT_DIR + File.separator + DM_DIR_NAME;
-
     public static final DateTimeFormatter DBC_FILE_NAME_DTF = DateTimeFormatter.ofPattern(NSE_DBC_FILE_NAME_DATE_FORMAT);
-
     public static final DateTimeFormatter AB_FILE_NAME_DTF = DateTimeFormatter.ofPattern(AB_FILE_NAME_DATE_FORMAT);
     public static final DateTimeFormatter AB_DATA_DTF = DateTimeFormatter.ofPattern(ApCo.AB_DATA_DATE_FORMAT);
 
