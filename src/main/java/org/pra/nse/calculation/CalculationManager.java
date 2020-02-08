@@ -22,15 +22,15 @@ public class CalculationManager implements Manager {
 
     private final DataService dataService;
 
-    private final AvgCalculatorNew avgCalculator;
-    private final RsiCalculatorNew rsiCalculator;
-    private final MfiCalculatorNew mfiCalculator;
+    private final AvgCalculator avgCalculator;
+    private final RsiCalculator rsiCalculator;
+    private final MfiCalculator mfiCalculator;
 
 
 
     public CalculationManager(NseFileUtils nseFileUtils, NseReportsDao nseReportsDao,
                               DataService dataService,
-                              AvgCalculatorNew avgCalculator, RsiCalculatorNew rsiCalculator, MfiCalculatorNew mfiCalculator) {
+                              AvgCalculator avgCalculator, RsiCalculator rsiCalculator, MfiCalculator mfiCalculator) {
         this.nseFileUtils = nseFileUtils;
         this.nseReportsDao = nseReportsDao;
         this.dataService = dataService;

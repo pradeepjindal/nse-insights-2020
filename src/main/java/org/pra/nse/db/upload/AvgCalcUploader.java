@@ -1,7 +1,7 @@
 package org.pra.nse.db.upload;
 
 import org.pra.nse.ApCo;
-import org.pra.nse.calculation.AvgCalculatorNew;
+import org.pra.nse.calculation.AvgCalculator;
 import org.pra.nse.calculation.CalcCons;
 import org.pra.nse.csv.data.AvgBean;
 import org.pra.nse.db.dao.calc.AvgCalculationDao;
@@ -29,12 +29,12 @@ public class AvgCalcUploader extends BaseUploader {
 
     private final AvgCalculationDao dao;
     private final CalcAvgRepository repo;
-    private final AvgCalculatorNew calculator;
+    private final AvgCalculator calculator;
 
     private final NseFileUtils nseFileUtils;
     private final PraFileUtils praFileUtils;
 
-    public AvgCalcUploader(AvgCalculationDao dao, CalcAvgRepository repo, AvgCalculatorNew calculator,
+    public AvgCalcUploader(AvgCalculationDao dao, CalcAvgRepository repo, AvgCalculator calculator,
                            NseFileUtils nseFileUtils, PraFileUtils praFileUtils) {
         super(praFileUtils, CalcCons.AVG_DIR_NAME, AVG_FILE_PREFIX);
         this.dao = dao;

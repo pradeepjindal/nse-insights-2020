@@ -25,8 +25,8 @@ import java.util.function.BiConsumer;
 import java.util.function.Function;
 
 @Component
-public class MfiCalculatorNew {
-    private static final Logger LOGGER = LoggerFactory.getLogger(MfiCalculatorNew.class);
+public class MfiCalculator {
+    private static final Logger LOGGER = LoggerFactory.getLogger(MfiCalculator.class);
 
     private final String calc_name = CalcCons.MFI_FILE_PREFIX;
     private final String csv_header = CalcCons.MFI_CSV_HEADER;
@@ -39,8 +39,8 @@ public class MfiCalculatorNew {
     private final CalcMfiRepository repository;
     private final DataService dataService;
 
-    public MfiCalculatorNew(NseFileUtils nseFileUtils, PraFileUtils praFileUtils,
-                            MfiCalculationDao mfiCalculationDao, CalcMfiRepository calcMfiRepository, DataService dataService) {
+    public MfiCalculator(NseFileUtils nseFileUtils, PraFileUtils praFileUtils,
+                         MfiCalculationDao mfiCalculationDao, CalcMfiRepository calcMfiRepository, DataService dataService) {
         this.nseFileUtils = nseFileUtils;
         this.praFileUtils = praFileUtils;
         this.dao = mfiCalculationDao;
@@ -222,8 +222,6 @@ public class MfiCalculatorNew {
     }
 
     private void saveToCsv(LocalDate forDate, List<MfiBean> dtos) {
-//        String fileName = calc_name + forDate + ApCo.DATA_FILE_EXT;
-//        String toPath = ApCo.ROOT_DIR + File.separator + computeFolderName + File.separator + fileName;
         String computeToFilePath = getComputeOutputPath(forDate);
         MfiCao.saveOverWrite(csv_header, dtos, computeToFilePath, dto -> dto.toCsvString());
         LOGGER.info("{} | saved on disk ({})", calc_name, computeToFilePath);

@@ -2,7 +2,7 @@ package org.pra.nse.db.upload;
 
 import org.pra.nse.ApCo;
 import org.pra.nse.calculation.CalcCons;
-import org.pra.nse.calculation.RsiCalculatorNew;
+import org.pra.nse.calculation.RsiCalculator;
 import org.pra.nse.csv.data.RsiBean;
 import org.pra.nse.db.dao.calc.RsiCalculationDao;
 import org.pra.nse.db.model.CalcRsiTab;
@@ -29,12 +29,12 @@ public class RsiCalcUploader extends BaseUploader {
 
     private final RsiCalculationDao dao;
     private final CalcRsiRepository repo;
-    private final RsiCalculatorNew calculator;
+    private final RsiCalculator calculator;
 
     private final NseFileUtils nseFileUtils;
     private final PraFileUtils praFileUtils;
 
-    public RsiCalcUploader(RsiCalculationDao dao, CalcRsiRepository repo, RsiCalculatorNew calculator,
+    public RsiCalcUploader(RsiCalculationDao dao, CalcRsiRepository repo, RsiCalculator calculator,
                            NseFileUtils nseFileUtils, PraFileUtils praFileUtils) {
         super(praFileUtils, CalcCons.RSI_DIR_NAME, RSI_FILE_PREFIX);
         this.dao = dao;

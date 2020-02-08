@@ -48,18 +48,15 @@ public class ReportManager implements Manager {
     private final DeliverySpikeReporterFull deliverySpikeReportFull;
     private final PastPresentFutureReporter pastPresentFutureReport;
 
-    private final Statisian statisian;
-
     public ReportManager(NseFileUtils nseFileUtils,
                          NseReportsDao nseReportsDao, DeliverySpikeReporter deliverySpikeReport,
                          DeliverySpikeReporterFull deliverySpikeReportFull,
-                         PastPresentFutureReporter pastPresentFutureReport, Statisian statisian) {
+                         PastPresentFutureReporter pastPresentFutureReport) {
         this.nseFileUtils = nseFileUtils;
         this.nseReportsDao = nseReportsDao;
         this.deliverySpikeReport = deliverySpikeReport;
         this.deliverySpikeReportFull = deliverySpikeReportFull;
         this.pastPresentFutureReport = pastPresentFutureReport;
-        this.statisian = statisian;
     }
 
     @Override
@@ -110,9 +107,6 @@ public class ReportManager implements Manager {
         pastPresentFutureReport.reportFromLast(10);
         //pastPresentFutureReport.reportFromLast(15);
         pastPresentFutureReport.reportFromLast(20);
-
-        //
-        //statisian.stats(LocalDate.of(2020, 2, 5), 10);
 
         LOGGER.info("======================================== Report Manager");
     }

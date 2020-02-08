@@ -1,7 +1,7 @@
 package org.pra.nse.db.upload;
 
 import org.pra.nse.ApCo;
-import org.pra.nse.calculation.MfiCalculatorNew;
+import org.pra.nse.calculation.MfiCalculator;
 import org.pra.nse.calculation.CalcCons;
 import org.pra.nse.csv.data.MfiBean;
 import org.pra.nse.db.dao.calc.MfiCalculationDao;
@@ -27,12 +27,12 @@ public class MfiCalcUploader extends BaseUploader {
 
     private final MfiCalculationDao dao;
     private final CalcMfiRepository repo;
-    private final MfiCalculatorNew calculator;
+    private final MfiCalculator calculator;
 
     private final NseFileUtils nseFileUtils;
     private final PraFileUtils praFileUtils;
 
-    public MfiCalcUploader(MfiCalculationDao dao, CalcMfiRepository repo, MfiCalculatorNew calculator,
+    public MfiCalcUploader(MfiCalculationDao dao, CalcMfiRepository repo, MfiCalculator calculator,
                            NseFileUtils nseFileUtils, PraFileUtils praFileUtils) {
         super(praFileUtils, CalcCons.MFI_DIR_NAME, CalcCons.MFI_FILE_PREFIX);
         this.dao = dao;

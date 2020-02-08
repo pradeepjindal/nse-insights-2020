@@ -7,6 +7,7 @@ import org.pra.nse.db.upload.CalcUploadManager;
 import org.pra.nse.db.upload.NseUploadManager;
 import org.pra.nse.processor.*;
 import org.pra.nse.report.ReportManager;
+import org.pra.nse.statistics.StatisticsManager;
 import org.pra.nse.util.DirUtils;
 import org.pra.nse.util.PraFileUtils;
 import org.slf4j.Logger;
@@ -28,6 +29,7 @@ public class MainProcess implements ApplicationRunner {
     private final CalcUploadManager calcUploadManager;
     private final ProcessManager processManager;
     private final ReportManager reportManager;
+    private final StatisticsManager statisticsManager;
 
     public MainProcess(PraFileUtils praFileUtils,
                        DownloadManager downloadManager,
@@ -35,7 +37,7 @@ public class MainProcess implements ApplicationRunner {
                        NseUploadManager nseUploadManager,
                        CalculationManager calculationManager,
                        CalcUploadManager calcUploadManager, ProcessManager processManager,
-                       ReportManager reportManager) {
+                       ReportManager reportManager, StatisticsManager statisticsManager) {
         this.praFileUtils = praFileUtils;
         this.downloadManager = downloadManager;
         this.transformationManager = transformationManager;
@@ -44,6 +46,7 @@ public class MainProcess implements ApplicationRunner {
         this.calcUploadManager = calcUploadManager;
         this.processManager = processManager;
         this.reportManager = reportManager;
+        this.statisticsManager = statisticsManager;
     }
 
     @Override
@@ -61,6 +64,7 @@ public class MainProcess implements ApplicationRunner {
                 calcUploadManager.execute();
                 processManager.execute();
                 reportManager.execute();
+                statisticsManager.execute();
             }
         } catch(Exception e) {
             LOGGER.error("ERROR: {}", e);
