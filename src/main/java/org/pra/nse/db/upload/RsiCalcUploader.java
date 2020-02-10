@@ -84,6 +84,10 @@ public class RsiCalcUploader extends BaseUploader {
             tab.setSymbol(dto.getSymbol());
             tab.setTradeDate(dto.getTradeDate());
 
+            tab.setCloseRsi05Sma(dto.getCloseRsi10());
+            tab.setLastRsi05Sma(dto.getLastRsi10());
+            tab.setAtpRsi05Sma(dto.getAtpRsi10());
+
             tab.setCloseRsi10Sma(dto.getCloseRsi10());
             tab.setLastRsi10Sma(dto.getLastRsi10());
             tab.setAtpRsi10Sma(dto.getAtpRsi10());

@@ -83,6 +83,11 @@ public class AvgCalcUploader extends BaseUploader {
             tab.setSymbol(dto.getSymbol());
             tab.setTradeDate(dto.getTradeDate());
 
+            tab.setAtpAvg05Sma(dto.getAtpAvg10());
+            tab.setVolAvg05Sma(dto.getVolAvg10());
+            tab.setDelAvg05Sma(dto.getDelAvg10());
+            tab.setOiAvg05Sma(dto.getFoiAvg10());
+
             tab.setAtpAvg10Sma(dto.getAtpAvg10());
             tab.setVolAvg10Sma(dto.getVolAvg10());
             tab.setDelAvg10Sma(dto.getDelAvg10());

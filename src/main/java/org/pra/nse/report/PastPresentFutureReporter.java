@@ -122,6 +122,7 @@ public class PastPresentFutureReporter {
         Map<String, List<DeliverySpikeDto>> symbolMap = dataService.getRichDataBySymbol(forDate, forMinusDays);
         //ReportHelper.enrichGrowth10(calcAvgMap, symbolMap);
         switch (forMinusDays) {
+            case 5: ReportHelper.enrichGrowth05(calcAvgMap, symbolMap); break;
             case 10: ReportHelper.enrichGrowth10(calcAvgMap, symbolMap); break;
             case 20: ReportHelper.enrichGrowth20(calcAvgMap, symbolMap); break;
             default:

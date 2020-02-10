@@ -82,6 +82,9 @@ public class MfiCalcUploader extends BaseUploader {
             tab.setSymbol(dto.getSymbol());
             tab.setTradeDate(dto.getTradeDate());
 
+            tab.setVolAtpMfi05Sma(dto.getVolMfi10());
+            tab.setDelAtpMfi05Sma(dto.getDelMfi10());
+
             tab.setVolAtpMfi10Sma(dto.getVolMfi10());
             tab.setDelAtpMfi10Sma(dto.getDelMfi10());
 

@@ -104,6 +104,7 @@ public class ReportManager implements Manager {
 //                        LOGGER.error("ERROR: {}", e);
 //                    }
 //                });
+        pastPresentFutureReport.reportFromLast(5);
         pastPresentFutureReport.reportFromLast(10);
         //pastPresentFutureReport.reportFromLast(15);
         pastPresentFutureReport.reportFromLast(20);
