@@ -9,6 +9,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDate;
+
 import static org.pra.nse.calculation.CalcCons.RSI_FILE_PREFIX;
 import static org.pra.nse.calculation.CalcCons.MFI_FILE_PREFIX;
 import static org.pra.nse.calculation.CalcCons.AVG_FILE_PREFIX;
@@ -58,18 +60,6 @@ public class CalculationManager implements Manager {
                 });
 
         LOGGER.info("----------");
-        nseFileUtils.getDatesToBeComputed(()-> RSI_FILE_PREFIX, ApCo.RSI_DIR_NAME, ApCo.CALC_FROM_DATE)
-                .forEach( forDate -> {
-                    LOGGER.info(".");
-                    LOGGER.info("calc-{} | for:{}", RSI_FILE_PREFIX, forDate.toString());
-                    try {
-                        rsiCalculator.calculateAndSave(forDate);
-                    } catch (Exception e) {
-                        LOGGER.error("ERROR: {}", e);
-                    }
-                });
-
-        LOGGER.info("----------");
         nseFileUtils.getDatesToBeComputed(()-> MFI_FILE_PREFIX, ApCo.MFI_DIR_NAME, ApCo.CALC_FROM_DATE)
                 .forEach( forDate -> {
                     LOGGER.info(".");
@@ -81,6 +71,19 @@ public class CalculationManager implements Manager {
                     }
                 });
 
+        LOGGER.info("----------");
+        nseFileUtils.getDatesToBeComputed(()-> RSI_FILE_PREFIX, ApCo.RSI_DIR_NAME, ApCo.CALC_FROM_DATE)
+                .forEach( forDate -> {
+                    LOGGER.info(".");
+                    LOGGER.info("calc-{} | for:{}", RSI_FILE_PREFIX, forDate.toString());
+                    try {
+                        rsiCalculator.calculateAndSave(forDate);
+                    } catch (Exception e) {
+                        LOGGER.error("ERROR: {}", e);
+                    }
+                });
+
         LOGGER.info("======================================== Calculation Manager");
+        //rsiCalculator.calculateAndReturn(LocalDate.of(2020,02,10), "BAJAJ-AUTO");
     }
 }

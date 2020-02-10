@@ -11,6 +11,7 @@ import org.pra.nse.db.model.CalcAvgTab;
 import org.pra.nse.db.repository.CalcAvgRepository;
 import org.pra.nse.service.DateService;
 import org.pra.nse.util.NseFileUtils;
+import org.pra.nse.util.NumberUtils;
 import org.pra.nse.util.PraFileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -123,6 +124,15 @@ public class AvgCalculator {
                 (dto, avg) -> beansMap.get(dto.getSymbol()).setFoiAvg10(avg)
         );
 
+        LOGGER.info("{} calculating for 05 days", calc_name);
+        symbolMap = dataService.getRawDataBySymbol(forDate, 5);
+        loopIt(forDate, symbolMap,
+                (dto, avg) -> beansMap.get(dto.getSymbol()).setAtpAvg05(avg),
+                (dto, avg) -> beansMap.get(dto.getSymbol()).setVolAvg05(avg),
+                (dto, avg) -> beansMap.get(dto.getSymbol()).setDelAvg05(avg),
+                (dto, avg) -> beansMap.get(dto.getSymbol()).setFoiAvg05(avg)
+        );
+
         return beansMap;
     }
 
@@ -172,6 +182,7 @@ public class AvgCalculator {
         BigDecimal zero = BigDecimal.ZERO;
 
         short ctr = 0;
+        BigDecimal numberOfTrades = BigDecimal.ZERO;
         BigDecimal sum = BigDecimal.ZERO;
         DeliverySpikeDto latestDto = null;
         for(DeliverySpikeDto dsDto:spikeDtoList) {
@@ -182,21 +193,22 @@ public class AvgCalculator {
 
             //if(dsDto.getTdycloseMinusYesclose().compareTo(zero) > 0)  {
             BigDecimal indicatorColumn = functionSupplier.apply(dsDto);
-            if(indicatorColumn==null) {
+            if(indicatorColumn == null || indicatorColumn.compareTo(BigDecimal.ZERO) == 0) {
                 indicatorColumn = BigDecimal.ZERO;
+            } else {
+                ctr++;
+                sum = sum.add(indicatorColumn);
             }
-            ctr++;
-            sum = sum.add(indicatorColumn);
         }
-
+        if(ctr != spikeDtoList.size()) {
+            LOGGER.warn("avg | for symbol = {}, ctr mismatch {}", symbol, ctr);
+        }
         if(ctr == 0) {
             LOGGER.info("avg | for symbol = {}, ctr = {}", symbol, ctr);
         }
 
         //LOGGER.info("latestDto = {}", latestDto.toFullCsvString());
-        BigDecimal ten = new BigDecimal(ctr);
-        BigDecimal avg;
-        avg = sum.divide(ctr == 0 ? BigDecimal.ONE : ten, 2, RoundingMode.HALF_UP);
+        BigDecimal avg = NumberUtils.divide(sum, new BigDecimal(ctr));
         //===========================================
 
         if(latestDto != null) biConsumer.accept(latestDto, avg);

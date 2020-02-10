@@ -9,9 +9,9 @@ public class ApCo {
 
     public static final LocalTime DAILY_DOWNLOAD_TIME = LocalTime.of(18,0,0,0);
     public static final LocalDate DOWNLOAD_FROM_DATE = LocalDate.of(2020,2,1);
-    public static final LocalDate UPLOAD_FROM_DATE = DOWNLOAD_FROM_DATE;
+    public static final LocalDate CALC_FROM_DATE = LocalDate.of(2020,2,1);
+    public static final LocalDate UPLOAD_FROM_DATE = LocalDate.of(2020, 2,1);
     public static final LocalDate REPORTS_FROM_DATE = LocalDate.of(2020,2,1);
-    public static final LocalDate CALC_FROM_DATE = LocalDate.of(2020,2,7);
     public static final LocalDate EMAIL_FROM_DATE = LocalDate.of(2020,2,1);
 
 
@@ -63,6 +63,7 @@ public class ApCo {
     public static final String yyyy_D_MM_D_dd_DATE_FORMAT = "yyyy-MM-dd";
     public static final String dd_D_MMM_D_yyyy_DATE_FORMAT = "dd-MMM-yyyy";
 
+    //DateTimeFormatter.ISO_LOCAL_DATE;
     public static final String DATA_FILE_NAME_DATE_FORMAT = yyyy_D_MM_D_dd_DATE_FORMAT;
     public static final String PRA_FILE_NAME_DATE_FORMAT = yyyy_D_MM_D_dd_DATE_FORMAT;
     public static final String DEFAULT_FILE_NAME_DATE_FORMAT = yyyy_D_MM_D_dd_DATE_FORMAT;

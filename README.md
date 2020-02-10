@@ -34,6 +34,8 @@ stock is in falling trend in chart
 50pp
 pick only positive rsi chg by at least 1
 pick only above rsi 60
+filter only postitve mfi and positive chg by at least 1
+consult the chart
 
 find when mfi rise more then rsi, means scrip is going to rise
 
@@ -41,18 +43,27 @@ find scrip which drops for 50p daily or rise by 50p daily
 
 3day continue fall report, 3day continue rise report
 
-Tech Debt
-separate DeliverySpikeDto into ppfDto
-file validator - csv files and db dates
-data validator - csv rows and db rows
+divergence report - price rising and rsi falling (3d)
 
+find what happens to tdy topper on next day
+find what happens to tdy open=low on next day
+
+detect bullsih and bearish engulf
 
 sbi
 buy 2 rs down from open and 5 rs down from open
 sell 3 rs high from open
 
 
-Design
+
+TECH DEBT
+separate DeliverySpikeDto into ppfDto
+file validator - csv files and db dates
+data validator - csv rows and db rows
+
+
+
+DESIGN
 favor composition over inheritance
 
 Scala has support for Mixins as well. In Scala those are called Traits. 

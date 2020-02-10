@@ -64,7 +64,7 @@ public class MainProcess implements ApplicationRunner {
                 calcUploadManager.execute();
                 processManager.execute();
                 reportManager.execute();
-                statisticsManager.execute();
+                //statisticsManager.execute();
             }
         } catch(Exception e) {
             LOGGER.error("ERROR: {}", e);

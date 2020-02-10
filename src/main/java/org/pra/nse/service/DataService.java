@@ -99,10 +99,10 @@ public class DataService implements Manager {
         return predicate == null ? Collections.EMPTY_MAP : prepareDataBySymbol(predicate);
     }
 
-    public Map<LocalDate, Map<String, DeliverySpikeDto>> getRichDataByTradeDateAndSymbol(LocalDate forDate, int forMinusDays) {
-        return getRichDataByTradeDateAndSymbol(forDate, forMinusDays, null);
+    public Map<LocalDate, Map<String, DeliverySpikeDto>> getRichDataByTradeDateAndSymbolWise(LocalDate forDate, int forMinusDays) {
+        return getRichDataByTradeDateAndSymbolWise(forDate, forMinusDays, null);
     }
-    public Map<LocalDate, Map<String, DeliverySpikeDto>> getRichDataByTradeDateAndSymbol(LocalDate forDate, int forMinusDays, String forSymbol) {
+    public Map<LocalDate, Map<String, DeliverySpikeDto>> getRichDataByTradeDateAndSymbolWise(LocalDate forDate, int forMinusDays, String forSymbol) {
         Predicate<DeliverySpikeDto> predicate =  initializeData(forDate, forMinusDays, forSymbol);
         return predicate == null ? Collections.EMPTY_MAP : prepareDataByTradeDateAndSymbol(predicate);
     }
@@ -112,7 +112,6 @@ public class DataService implements Manager {
         LocalDate latestNseDate = praFileUtils.getLatestNseDate();
         if(dbResults == null || latestNseDate.isAfter(latestDbDate)) {
             bootUpData();
-            //backFill();
         }
         if(forDate.isAfter(latestDbDate))
             return null;
@@ -139,7 +138,6 @@ public class DataService implements Manager {
 
     private void backFill() {
         fillTheCalcFields();
-        fillTheOi();
         fillTheNext();
         fillTheIndicators();
     }
@@ -182,6 +180,9 @@ public class DataService implements Manager {
             row.setBackDate(backDateMap.get(row.getTradeDate()));
             row.setNextDate(nextDateMap.get(row.getTradeDate()));
         });
+
+        //
+        fillTheOi();
     }
 
     private void initializeTradeDates() {

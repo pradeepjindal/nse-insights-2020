@@ -53,31 +53,30 @@ public class CalcAvgTab implements Serializable {
     @Column(name = "oi_avg_20_Sma")
     private BigDecimal oiAvg20Sma;
 
-    @Override
-    public String toString() {
-        return symbol +
-                "," + tradeDate +
-
-                "," + atpAvg05Sma +
-                "," + atpAvg10Sma +
-                "," + atpAvg15Sma +
-                "," + atpAvg20Sma +
-
-                "," + volAvg05Sma +
-                "," + volAvg10Sma +
-                "," + volAvg15Sma +
-                "," + volAvg20Sma +
-
-                "," + delAvg05Sma +
-                "," + delAvg10Sma +
-                "," + delAvg15Sma +
-                "," + delAvg20Sma +
-
-                "," + oiAvg05Sma +
-                "," + oiAvg10Sma +
-                "," + oiAvg15Sma +
-                "," + oiAvg20Sma;
-    }
+//    public String toCsvString() {
+//        return symbol +
+//                "," + tradeDate +
+//
+//                "," + atpAvg05Sma +
+//                "," + atpAvg10Sma +
+//                "," + atpAvg15Sma +
+//                "," + atpAvg20Sma +
+//
+//                "," + volAvg05Sma +
+//                "," + volAvg10Sma +
+//                "," + volAvg15Sma +
+//                "," + volAvg20Sma +
+//
+//                "," + delAvg05Sma +
+//                "," + delAvg10Sma +
+//                "," + delAvg15Sma +
+//                "," + delAvg20Sma +
+//
+//                "," + oiAvg05Sma +
+//                "," + oiAvg10Sma +
+//                "," + oiAvg15Sma +
+//                "," + oiAvg20Sma;
+//    }
 
     public void reset() {
         id = null;

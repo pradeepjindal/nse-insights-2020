@@ -76,7 +76,7 @@ public class DeliverySpikeReporterFull {
     private void produceTenDayReportFull(LocalDate forDate, int forMinusDays, String filePath) {
         // aggregate trade by symbols
         Map<String, List<DeliverySpikeDto>> symbolMap = new HashMap<>();
-        Map<LocalDate, Map<String, DeliverySpikeDto>> tradeDateAndSymbolWise_DoubleMap = dataService.getRichDataByTradeDateAndSymbol(forDate, forMinusDays);
+        Map<LocalDate, Map<String, DeliverySpikeDto>> tradeDateAndSymbolWise_DoubleMap = dataService.getRichDataByTradeDateAndSymbolWise(forDate, forMinusDays);
 
         //loadRsiOld(dateMap);
         List<CalcRsiTab> oldRsiList = calcRsiRepository.findAll();

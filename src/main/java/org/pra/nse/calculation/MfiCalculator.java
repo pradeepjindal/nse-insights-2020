@@ -117,22 +117,34 @@ public class MfiCalculator {
                 (dto, mfi) -> beansMap.get(dto.getSymbol()).setDelMfi10(mfi)
         );
 
+        LOGGER.info("{} calculating for 05 days", calc_name);
+        symbolMap = dataService.getRawDataBySymbol(forDate, 05);
+        loopIt(forDate, symbolMap,
+                (dto, mfi) -> beansMap.get(dto.getSymbol()).setVolMfi05(mfi),
+                (dto, mfi) -> beansMap.get(dto.getSymbol()).setDelMfi05(mfi)
+        );
+
         return beansMap;
     }
 
     private void loopIt(LocalDate forDate,
-                        Map<String, List<DeliverySpikeDto>> symbolDtosMap,
+                        Map<String, List<DeliverySpikeDto>> symbolDtoMap,
                         BiConsumer<DeliverySpikeDto, BigDecimal> biConsumerVol,
                         BiConsumer<DeliverySpikeDto, BigDecimal> biConsumerDel) {
         //List<DeliverySpikeDto> dtos_ToBeSaved = new ArrayList<>();
-        symbolDtosMap.forEach( (symbol, list) -> {
+        symbolDtoMap.forEach( (symbol, list) -> {
             calculate(forDate, symbol, list,
                     dto -> {
-//                        LOGGER.info("dt:{}, val:{}, del:{}, oi:{}", dto.getTradeDate(), dto.getVolume, dto.getDelivery, oiSumMap.get(dto.getSymbol());
+//                        if(dto.getSymbol().equals("INDUSINDBK")) {
+//                            LOGGER.info("");
+//                        }
+                        //LOGGER.info("sym:{}, dt:{}, atp:{}, val:{}", dto.getSymbol(), dto.getTradeDate(), dto.getAtp(), dto.getVolume());
                         //return dto.getVolume();
-                        if(dto.getAtpChgPrcnt().compareTo(BigDecimal.ZERO) > 0) {
+                        if(dto.getAtpChgPrcnt().compareTo(BigDecimal.ZERO) == 1) {
+                            //LOGGER.info("calc+:{}", dto.getAtp().multiply(dto.getVolume()));
                             return dto.getAtp().multiply(dto.getVolume());
                         } else {
+                            //LOGGER.info("calc-:{}", dto.getAtp().multiply(dto.getVolume()).multiply(new BigDecimal(-1)));
                             return dto.getAtp().multiply(dto.getVolume()).multiply(new BigDecimal(-1));
                         }
                     },
@@ -140,10 +152,13 @@ public class MfiCalculator {
             );
             calculate(forDate, symbol, list,
                     dto -> {
+                        //LOGGER.info("sym:{}, dt:{}, atp:{}, del:{}", dto.getSymbol(), dto.getTradeDate(), dto.getAtp(), dto.getDelivery());
                         //return dto.getDelivery();
-                        if(dto.getAtpChgPrcnt().compareTo(BigDecimal.ZERO) > 0) {
+                        if(dto.getAtpChgPrcnt().compareTo(BigDecimal.ZERO) == 1) {
+                            //LOGGER.info("calc+:{}", dto.getAtp().multiply(dto.getDelivery()));
                             return dto.getAtp().multiply(dto.getDelivery());
                         } else {
+                            //LOGGER.info("calc-:{}", dto.getAtp().multiply(dto.getDelivery()).multiply(new BigDecimal(-1)));
                             return dto.getAtp().multiply(dto.getDelivery()).multiply(new BigDecimal(-1));
                         }
                     },
@@ -159,7 +174,6 @@ public class MfiCalculator {
                             BiConsumer<DeliverySpikeDto, BigDecimal> biConsumer) {
         // calculate mfi for each s symbol
         //LOGGER.info("mfi | for symbol = {}", symbol);
-        BigDecimal zero = BigDecimal.ZERO;
 
         short upCtr = 0;
         BigDecimal up = BigDecimal.ZERO;
@@ -173,51 +187,51 @@ public class MfiCalculator {
                 latestDto = dsDto;
             }
 
-            //if(dsDto.getTdycloseMinusYesclose().compareTo(zero) > 0)  {
-            BigDecimal indicatorColumn = functionSupplier.apply(dsDto);
-            if(indicatorColumn==null) {
-                indicatorColumn = BigDecimal.ZERO;
-            }
-            if(indicatorColumn.compareTo(zero) > 0)  {
-                //up = up.add(dsDto.getTdycloseMinusYesclose());
-                up = up.add(indicatorColumn);
+            BigDecimal rawMoneyFlow = functionSupplier.apply(dsDto);
+            if(rawMoneyFlow == null || rawMoneyFlow.compareTo(BigDecimal.ZERO) == 0) {
+                rawMoneyFlow = BigDecimal.ZERO;
+            } else if(rawMoneyFlow.compareTo(BigDecimal.ZERO) == 1)  {
+                up = up.add(rawMoneyFlow);
                 upCtr++;
-            } else {
-                //dn = dn.add(dsDto.getTdycloseMinusYesclose());
-                dn = dn.add(indicatorColumn.abs());
+            } else if (rawMoneyFlow.compareTo(BigDecimal.ZERO) == -1) {
+                dn = dn.add(rawMoneyFlow.abs());
                 dnCtr++;
+            } else {
+                LOGGER.error("mfi | {}, UNKNOWN CONDITION", symbol);
             }
         }
-
-        if(upCtr == 0 || dnCtr == 0) {
-            LOGGER.info("mfi | for symbol = {}, upCtr = {}, dnCtr = {}", symbol, upCtr, dnCtr);
+//        if(upCtr == 0 || dnCtr == 0) {
+//            LOGGER.warn("mfi | forSymbol = {}, forDate = {}, upCtr = {}, dnCtr = {}", symbol, forDate, upCtr, dnCtr);
+//        }
+        if(upCtr == 3 && dnCtr == 0) {
+            LOGGER.info("mfi+ | forSymbol = {}, forDate = {}, upCtr = {}, dnCtr = {}", symbol, forDate, upCtr, dnCtr);
+        }
+        if(upCtr == 0 && dnCtr == 3) {
+            LOGGER.info("mfi- | forSymbol = {}, forDate = {}, upCtr = {}, dnCtr = {}", symbol, forDate, upCtr, dnCtr);
         }
 
-        //LOGGER.info("latestDto = {}", latestDto.toFullCsvString());
         BigDecimal moneyFlowRatio;
-        moneyFlowRatio = up.divide(dnCtr == 0 ? BigDecimal.ONE : dn, 2, RoundingMode.HALF_UP);
-        if(upCtr > 0 && dnCtr > 0) {
-            moneyFlowRatio = up.divide(dn, 2, RoundingMode.HALF_UP);
-        } else if(upCtr > 0 && dnCtr == 0) {
+        if(upCtr == 0 && dnCtr == 0) {
+            moneyFlowRatio = BigDecimal.ZERO;
+        } else if(upCtr == 1 && dnCtr == 0) {
             moneyFlowRatio = up;
-        } else if(upCtr == 0 && dnCtr > 0) {
+        } else if(upCtr == 0 && dnCtr == 1) {
             moneyFlowRatio = BigDecimal.ZERO;
         } else {
-            moneyFlowRatio = BigDecimal.ZERO;
+            moneyFlowRatio = NumberUtils.divide(up, dn);
         }
         //mfi = 100 - (100 / (1 + moneyFlowRatio));
         //------------------------------------------
         //(1 + rs)
         BigDecimal mfi = moneyFlowRatio.add(BigDecimal.ONE);
         //(100 / (1 + rs)
-
-        mfi = NumberUtils.HUNDRED.divide(mfi, 2, RoundingMode.HALF_UP);
+        mfi = NumberUtils.divide(NumberUtils.HUNDRED, mfi);
         //100 - (100 / (1 + rs))
         mfi = NumberUtils.HUNDRED.subtract(mfi);
         //===========================================
 
         if(latestDto != null) biConsumer.accept(latestDto, mfi);
-        else LOGGER.warn("skipping mfi, latestDto is null for symbol {}, may be phasing out from FnO", symbol);
+        else LOGGER.warn("skipping mfi, latestDto is null symbol {}, dt {}, may be phasing out from FnO", symbol, forDate);
         //LOGGER.info("for symbol = {}, mfi = {}", symbol, mfi);
     }
 

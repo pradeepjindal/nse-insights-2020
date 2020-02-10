@@ -17,6 +17,23 @@ public class CalcRsiTab implements Serializable {
     private String symbol;
     private LocalDate tradeDate;
 
+    @Column(name = "open_rsi_05_Sma")
+    private BigDecimal openRsi05Sma;
+    @Column(name = "high_rsi_05_Sma")
+    private BigDecimal highRsi05Sma;
+    @Column(name = "low_rsi_05_Sma")
+    private BigDecimal lowRsi05Sma;
+    @Column(name = "close_rsi_05_Sma")
+    private BigDecimal closeRsi05Sma;
+    @Column(name = "last_rsi_05_Sma")
+    private BigDecimal lastRsi05Sma;
+    @Column(name = "atp_rsi_05_Sma")
+    private BigDecimal atpRsi05Sma;
+    @Column(name = "hlm_rsi_05_Sma")
+    private BigDecimal hlmRsi05Sma;
+    @Column(name = "ohlc_rsi_05_Sma")
+    private BigDecimal ohlcRsi05Sma;
+
     @Column(name = "open_rsi_10_Sma")
     private BigDecimal openRsi10Sma;
     @Column(name = "high_rsi_10_Sma")
@@ -31,6 +48,8 @@ public class CalcRsiTab implements Serializable {
     private BigDecimal atpRsi10Sma;
     @Column(name = "hlm_rsi_10_Sma")
     private BigDecimal hlmRsi10Sma;
+    @Column(name = "ohlc_rsi_10_Sma")
+    private BigDecimal ohlcRsi10Sma;
 
     @Column(name = "open_rsi_20_Sma")
     private BigDecimal openRsi20Sma;
@@ -46,33 +65,43 @@ public class CalcRsiTab implements Serializable {
     private BigDecimal atpRsi20Sma;
     @Column(name = "hlm_rsi_20_Sma")
     private BigDecimal hlmRsi20Sma;
+    @Column(name = "ohlc_rsi_20_Sma")
+    private BigDecimal ohlcRsi20Sma;
 
-    @Override
-    public String toString() {
-        return symbol +
-                "," + tradeDate +
-
-                "," + openRsi10Sma +
-                "," + highRsi10Sma +
-                "," + lowRsi10Sma +
-                "," + closeRsi10Sma +
-                "," + lastRsi10Sma +
-                "," + atpRsi10Sma +
-                "," + hlmRsi10Sma +
-
-                "," + openRsi20Sma +
-                "," + highRsi20Sma +
-                "," + lowRsi20Sma +
-                "," + closeRsi20Sma +
-                "," + lastRsi20Sma +
-                "," + atpRsi20Sma +
-                "," + hlmRsi20Sma;
-    }
+//    public String toCsvString() {
+//        return symbol +
+//                "," + tradeDate +
+//
+//                "," + openRsi10Sma +
+//                "," + highRsi10Sma +
+//                "," + lowRsi10Sma +
+//                "," + closeRsi10Sma +
+//                "," + lastRsi10Sma +
+//                "," + atpRsi10Sma +
+//                "," + hlmRsi10Sma +
+//
+//                "," + openRsi20Sma +
+//                "," + highRsi20Sma +
+//                "," + lowRsi20Sma +
+//                "," + closeRsi20Sma +
+//                "," + lastRsi20Sma +
+//                "," + atpRsi20Sma +
+//                "," + hlmRsi20Sma;
+//    }
 
     public void reset() {
         id = null;
         symbol = null;
         tradeDate = null;
+
+        openRsi05Sma = null;
+        highRsi05Sma = null;
+        lowRsi05Sma = null;
+        closeRsi05Sma = null;
+        lastRsi05Sma = null;
+        atpRsi05Sma = null;
+        hlmRsi05Sma = null;
+        ohlcRsi05Sma = null;
 
         openRsi10Sma = null;
         highRsi10Sma = null;
@@ -81,6 +110,7 @@ public class CalcRsiTab implements Serializable {
         lastRsi10Sma = null;
         atpRsi10Sma = null;
         hlmRsi10Sma = null;
+        ohlcRsi10Sma = null;
 
         openRsi20Sma = null;
         highRsi20Sma = null;
@@ -89,6 +119,12 @@ public class CalcRsiTab implements Serializable {
         lastRsi20Sma = null;
         atpRsi20Sma = null;
         hlmRsi20Sma = null;
+        ohlcRsi20Sma = null;
+    }
+
+
+    public static long getSerialVersionUID() {
+        return serialVersionUID;
     }
 
     public Long getId() {
@@ -115,9 +151,68 @@ public class CalcRsiTab implements Serializable {
         this.tradeDate = tradeDate;
     }
 
+    public BigDecimal getOpenRsi05Sma() {
+        return openRsi05Sma;
+    }
 
-    public static long getSerialVersionUID() {
-        return serialVersionUID;
+    public void setOpenRsi05Sma(BigDecimal openRsi05Sma) {
+        this.openRsi05Sma = openRsi05Sma;
+    }
+
+    public BigDecimal getHighRsi05Sma() {
+        return highRsi05Sma;
+    }
+
+    public void setHighRsi05Sma(BigDecimal highRsi05Sma) {
+        this.highRsi05Sma = highRsi05Sma;
+    }
+
+    public BigDecimal getLowRsi05Sma() {
+        return lowRsi05Sma;
+    }
+
+    public void setLowRsi05Sma(BigDecimal lowRsi05Sma) {
+        this.lowRsi05Sma = lowRsi05Sma;
+    }
+
+    public BigDecimal getCloseRsi05Sma() {
+        return closeRsi05Sma;
+    }
+
+    public void setCloseRsi05Sma(BigDecimal closeRsi05Sma) {
+        this.closeRsi05Sma = closeRsi05Sma;
+    }
+
+    public BigDecimal getLastRsi05Sma() {
+        return lastRsi05Sma;
+    }
+
+    public void setLastRsi05Sma(BigDecimal lastRsi05Sma) {
+        this.lastRsi05Sma = lastRsi05Sma;
+    }
+
+    public BigDecimal getAtpRsi05Sma() {
+        return atpRsi05Sma;
+    }
+
+    public void setAtpRsi05Sma(BigDecimal atpRsi05Sma) {
+        this.atpRsi05Sma = atpRsi05Sma;
+    }
+
+    public BigDecimal getHlmRsi05Sma() {
+        return hlmRsi05Sma;
+    }
+
+    public void setHlmRsi05Sma(BigDecimal hlmRsi05Sma) {
+        this.hlmRsi05Sma = hlmRsi05Sma;
+    }
+
+    public BigDecimal getOhlcRsi05Sma() {
+        return ohlcRsi05Sma;
+    }
+
+    public void setOhlcRsi05Sma(BigDecimal ohlcRsi05Sma) {
+        this.ohlcRsi05Sma = ohlcRsi05Sma;
     }
 
     public BigDecimal getOpenRsi10Sma() {
@@ -176,6 +271,14 @@ public class CalcRsiTab implements Serializable {
         this.hlmRsi10Sma = hlmRsi10Sma;
     }
 
+    public BigDecimal getOhlcRsi10Sma() {
+        return ohlcRsi10Sma;
+    }
+
+    public void setOhlcRsi10Sma(BigDecimal ohlcRsi10Sma) {
+        this.ohlcRsi10Sma = ohlcRsi10Sma;
+    }
+
     public BigDecimal getOpenRsi20Sma() {
         return openRsi20Sma;
     }
@@ -231,4 +334,13 @@ public class CalcRsiTab implements Serializable {
     public void setHlmRsi20Sma(BigDecimal hlmRsi20Sma) {
         this.hlmRsi20Sma = hlmRsi20Sma;
     }
+
+    public BigDecimal getOhlcRsi20Sma() {
+        return ohlcRsi20Sma;
+    }
+
+    public void setOhlcRsi20Sma(BigDecimal ohlcRsi20Sma) {
+        this.ohlcRsi20Sma = ohlcRsi20Sma;
+    }
+
 }

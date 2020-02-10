@@ -4,8 +4,8 @@ package org.pra.nse.csv.data;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import org.pra.nse.util.LocalDateDeserializer;
-import org.pra.nse.util.LocalDateSerializer;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -13,10 +13,19 @@ import java.time.LocalDate;
 public class RsiBean implements CalcBean {
 
     private String symbol;
-    @JsonFormat(pattern="yyyy-MM-dd")
+    //@JsonFormat(pattern="yyyy-MM-dd")
     @JsonDeserialize(using = LocalDateDeserializer.class)
     @JsonSerialize(using = LocalDateSerializer.class)
     private LocalDate tradeDate;
+
+    private BigDecimal openRsi05;
+    private BigDecimal highRsi05;
+    private BigDecimal lowRsi05;
+    private BigDecimal closeRsi05;
+    private BigDecimal lastRsi05;
+    private BigDecimal atpRsi05;
+    private BigDecimal hlmRsi05;
+    private BigDecimal ohlcRsi05;
 
     private BigDecimal openRsi10;
     private BigDecimal highRsi10;
@@ -25,6 +34,7 @@ public class RsiBean implements CalcBean {
     private BigDecimal lastRsi10;
     private BigDecimal atpRsi10;
     private BigDecimal hlmRsi10;
+    private BigDecimal ohlcRsi10;
 
     private BigDecimal openRsi20;
     private BigDecimal highRsi20;
@@ -33,11 +43,20 @@ public class RsiBean implements CalcBean {
     private BigDecimal lastRsi20;
     private BigDecimal atpRsi20;
     private BigDecimal hlmRsi20;
-
+    private BigDecimal ohlcRsi20;
 
     public String toCsvString() {
         return symbol +
                 "," + tradeDate +
+
+                "," + openRsi05 +
+                "," + highRsi05 +
+                "," + lowRsi05 +
+                "," + closeRsi05 +
+                "," + lastRsi05 +
+                "," + atpRsi05 +
+                "," + hlmRsi05 +
+                "," + ohlcRsi05 +
 
                 "," + openRsi10 +
                 "," + highRsi10 +
@@ -46,6 +65,7 @@ public class RsiBean implements CalcBean {
                 "," + lastRsi10 +
                 "," + atpRsi10 +
                 "," + hlmRsi10 +
+                "," + ohlcRsi10 +
 
                 "," + openRsi20 +
                 "," + highRsi20 +
@@ -53,7 +73,8 @@ public class RsiBean implements CalcBean {
                 "," + closeRsi20 +
                 "," + lastRsi20 +
                 "," + atpRsi20 +
-                "," + hlmRsi20;
+                "," + hlmRsi20 +
+                "," + ohlcRsi20;
     }
 
     public String getSymbol() {
@@ -70,6 +91,70 @@ public class RsiBean implements CalcBean {
 
     public void setTradeDate(LocalDate tradeDate) {
         this.tradeDate = tradeDate;
+    }
+
+    public BigDecimal getOpenRsi05() {
+        return openRsi05;
+    }
+
+    public void setOpenRsi05(BigDecimal openRsi05) {
+        this.openRsi05 = openRsi05;
+    }
+
+    public BigDecimal getHighRsi05() {
+        return highRsi05;
+    }
+
+    public void setHighRsi05(BigDecimal highRsi05) {
+        this.highRsi05 = highRsi05;
+    }
+
+    public BigDecimal getLowRsi05() {
+        return lowRsi05;
+    }
+
+    public void setLowRsi05(BigDecimal lowRsi05) {
+        this.lowRsi05 = lowRsi05;
+    }
+
+    public BigDecimal getCloseRsi05() {
+        return closeRsi05;
+    }
+
+    public void setCloseRsi05(BigDecimal closeRsi05) {
+        this.closeRsi05 = closeRsi05;
+    }
+
+    public BigDecimal getLastRsi05() {
+        return lastRsi05;
+    }
+
+    public void setLastRsi05(BigDecimal lastRsi05) {
+        this.lastRsi05 = lastRsi05;
+    }
+
+    public BigDecimal getAtpRsi05() {
+        return atpRsi05;
+    }
+
+    public void setAtpRsi05(BigDecimal atpRsi05) {
+        this.atpRsi05 = atpRsi05;
+    }
+
+    public BigDecimal getHlmRsi05() {
+        return hlmRsi05;
+    }
+
+    public void setHlmRsi05(BigDecimal hlmRsi05) {
+        this.hlmRsi05 = hlmRsi05;
+    }
+
+    public BigDecimal getOhlcRsi05() {
+        return ohlcRsi05;
+    }
+
+    public void setOhlcRsi05(BigDecimal ohlcRsi05) {
+        this.ohlcRsi05 = ohlcRsi05;
     }
 
     public BigDecimal getOpenRsi10() {
@@ -128,6 +213,14 @@ public class RsiBean implements CalcBean {
         this.hlmRsi10 = hlmRsi10;
     }
 
+    public BigDecimal getOhlcRsi10() {
+        return ohlcRsi10;
+    }
+
+    public void setOhlcRsi10(BigDecimal ohlcRsi10) {
+        this.ohlcRsi10 = ohlcRsi10;
+    }
+
     public BigDecimal getOpenRsi20() {
         return openRsi20;
     }
@@ -182,5 +275,13 @@ public class RsiBean implements CalcBean {
 
     public void setHlmRsi20(BigDecimal hlmRsi20) {
         this.hlmRsi20 = hlmRsi20;
+    }
+
+    public BigDecimal getOhlcRsi20() {
+        return ohlcRsi20;
+    }
+
+    public void setOhlcRsi20(BigDecimal ohlcRsi20) {
+        this.ohlcRsi20 = ohlcRsi20;
     }
 }

@@ -36,22 +36,20 @@ public class CalcMfiTab implements Serializable {
     private BigDecimal delAtpMfi20Sma;
 
 
-
-    @Override
-    public String toString() {
-        return symbol +
-                "," + tradeDate +
-
-                "," + volAtpMfi05Sma +
-                "," + volAtpMfi10Sma +
-                "," + volAtpMfi15Sma +
-                "," + volAtpMfi20Sma +
-
-                "," + delAtpMfi05Sma +
-                "," + delAtpMfi10Sma +
-                "," + delAtpMfi15Sma +
-                "," + delAtpMfi20Sma;
-    }
+//    public String toCsvString() {
+//        return symbol +
+//                "," + tradeDate +
+//
+//                "," + volAtpMfi05Sma +
+//                "," + volAtpMfi10Sma +
+//                "," + volAtpMfi15Sma +
+//                "," + volAtpMfi20Sma +
+//
+//                "," + delAtpMfi05Sma +
+//                "," + delAtpMfi10Sma +
+//                "," + delAtpMfi15Sma +
+//                "," + delAtpMfi20Sma;
+//    }
 
     public void reset() {
         id = null;

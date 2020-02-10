@@ -10,6 +10,7 @@ import java.time.LocalDate;
 public class LotSizeBean {
     private String symbol;
     private long size;
+    //@JsonFormat(pattern="yyyy-MM-dd")
 //    @JsonDeserialize(using = LocalDateDeserializer.class)
 //    @JsonSerialize(using = LocalDateSerializer.class)
 //    private LocalDate dt;

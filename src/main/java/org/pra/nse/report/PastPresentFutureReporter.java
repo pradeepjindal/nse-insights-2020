@@ -103,7 +103,7 @@ public class PastPresentFutureReporter {
 
     private void produceReport(LocalDate forDate, int forMinusDays, String filePath) {
         // aggregate trade by symbols
-        Map<LocalDate, Map<String, DeliverySpikeDto>> tradeDateAndSymbolWise_DoubleMap = dataService.getRichDataByTradeDateAndSymbol(forDate, forMinusDays);
+        Map<LocalDate, Map<String, DeliverySpikeDto>> tradeDateAndSymbolWise_DoubleMap = dataService.getRichDataByTradeDateAndSymbolWise(forDate, forMinusDays);
 
         //load old Rsi
         List<CalcRsiTab> oldRsiList = calcRsiRepository.findAll();
@@ -129,7 +129,6 @@ public class PastPresentFutureReporter {
                 LOGGER.error(errMsg);
                 throw new RuntimeException(errMsg);
         }
-
 
         // write report
         writeReport(filePath, symbolMap);

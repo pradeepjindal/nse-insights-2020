@@ -11,6 +11,6 @@ public class NumberUtils {
     }
 
     public static BigDecimal divide(BigDecimal to, BigDecimal by) {
-        return to.divide(by, 2, RoundingMode.HALF_UP);
+        return by.compareTo(BigDecimal.ZERO) == 0 ? to : to.divide(by, 2, RoundingMode.HALF_UP);
     }
 }
