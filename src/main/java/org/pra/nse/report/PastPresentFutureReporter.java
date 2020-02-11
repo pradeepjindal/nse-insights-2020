@@ -107,11 +107,29 @@ public class PastPresentFutureReporter {
 
         //load old Rsi
         List<CalcRsiTab> oldRsiList = calcRsiRepository.findAll();
-        ReportHelper.enrichRsi(oldRsiList, tradeDateAndSymbolWise_DoubleMap);
+        //ReportHelper.enrichRsi(oldRsiList, tradeDateAndSymbolWise_DoubleMap);
+        switch (forMinusDays) {
+            case 5: ReportHelper.enrichRsi05(oldRsiList, tradeDateAndSymbolWise_DoubleMap); break;
+            case 10: ReportHelper.enrichRsi10(oldRsiList, tradeDateAndSymbolWise_DoubleMap); break;
+            case 20: ReportHelper.enrichRsi20(oldRsiList, tradeDateAndSymbolWise_DoubleMap); break;
+            default:
+                String errMsg = "enrichGrowth | error - forMinusDays can be either 10 or 20 only (provided forMinusDays:" +forMinusDays+ ")";
+                LOGGER.error(errMsg);
+                throw new RuntimeException(errMsg);
+        }
 
         //load old Mfi
         List<CalcMfiTab> oldMfiList = calcMfiRepository.findAll();
-        ReportHelper.enrichMfi(oldMfiList, tradeDateAndSymbolWise_DoubleMap);
+        //ReportHelper.enrichMfi(oldMfiList, tradeDateAndSymbolWise_DoubleMap);
+        switch (forMinusDays) {
+            case 5: ReportHelper.enrichMfi05(oldMfiList, tradeDateAndSymbolWise_DoubleMap); break;
+            case 10: ReportHelper.enrichMfi10(oldMfiList, tradeDateAndSymbolWise_DoubleMap); break;
+            case 20: ReportHelper.enrichMfi20(oldMfiList, tradeDateAndSymbolWise_DoubleMap); break;
+            default:
+                String errMsg = "enrichGrowth | error - forMinusDays can be either 10 or 20 only (provided forMinusDays:" +forMinusDays+ ")";
+                LOGGER.error(errMsg);
+                throw new RuntimeException(errMsg);
+        }
 
         // load avg
         LocalDate minDate = dateService.getMinTradeDate(forDate, forMinusDays);

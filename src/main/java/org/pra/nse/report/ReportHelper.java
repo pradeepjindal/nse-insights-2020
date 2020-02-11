@@ -35,6 +35,60 @@ public class ReportHelper {
             }
         });
     }
+    public static void enrichRsi05(List<CalcRsiTab> oldRsiList, Map<LocalDate, Map<String, DeliverySpikeDto>> tradeDateAndSymbolWise_DoubleMap) {
+        oldRsiList.forEach( oldRsi -> {
+            if(tradeDateAndSymbolWise_DoubleMap.containsKey(oldRsi.getTradeDate())) {
+                if(tradeDateAndSymbolWise_DoubleMap.get(oldRsi.getTradeDate()).containsKey(oldRsi.getSymbol())) {
+                    DeliverySpikeDto tdyDto = tradeDateAndSymbolWise_DoubleMap.get(oldRsi.getTradeDate()).get(oldRsi.getSymbol());
+                    tdyDto.setCloseRsi(oldRsi.getCloseRsi05Sma());
+                    tdyDto.setLastRsi(oldRsi.getLastRsi05Sma());
+                    tdyDto.setAtpRsi(oldRsi.getAtpRsi05Sma());
+                    // calculating Bells
+                    //calculateBells2(tdyDto);
+                } else {
+                    //LOGGER.warn("old rsi | symbol {} not found for tradeDate {}", oldRsi.getSymbol(), oldRsi.getTradeDate());
+                }
+            } else {
+                //LOGGER.warn("old rsi | tradeDate {} not found for symbol {}", oldRsi.getTradeDate(), oldRsi.getSymbol());
+            }
+        });
+    }
+    public static void enrichRsi10(List<CalcRsiTab> oldRsiList, Map<LocalDate, Map<String, DeliverySpikeDto>> tradeDateAndSymbolWise_DoubleMap) {
+        oldRsiList.forEach( oldRsi -> {
+            if(tradeDateAndSymbolWise_DoubleMap.containsKey(oldRsi.getTradeDate())) {
+                if(tradeDateAndSymbolWise_DoubleMap.get(oldRsi.getTradeDate()).containsKey(oldRsi.getSymbol())) {
+                    DeliverySpikeDto tdyDto = tradeDateAndSymbolWise_DoubleMap.get(oldRsi.getTradeDate()).get(oldRsi.getSymbol());
+                    tdyDto.setCloseRsi(oldRsi.getCloseRsi10Sma());
+                    tdyDto.setLastRsi(oldRsi.getLastRsi10Sma());
+                    tdyDto.setAtpRsi(oldRsi.getAtpRsi10Sma());
+                    // calculating Bells
+                    //calculateBells2(tdyDto);
+                } else {
+                    //LOGGER.warn("old rsi | symbol {} not found for tradeDate {}", oldRsi.getSymbol(), oldRsi.getTradeDate());
+                }
+            } else {
+                //LOGGER.warn("old rsi | tradeDate {} not found for symbol {}", oldRsi.getTradeDate(), oldRsi.getSymbol());
+            }
+        });
+    }
+    public static void enrichRsi20(List<CalcRsiTab> oldRsiList, Map<LocalDate, Map<String, DeliverySpikeDto>> tradeDateAndSymbolWise_DoubleMap) {
+        oldRsiList.forEach( oldRsi -> {
+            if(tradeDateAndSymbolWise_DoubleMap.containsKey(oldRsi.getTradeDate())) {
+                if(tradeDateAndSymbolWise_DoubleMap.get(oldRsi.getTradeDate()).containsKey(oldRsi.getSymbol())) {
+                    DeliverySpikeDto tdyDto = tradeDateAndSymbolWise_DoubleMap.get(oldRsi.getTradeDate()).get(oldRsi.getSymbol());
+                    tdyDto.setCloseRsi(oldRsi.getCloseRsi20Sma());
+                    tdyDto.setLastRsi(oldRsi.getLastRsi20Sma());
+                    tdyDto.setAtpRsi(oldRsi.getAtpRsi20Sma());
+                    // calculating Bells
+                    //calculateBells2(tdyDto);
+                } else {
+                    //LOGGER.warn("old rsi | symbol {} not found for tradeDate {}", oldRsi.getSymbol(), oldRsi.getTradeDate());
+                }
+            } else {
+                //LOGGER.warn("old rsi | tradeDate {} not found for symbol {}", oldRsi.getTradeDate(), oldRsi.getSymbol());
+            }
+        });
+    }
 
     public static void enrichMfi(List<CalcMfiTab> oldMfiList, Map<LocalDate, Map<String, DeliverySpikeDto>> tradeDateAndSymbolWise_DoubleMap) {
         oldMfiList.forEach( oldMfi -> {
@@ -43,6 +97,51 @@ public class ReportHelper {
                     DeliverySpikeDto tdyDto = tradeDateAndSymbolWise_DoubleMap.get(oldMfi.getTradeDate()).get(oldMfi.getSymbol());
                     tdyDto.setVolAtpMfi(oldMfi.getVolAtpMfi10Sma());
                     tdyDto.setDelAtpMfi(oldMfi.getDelAtpMfi10Sma());
+                } else {
+                    //LOGGER.warn("old rsi | symbol {} not found for tradeDate {}", oldRsi.getSymbol(), oldRsi.getTradeDate());
+                }
+            } else {
+                //LOGGER.warn("old rsi | tradeDate {} not found for symbol {}", oldRsi.getTradeDate(), oldRsi.getSymbol());
+            }
+        });
+    }
+    public static void enrichMfi05(List<CalcMfiTab> oldMfiList, Map<LocalDate, Map<String, DeliverySpikeDto>> tradeDateAndSymbolWise_DoubleMap) {
+        oldMfiList.forEach( oldMfi -> {
+            if(tradeDateAndSymbolWise_DoubleMap.containsKey(oldMfi.getTradeDate())) {
+                if(tradeDateAndSymbolWise_DoubleMap.get(oldMfi.getTradeDate()).containsKey(oldMfi.getSymbol())) {
+                    DeliverySpikeDto tdyDto = tradeDateAndSymbolWise_DoubleMap.get(oldMfi.getTradeDate()).get(oldMfi.getSymbol());
+                    tdyDto.setVolAtpMfi(oldMfi.getVolAtpMfi05Sma());
+                    tdyDto.setDelAtpMfi(oldMfi.getDelAtpMfi05Sma());
+                } else {
+                    //LOGGER.warn("old rsi | symbol {} not found for tradeDate {}", oldRsi.getSymbol(), oldRsi.getTradeDate());
+                }
+            } else {
+                //LOGGER.warn("old rsi | tradeDate {} not found for symbol {}", oldRsi.getTradeDate(), oldRsi.getSymbol());
+            }
+        });
+    }
+    public static void enrichMfi10(List<CalcMfiTab> oldMfiList, Map<LocalDate, Map<String, DeliverySpikeDto>> tradeDateAndSymbolWise_DoubleMap) {
+        oldMfiList.forEach( oldMfi -> {
+            if(tradeDateAndSymbolWise_DoubleMap.containsKey(oldMfi.getTradeDate())) {
+                if(tradeDateAndSymbolWise_DoubleMap.get(oldMfi.getTradeDate()).containsKey(oldMfi.getSymbol())) {
+                    DeliverySpikeDto tdyDto = tradeDateAndSymbolWise_DoubleMap.get(oldMfi.getTradeDate()).get(oldMfi.getSymbol());
+                    tdyDto.setVolAtpMfi(oldMfi.getVolAtpMfi10Sma());
+                    tdyDto.setDelAtpMfi(oldMfi.getDelAtpMfi10Sma());
+                } else {
+                    //LOGGER.warn("old rsi | symbol {} not found for tradeDate {}", oldRsi.getSymbol(), oldRsi.getTradeDate());
+                }
+            } else {
+                //LOGGER.warn("old rsi | tradeDate {} not found for symbol {}", oldRsi.getTradeDate(), oldRsi.getSymbol());
+            }
+        });
+    }
+    public static void enrichMfi20(List<CalcMfiTab> oldMfiList, Map<LocalDate, Map<String, DeliverySpikeDto>> tradeDateAndSymbolWise_DoubleMap) {
+        oldMfiList.forEach( oldMfi -> {
+            if(tradeDateAndSymbolWise_DoubleMap.containsKey(oldMfi.getTradeDate())) {
+                if(tradeDateAndSymbolWise_DoubleMap.get(oldMfi.getTradeDate()).containsKey(oldMfi.getSymbol())) {
+                    DeliverySpikeDto tdyDto = tradeDateAndSymbolWise_DoubleMap.get(oldMfi.getTradeDate()).get(oldMfi.getSymbol());
+                    tdyDto.setVolAtpMfi(oldMfi.getVolAtpMfi20Sma());
+                    tdyDto.setDelAtpMfi(oldMfi.getDelAtpMfi20Sma());
                 } else {
                     //LOGGER.warn("old rsi | symbol {} not found for tradeDate {}", oldRsi.getSymbol(), oldRsi.getTradeDate());
                 }

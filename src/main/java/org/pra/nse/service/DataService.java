@@ -411,10 +411,12 @@ public class DataService implements Manager {
         Map<LocalDate, Map<String, DeliverySpikeDto>> tradeDateAndSymbolMap = prepareDataByTradeDateAndSymbol(predicate);
 
         //load old Rsi
+        //TODO fix this
         List<CalcRsiTab> oldRsiList = calcRsiRepository.findAll();
         ReportHelper.enrichRsi(oldRsiList, tradeDateAndSymbolMap);
 
         //load old Mfi
+        //TODO fix this
         List<CalcMfiTab> oldMfiList = calcMfiRepository.findAll();
         ReportHelper.enrichMfi(oldMfiList, tradeDateAndSymbolMap);
 

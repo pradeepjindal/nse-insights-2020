@@ -9,8 +9,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
-import java.time.LocalDate;
-
 import static org.pra.nse.calculation.CalcCons.RSI_FILE_PREFIX;
 import static org.pra.nse.calculation.CalcCons.MFI_FILE_PREFIX;
 import static org.pra.nse.calculation.CalcCons.AVG_FILE_PREFIX;
@@ -84,6 +82,7 @@ public class CalculationManager implements Manager {
                 });
 
         LOGGER.info("======================================== Calculation Manager");
+        //rsiCalculator.calculateAndReturn(LocalDate.of(2020,02,10));
         //rsiCalculator.calculateAndReturn(LocalDate.of(2020,02,10), "BAJAJ-AUTO");
     }
 }

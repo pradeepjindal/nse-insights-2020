@@ -1,12 +1,12 @@
 package org.pra.nse.db.upload;
 
 import org.pra.nse.ApCo;
+import org.pra.nse.calculation.MfiCalculator;
 import org.pra.nse.calculation.CalcCons;
-import org.pra.nse.calculation.RsiCalculator;
-import org.pra.nse.csv.data.RsiBean;
-import org.pra.nse.db.dao.calc.RsiCalculationDao;
-import org.pra.nse.db.model.CalcRsiTab;
-import org.pra.nse.db.repository.CalcRsiRepository;
+import org.pra.nse.csv.data.MfiBean;
+import org.pra.nse.db.dao.calc.MfiCalculationDao;
+import org.pra.nse.db.model.CalcMfiTab;
+import org.pra.nse.db.repository.CalcMfiRepository;
 import org.pra.nse.util.NseFileUtils;
 import org.pra.nse.util.PraFileUtils;
 import org.slf4j.Logger;
@@ -19,24 +19,22 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import static org.pra.nse.calculation.CalcCons.RSI_FILE_PREFIX;
-
 @Component
-public class RsiCalcUploader extends BaseUploader {
-    private static final Logger LOGGER = LoggerFactory.getLogger(RsiCalcUploader.class);
+public class CalcMfiUploader extends BaseUploader {
+    private static final Logger LOGGER = LoggerFactory.getLogger(CalcMfiUploader.class);
 
-    private final String calc_name = CalcCons.RSI_DATA_NAME;
+    private final String calc_name = CalcCons.MFI_DATA_NAME;
 
-    private final RsiCalculationDao dao;
-    private final CalcRsiRepository repo;
-    private final RsiCalculator calculator;
+    private final MfiCalculationDao dao;
+    private final CalcMfiRepository repo;
+    private final MfiCalculator calculator;
 
     private final NseFileUtils nseFileUtils;
     private final PraFileUtils praFileUtils;
 
-    public RsiCalcUploader(RsiCalculationDao dao, CalcRsiRepository repo, RsiCalculator calculator,
+    public CalcMfiUploader(MfiCalculationDao dao, CalcMfiRepository repo, MfiCalculator calculator,
                            NseFileUtils nseFileUtils, PraFileUtils praFileUtils) {
-        super(praFileUtils, CalcCons.RSI_DIR_NAME, RSI_FILE_PREFIX);
+        super(praFileUtils, CalcCons.MFI_DIR_NAME, CalcCons.MFI_FILE_PREFIX);
         this.dao = dao;
         this.repo = repo;
         this.calculator = calculator;
@@ -47,8 +45,8 @@ public class RsiCalcUploader extends BaseUploader {
 
     public void uploadForDate(LocalDate forDate) {
         //
-        String fileName = CalcCons.RSI_FILE_PREFIX +forDate+ ApCo.DATA_FILE_EXT;
-        String fromFile = CalcCons.RSI_FILES_PATH +File.separator+ fileName;
+        String fileName = CalcCons.MFI_FILE_PREFIX +forDate+ ApCo.DATA_FILE_EXT;
+        String fromFile = CalcCons.MFI_FILES_PATH +File.separator+ fileName;
         LOGGER.info("{} upload | looking for file Name along with path:[{}]",calc_name, fromFile);
 
         if(!nseFileUtils.isFileExist(fromFile)) {
@@ -58,7 +56,7 @@ public class RsiCalcUploader extends BaseUploader {
 
         //
         int dataCtr = dao.dataCount(forDate);
-//        List<RsiBean> beans = calculator.calculateAndReturn(forDate);
+//        List<MfiBean> beans = calculator.calculateAndReturn(forDate);
 //        if (dataCtr == 0) {
 //            LOGGER.info("{} upload | uploading | for date:[{}]", calc_name, forDate);
 //            upload(beans);
@@ -69,32 +67,29 @@ public class RsiCalcUploader extends BaseUploader {
 //        }
         if (dataCtr == 0) {
             LOGGER.info("{} upload | uploading | for date:[{}]", calc_name, forDate);
-            List<RsiBean> beans = calculator.calculateAndReturn(forDate);
+            List<MfiBean> beans = calculator.calculateAndReturn(forDate);
             upload(beans);
         }
     }
 
-    private void upload(List<RsiBean> dtos) {
+    private void upload(List<MfiBean> dtos) {
         AtomicInteger recordSucceed = new AtomicInteger();
         AtomicInteger recordFailed = new AtomicInteger();
 
-        CalcRsiTab tab = new CalcRsiTab();
+        CalcMfiTab tab = new CalcMfiTab();
         dtos.forEach(dto -> {
             tab.reset();
             tab.setSymbol(dto.getSymbol());
             tab.setTradeDate(dto.getTradeDate());
 
-            tab.setCloseRsi05Sma(dto.getCloseRsi10());
-            tab.setLastRsi05Sma(dto.getLastRsi10());
-            tab.setAtpRsi05Sma(dto.getAtpRsi10());
+            tab.setVolAtpMfi05Sma(dto.getVolMfi05());
+            tab.setDelAtpMfi05Sma(dto.getDelMfi05());
 
-            tab.setCloseRsi10Sma(dto.getCloseRsi10());
-            tab.setLastRsi10Sma(dto.getLastRsi10());
-            tab.setAtpRsi10Sma(dto.getAtpRsi10());
+            tab.setVolAtpMfi10Sma(dto.getVolMfi10());
+            tab.setDelAtpMfi10Sma(dto.getDelMfi10());
 
-            tab.setCloseRsi20Sma(dto.getCloseRsi20());
-            tab.setLastRsi20Sma(dto.getLastRsi20());
-            tab.setAtpRsi20Sma(dto.getAtpRsi20());
+            tab.setVolAtpMfi20Sma(dto.getVolMfi20());
+            tab.setDelAtpMfi20Sma(dto.getDelMfi20());
 
             try {
                 repo.save(tab);

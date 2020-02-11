@@ -91,22 +91,30 @@ public class RsiCalculator {
         LocalDate latestNseDate = praFileUtils.getLatestNseDate();
         if(forDate.isAfter(latestNseDate)) return Collections.emptyMap();
 
-        LOGGER.info("{} calculating for 20 days", calc_name);
         Map<String, List<DeliverySpikeDto>> symbolMap;
-        symbolMap = dataService.getRawDataBySymbol(forDate, 20, forSymbol);
-
         Map<String, RsiBean> beansMap = new HashMap<>();
+
+        // prepare beans
+        symbolMap = dataService.getRawDataBySymbol(forDate, 1);
         symbolMap.values().forEach( list -> {
+//            if (list.size() != 1) {
+//                LOGGER.error("{} data discrepancy - aborting", calc_name);
+//                throw new RuntimeException("data discrepancy");
+//            }
             list.forEach( dto -> {
-                if (dto.getTradeDate().compareTo(forDate) == 0) {
-                    RsiBean bean = new RsiBean();
-                    bean.setSymbol(dto.getSymbol());
-                    bean.setTradeDate(dto.getTradeDate());
-                    beansMap.put(dto.getSymbol(), bean);
-                }
+//                if (dto.getTradeDate().compareTo(forDate) != 0) {
+//                    LOGGER.error("{} data discrepancy - aborting", calc_name);
+//                    throw new RuntimeException("data discrepancy");
+//                }
+                RsiBean bean = new RsiBean();
+                bean.setSymbol(dto.getSymbol());
+                bean.setTradeDate(dto.getTradeDate());
+                beansMap.put(dto.getSymbol(), bean);
             });
         });
 
+        LOGGER.info("{} calculating for 20 days", calc_name);
+        symbolMap = dataService.getRawDataBySymbol(forDate, 20);
         loopIt(forDate, symbolMap,
                 (dto, rsi) -> beansMap.get(dto.getSymbol()).setAtpRsi20(rsi),
                 (dto, rsi) -> beansMap.get(dto.getSymbol()).setCloseRsi20(rsi),
@@ -114,7 +122,7 @@ public class RsiCalculator {
         );
 
         LOGGER.info("{} calculating for 10 days", calc_name);
-        symbolMap = dataService.getRawDataBySymbol(forDate, 10, forSymbol);
+        symbolMap = dataService.getRawDataBySymbol(forDate, 10);
         loopIt(forDate, symbolMap,
                 (dto, rsi) -> beansMap.get(dto.getSymbol()).setAtpRsi10(rsi),
                 (dto, rsi) -> beansMap.get(dto.getSymbol()).setCloseRsi10(rsi),
@@ -122,7 +130,7 @@ public class RsiCalculator {
         );
 
         LOGGER.info("{} calculating for 05 days", calc_name);
-        symbolMap = dataService.getRawDataBySymbol(forDate, 5, forSymbol);
+        symbolMap = dataService.getRawDataBySymbol(forDate, 5);
         loopIt(forDate, symbolMap,
                 (dto, rsi) -> beansMap.get(dto.getSymbol()).setAtpRsi05(rsi),
                 (dto, rsi) -> beansMap.get(dto.getSymbol()).setCloseRsi05(rsi),
@@ -142,7 +150,6 @@ public class RsiCalculator {
         symbolDtoMap.forEach( (symbol, list) -> {
             calculate(forDate, symbol, list,
                     dto -> {
-//                        LOGGER.info("dt:{}, val:{}, del:{}, oi:{}", dto.getTradeDate(), dto.getVolume, dto.getDelivery, oiSumMap.get(dto.getSymbol());
                         LOGGER.debug("calc+:{}", dto.getTdyatpMinusYesatp());
                         return dto.getTdyatpMinusYesatp();
                     },
@@ -177,6 +184,8 @@ public class RsiCalculator {
         short upCtr = 0;
         BigDecimal dn = BigDecimal.ZERO;
         short dnCtr = 0;
+
+        LOGGER.debug("spikeDtoList size {}", spikeDtoList.size());
         DeliverySpikeDto latestDto = null;
         for(DeliverySpikeDto dsDto:spikeDtoList) {
             //LOGGER.info("loopDto = {}", dsDto.toFullCsvString());
@@ -254,9 +263,9 @@ public class RsiCalculator {
         //LOGGER.info("for symbol = {}, rsi = {}", symbol, rsi);
     }
 
-    private void saveToCsv(LocalDate forDate, List<RsiBean> dtos) {
+    private void saveToCsv(LocalDate forDate, List<RsiBean> beans) {
         String computeToFilePath = getComputeOutputPath(forDate);
-        RsiCao.saveOverWrite(csv_header, dtos, computeToFilePath, dto -> dto.toCsvString());
+        RsiCao.saveOverWrite(csv_header, beans, computeToFilePath, bean -> bean.toCsvString());
         LOGGER.info("{} | saved on disk ({})", calc_name, computeToFilePath);
     }
 

@@ -19,7 +19,6 @@ import org.springframework.stereotype.Component;
 
 import java.io.File;
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.*;
 import java.util.function.BiConsumer;
@@ -92,11 +91,11 @@ public class AvgCalculator {
         LocalDate latestNseDate = praFileUtils.getLatestNseDate();
         if(forDate.isAfter(latestNseDate)) return Collections.emptyMap();
 
-        LOGGER.info("{} calculating for 20 days", calc_name);
         Map<String, List<DeliverySpikeDto>> symbolMap;
-        symbolMap = dataService.getRawDataBySymbol(forDate, 20);
-
         Map<String, AvgBean> beansMap = new HashMap<>();
+
+        // prepare beans
+        symbolMap = dataService.getRawDataBySymbol(forDate, 1);
         symbolMap.values().forEach( list -> {
             list.forEach( dto -> {
                 if (dto.getTradeDate().compareTo(forDate) == 0) {
@@ -108,6 +107,8 @@ public class AvgCalculator {
             });
         });
 
+        LOGGER.info("{} calculating for 20 days", calc_name);
+        symbolMap = dataService.getRawDataBySymbol(forDate, 20);
         loopIt(forDate, symbolMap,
                 (dto, avg) -> beansMap.get(dto.getSymbol()).setAtpAvg20(avg),
                 (dto, avg) -> beansMap.get(dto.getSymbol()).setVolAvg20(avg),
@@ -216,9 +217,9 @@ public class AvgCalculator {
         //LOGGER.info("for symbol = {}, avg = {}", symbol, avg);
     }
 
-    private void saveToCsv(LocalDate forDate, List<AvgBean> dtos) {
+    private void saveToCsv(LocalDate forDate, List<AvgBean> beans) {
         String computeToFilePath = getComputeOutputPath(forDate);
-        AvgCao.saveOverWrite(csv_header, dtos, computeToFilePath, dto -> dto.toCsvString());
+        AvgCao.saveOverWrite(csv_header, beans, computeToFilePath, bean -> bean.toCsvString());
         LOGGER.info("{} | saved on disk ({})", calc_name, computeToFilePath);
     }
 

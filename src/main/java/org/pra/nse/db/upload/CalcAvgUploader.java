@@ -1,12 +1,12 @@
 package org.pra.nse.db.upload;
 
 import org.pra.nse.ApCo;
-import org.pra.nse.calculation.MfiCalculator;
+import org.pra.nse.calculation.AvgCalculator;
 import org.pra.nse.calculation.CalcCons;
-import org.pra.nse.csv.data.MfiBean;
-import org.pra.nse.db.dao.calc.MfiCalculationDao;
-import org.pra.nse.db.model.CalcMfiTab;
-import org.pra.nse.db.repository.CalcMfiRepository;
+import org.pra.nse.csv.data.AvgBean;
+import org.pra.nse.db.dao.calc.AvgCalculationDao;
+import org.pra.nse.db.model.CalcAvgTab;
+import org.pra.nse.db.repository.CalcAvgRepository;
 import org.pra.nse.util.NseFileUtils;
 import org.pra.nse.util.PraFileUtils;
 import org.slf4j.Logger;
@@ -19,22 +19,24 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import static org.pra.nse.calculation.CalcCons.AVG_FILE_PREFIX;
+
 @Component
-public class MfiCalcUploader extends BaseUploader {
-    private static final Logger LOGGER = LoggerFactory.getLogger(MfiCalcUploader.class);
+public class CalcAvgUploader extends BaseUploader {
+    private static final Logger LOGGER = LoggerFactory.getLogger(CalcAvgUploader.class);
 
-    private final String calc_name = CalcCons.MFI_DATA_NAME;
+    private final String calc_name = CalcCons.AVG_DATA_NAME;
 
-    private final MfiCalculationDao dao;
-    private final CalcMfiRepository repo;
-    private final MfiCalculator calculator;
+    private final AvgCalculationDao dao;
+    private final CalcAvgRepository repo;
+    private final AvgCalculator calculator;
 
     private final NseFileUtils nseFileUtils;
     private final PraFileUtils praFileUtils;
 
-    public MfiCalcUploader(MfiCalculationDao dao, CalcMfiRepository repo, MfiCalculator calculator,
+    public CalcAvgUploader(AvgCalculationDao dao, CalcAvgRepository repo, AvgCalculator calculator,
                            NseFileUtils nseFileUtils, PraFileUtils praFileUtils) {
-        super(praFileUtils, CalcCons.MFI_DIR_NAME, CalcCons.MFI_FILE_PREFIX);
+        super(praFileUtils, CalcCons.AVG_DIR_NAME, AVG_FILE_PREFIX);
         this.dao = dao;
         this.repo = repo;
         this.calculator = calculator;
@@ -42,11 +44,10 @@ public class MfiCalcUploader extends BaseUploader {
         this.praFileUtils = praFileUtils;
     }
 
-
     public void uploadForDate(LocalDate forDate) {
         //
-        String fileName = CalcCons.MFI_FILE_PREFIX +forDate+ ApCo.DATA_FILE_EXT;
-        String fromFile = CalcCons.MFI_FILES_PATH +File.separator+ fileName;
+        String fileName = CalcCons.AVG_FILE_PREFIX +forDate+ ApCo.DATA_FILE_EXT;
+        String fromFile = CalcCons.AVG_FILES_PATH +File.separator+ fileName;
         LOGGER.info("{} upload | looking for file Name along with path:[{}]",calc_name, fromFile);
 
         if(!nseFileUtils.isFileExist(fromFile)) {
@@ -56,7 +57,7 @@ public class MfiCalcUploader extends BaseUploader {
 
         //
         int dataCtr = dao.dataCount(forDate);
-//        List<MfiBean> beans = calculator.calculateAndReturn(forDate);
+//        List<AvgBean> beans = calculator.calculateAndReturn(forDate);
 //        if (dataCtr == 0) {
 //            LOGGER.info("{} upload | uploading | for date:[{}]", calc_name, forDate);
 //            upload(beans);
@@ -67,29 +68,35 @@ public class MfiCalcUploader extends BaseUploader {
 //        }
         if (dataCtr == 0) {
             LOGGER.info("{} upload | uploading | for date:[{}]", calc_name, forDate);
-            List<MfiBean> beans = calculator.calculateAndReturn(forDate);
+            List<AvgBean> beans = calculator.calculateAndReturn(forDate);
             upload(beans);
         }
     }
 
-    private void upload(List<MfiBean> dtos) {
+    private void upload(List<AvgBean> dtos) {
         AtomicInteger recordSucceed = new AtomicInteger();
         AtomicInteger recordFailed = new AtomicInteger();
 
-        CalcMfiTab tab = new CalcMfiTab();
+        CalcAvgTab tab = new CalcAvgTab();
         dtos.forEach(dto -> {
             tab.reset();
             tab.setSymbol(dto.getSymbol());
             tab.setTradeDate(dto.getTradeDate());
 
-            tab.setVolAtpMfi05Sma(dto.getVolMfi10());
-            tab.setDelAtpMfi05Sma(dto.getDelMfi10());
+            tab.setAtpAvg05Sma(dto.getAtpAvg05());
+            tab.setVolAvg05Sma(dto.getVolAvg05());
+            tab.setDelAvg05Sma(dto.getDelAvg05());
+            tab.setOiAvg05Sma(dto.getFoiAvg05());
 
-            tab.setVolAtpMfi10Sma(dto.getVolMfi10());
-            tab.setDelAtpMfi10Sma(dto.getDelMfi10());
+            tab.setAtpAvg10Sma(dto.getAtpAvg10());
+            tab.setVolAvg10Sma(dto.getVolAvg10());
+            tab.setDelAvg10Sma(dto.getDelAvg10());
+            tab.setOiAvg10Sma(dto.getFoiAvg10());
 
-            tab.setVolAtpMfi20Sma(dto.getVolMfi20());
-            tab.setDelAtpMfi20Sma(dto.getDelMfi20());
+            tab.setAtpAvg20Sma(dto.getAtpAvg20());
+            tab.setVolAvg20Sma(dto.getVolAvg20());
+            tab.setDelAvg20Sma(dto.getDelAvg20());
+            tab.setOiAvg20Sma(dto.getFoiAvg20());
 
             try {
                 repo.save(tab);

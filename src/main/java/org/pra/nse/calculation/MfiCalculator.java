@@ -18,7 +18,6 @@ import org.springframework.stereotype.Component;
 
 import java.io.File;
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.*;
 import java.util.function.BiConsumer;
@@ -89,11 +88,11 @@ public class MfiCalculator {
         LocalDate latestNseDate = praFileUtils.getLatestNseDate();
         if(forDate.isAfter(latestNseDate)) return Collections.emptyMap();
 
-        LOGGER.info("{} calculating for 20 days", calc_name);
         Map<String, List<DeliverySpikeDto>> symbolMap;
-        symbolMap = dataService.getRawDataBySymbol(forDate, 20);
-
         Map<String, MfiBean> beansMap = new HashMap<>();
+
+        // prepare beans
+        symbolMap = dataService.getRawDataBySymbol(forDate, 1);
         symbolMap.values().forEach( list -> {
             list.forEach( dto -> {
                 if (dto.getTradeDate().compareTo(forDate) == 0) {
@@ -105,6 +104,8 @@ public class MfiCalculator {
             });
         });
 
+        LOGGER.info("{} calculating for 20 days", calc_name);
+        symbolMap = dataService.getRawDataBySymbol(forDate, 20);
         loopIt(forDate, symbolMap,
                 (dto, mfi) -> beansMap.get(dto.getSymbol()).setVolMfi20(mfi),
                 (dto, mfi) -> beansMap.get(dto.getSymbol()).setDelMfi20(mfi)
@@ -172,14 +173,17 @@ public class MfiCalculator {
                             List<DeliverySpikeDto> spikeDtoList,
                             Function<DeliverySpikeDto, BigDecimal> functionSupplier,
                             BiConsumer<DeliverySpikeDto, BigDecimal> biConsumer) {
-        // calculate mfi for each s symbol
-        //LOGGER.info("mfi | for symbol = {}", symbol);
+//        if(spikeDtoList.size() != 10) {
+//            LOGGER.warn("size of the dto list is not 10, it is {}, for {}", spikeDtoList.size(), spikeDtoList.get(0).getSymbol());
+//        }
 
+        //LOGGER.info("mfi | for symbol = {}", symbol);
         short upCtr = 0;
         BigDecimal up = BigDecimal.ZERO;
         short dnCtr = 0;
         BigDecimal dn = BigDecimal.ZERO;
 
+        LOGGER.debug("spikeDtoList size {}", spikeDtoList.size());
         DeliverySpikeDto latestDto = null;
         for(DeliverySpikeDto dsDto:spikeDtoList) {
             //LOGGER.info("loopDto = {}", dsDto.toFullCsvString());
@@ -235,9 +239,9 @@ public class MfiCalculator {
         //LOGGER.info("for symbol = {}, mfi = {}", symbol, mfi);
     }
 
-    private void saveToCsv(LocalDate forDate, List<MfiBean> dtos) {
+    private void saveToCsv(LocalDate forDate, List<MfiBean> beans) {
         String computeToFilePath = getComputeOutputPath(forDate);
-        MfiCao.saveOverWrite(csv_header, dtos, computeToFilePath, dto -> dto.toCsvString());
+        MfiCao.saveOverWrite(csv_header, beans, computeToFilePath, bean -> bean.toCsvString());
         LOGGER.info("{} | saved on disk ({})", calc_name, computeToFilePath);
     }
 

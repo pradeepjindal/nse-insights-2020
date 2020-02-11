@@ -9,14 +9,14 @@ import org.springframework.stereotype.Component;
 public class CalcUploadManager implements Manager {
     private static final Logger LOGGER = LoggerFactory.getLogger(CalcUploadManager.class);
 
-    private final AvgCalcUploader avgCalcUploader;
-    private final RsiCalcUploader rsiCalcUploader;
-    private final MfiCalcUploader mfiCalcUploader;
+    private final CalcAvgUploader calcAvgUploader;
+    private final CalcRsiUploader calcRsiUploader;
+    private final CalcMfiUploader calcMfiUploader;
 
-    public CalcUploadManager(AvgCalcUploader avgCalcUploader, RsiCalcUploader rsiCalcUploader, MfiCalcUploader mfiCalcUploader) {
-        this.avgCalcUploader = avgCalcUploader;
-        this.rsiCalcUploader = rsiCalcUploader;
-        this.mfiCalcUploader = mfiCalcUploader;
+    public CalcUploadManager(CalcAvgUploader calcAvgUploader, CalcRsiUploader calcRsiUploader, CalcMfiUploader calcMfiUploader) {
+        this.calcAvgUploader = calcAvgUploader;
+        this.calcRsiUploader = calcRsiUploader;
+        this.calcMfiUploader = calcMfiUploader;
     }
 
     @Override
@@ -24,17 +24,17 @@ public class CalcUploadManager implements Manager {
         LOGGER.info(".");
         LOGGER.info("____________________ CALC - Upload Manager");
 
-        avgCalcUploader.uploadFromLastDate();
+        calcAvgUploader.uploadFromLastDate();
         LOGGER.info("----------");
-        rsiCalcUploader.uploadFromLastDate();
+        calcRsiUploader.uploadFromLastDate();
         LOGGER.info("----------");
-        mfiCalcUploader.uploadFromLastDate();
+        calcMfiUploader.uploadFromLastDate();
 
-//        avgCalcUploader.uploadFromDefaultDate();
+//        calcAvgUploader.uploadFromDefaultDate();
 //        LOGGER.info("----------");
-//        rsiCalcUploader.uploadFromDefaultDate();
+//        calcRsiUploader.uploadFromDefaultDate();
 //        LOGGER.info("----------");
-//        mfiCalcUploader.uploadFromDefaultDate();
+//        calcMfiUploader.uploadFromDefaultDate();
 
         LOGGER.info("======================================== CALC - Upload Manager");
     }
