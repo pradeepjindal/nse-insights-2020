@@ -74,27 +74,27 @@ public class CalcRsiUploader extends BaseUploader {
         }
     }
 
-    private void upload(List<RsiBean> dtos) {
+    private void upload(List<RsiBean> beans) {
         AtomicInteger recordSucceed = new AtomicInteger();
         AtomicInteger recordFailed = new AtomicInteger();
 
         CalcRsiTab tab = new CalcRsiTab();
-        dtos.forEach(dto -> {
+        beans.forEach(bean -> {
             tab.reset();
-            tab.setSymbol(dto.getSymbol());
-            tab.setTradeDate(dto.getTradeDate());
+            tab.setSymbol(bean.getSymbol());
+            tab.setTradeDate(bean.getTradeDate());
 
-            tab.setCloseRsi05Sma(dto.getCloseRsi05());
-            tab.setLastRsi05Sma(dto.getLastRsi05());
-            tab.setAtpRsi05Sma(dto.getAtpRsi05());
+            tab.setCloseRsi05Sma(bean.getCloseRsi05());
+            tab.setLastRsi05Sma(bean.getLastRsi05());
+            tab.setAtpRsi05Sma(bean.getAtpRsi05());
 
-            tab.setCloseRsi10Sma(dto.getCloseRsi10());
-            tab.setLastRsi10Sma(dto.getLastRsi10());
-            tab.setAtpRsi10Sma(dto.getAtpRsi10());
+            tab.setCloseRsi10Sma(bean.getCloseRsi10());
+            tab.setLastRsi10Sma(bean.getLastRsi10());
+            tab.setAtpRsi10Sma(bean.getAtpRsi10());
 
-            tab.setCloseRsi20Sma(dto.getCloseRsi20());
-            tab.setLastRsi20Sma(dto.getLastRsi20());
-            tab.setAtpRsi20Sma(dto.getAtpRsi20());
+            tab.setCloseRsi20Sma(bean.getCloseRsi20());
+            tab.setLastRsi20Sma(bean.getLastRsi20());
+            tab.setAtpRsi20Sma(bean.getAtpRsi20());
 
             try {
                 repo.save(tab);

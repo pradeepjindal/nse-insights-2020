@@ -1,6 +1,7 @@
 package org.pra.nse.report;
 
 import org.pra.nse.ApCo;
+import org.pra.nse.refdata.RefData;
 import org.pra.nse.service.DataService;
 import org.pra.nse.db.dto.DeliverySpikeDto;
 import org.pra.nse.db.model.CalcAvgTab;
@@ -149,10 +150,15 @@ public class PastPresentFutureReporter {
                 throw new RuntimeException(errMsg);
         }
 
+        // lot size
+        Map<String, List<DeliverySpikeDto>> tdySymbolMap = dataService.getRichDataBySymbol(forDate, 1);
+        List<DeliverySpikeDto> tdyDtos = symbolMap.values().stream().flatMap(List::stream).collect(Collectors.toList());
+        tdyDtos.forEach( dto -> dto.setLotSize(RefData.getLotSize(dto.getSymbol())) );
+
         // write report
         writeReport(filePath, symbolMap);
-        String str = "PPF-" +forDate+ " (" +forMinusDays+ ")";
-        email(null, str, str, filePath);
+        String str = "PPF-" +forDate+ "-(" +forMinusDays+ ").csv";
+        //email(null, str, str, filePath);
     }
 
     private boolean filterDate(CalcAvgTab pojo, LocalDate minDate, LocalDate maxDate) {

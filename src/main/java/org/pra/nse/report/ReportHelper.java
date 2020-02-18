@@ -173,7 +173,7 @@ public class ReportHelper {
                 BigDecimal foiDynOnePercent = calcAvgMap.get(dto.getSymbol()).getOiAvg05Sma().divide(hundred, 2, RoundingMode.HALF_UP);
                 //
                 sumDelivery.setValue(sumDelivery.getValue().add(dto.getDelivery()));
-
+                //TODO refactor it
                 if(previousDate.getValue() == null || previousDate.getValue().isBefore(dto.getTradeDate())) {
                     previousDate.setValue(dto.getTradeDate());
                     dto.setDelAccumulation(sumDelivery.getValue().divide(onePercentOfExpectedDelivery, 2, RoundingMode.HALF_UP));

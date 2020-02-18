@@ -9,11 +9,11 @@ public class ApCo {
 
     public static final LocalTime DAILY_DOWNLOAD_TIME = LocalTime.of(18,0,0,0);
     //
-    public static final LocalDate DOWNLOAD_FROM_DATE = LocalDate.of(2020,2,10);
-    public static final LocalDate CALC_FROM_DATE = LocalDate.of(2020,2,10);
-    public static final LocalDate UPLOAD_FROM_DATE = LocalDate.of(2020, 2,10);
-    public static final LocalDate REPORTS_FROM_DATE = LocalDate.of(2020,2,10);
-    public static final LocalDate EMAIL_FROM_DATE = LocalDate.of(2020,2,10);
+    public static final LocalDate DOWNLOAD_FROM_DATE = LocalDate.of(2020,2,15);
+    public static final LocalDate CALC_FROM_DATE = LocalDate.of(2020,2,15);
+    public static final LocalDate UPLOAD_FROM_DATE = LocalDate.of(2020, 2,15);
+    public static final LocalDate REPORTS_FROM_DATE = LocalDate.of(2020,2,15);
+    public static final LocalDate EMAIL_FROM_DATE = LocalDate.of(2020,2,15);
 
 
     public static final boolean EMAIL_ENABLED = true;
@@ -37,6 +37,7 @@ public class ApCo {
 
 //    public static final String REPORTS_DIR_NAME_PPF = "reports-ppf";
     public static final String REPORTS_DIR_NAME_PPF = "reports-ppf-tmp";
+    public static final String REPORTS_DIR_NAME_PPF_NEW = "reports-ppf-new";
 
         public static final String REPORTS_DIR_NAME_MANISH = "reports-manish";
         public static final String REPORTS_DIR_NAME_SHUVI = "reports-shuvi";

@@ -139,7 +139,7 @@ public class DataService implements Manager {
     private void backFill() {
         fillTheCalcFields();
         fillTheNext();
-        fillTheIndicators();
+        //fillTheIndicators();
     }
 
     private Predicate<DeliverySpikeDto> predicateIt(LocalDate forDate, int forMinusDays, String forSymbol) {
@@ -233,49 +233,6 @@ public class DataService implements Manager {
         return symbol.toUpperCase().equals(dto.getSymbol());
     }
 
-    private void fillTheCalcFields() {
-        LOGGER.info("DataManager - fillTheCalcFields");
-        BigDecimal TWO = new BigDecimal(2);
-        BigDecimal FOUR = new BigDecimal(4);
-        BigDecimal HUNDRED = new BigDecimal(100);
-        BigDecimal onePercent = null;
-
-        BigDecimal ohlcSum = null;
-        BigDecimal diff = null;
-        BigDecimal highLowDiffByHalf = null;
-        BigDecimal biggerValue = null;
-        BigDecimal smallerValue = null;
-        for(DeliverySpikeDto row:dbResults) {
-            //ohlc
-            ohlcSum = row.getOpen().add(row.getHigh()).add(row.getLow()).add(row.getClose());
-            row.setOhlc(NumberUtils.divide(ohlcSum, FOUR));
-            //hlm
-            diff = row.getHigh().subtract(row.getLow());
-            highLowDiffByHalf = NumberUtils.divide(diff, TWO);
-            row.setHighLowMid(row.getLow().add(highLowDiffByHalf));
-            //hlp
-            onePercent = NumberUtils.onePercent(row.getOpen());
-            row.setHighLowPct(NumberUtils.divide(diff, onePercent));
-            //closeToLastPct
-
-            if(row.getLast().compareTo(row.getClose()) == 1) {
-                biggerValue = row.getLast();
-                smallerValue = row.getClose();
-                    onePercent = NumberUtils.onePercent(smallerValue);
-                    diff = biggerValue.subtract(smallerValue);
-                    row.setCloseToLastPercent(NumberUtils.divide(diff, onePercent));
-            } else if (row.getClose().compareTo(row.getLast()) == 1) {
-                biggerValue = row.getLast();
-                smallerValue = row.getClose();
-                    onePercent = NumberUtils.onePercent(smallerValue);
-                    diff = biggerValue.subtract(smallerValue);
-                    row.setCloseToLastPercent(NumberUtils.divide(diff, onePercent));
-            } else {
-                row.setCloseToLastPercent(BigDecimal.ZERO);
-            }
-
-        }
-    }
 
     private void fillTheOi() {
         LOGGER.info("DataManager - fillTheOi");
@@ -310,6 +267,57 @@ public class DataService implements Manager {
                 //LOGGER.warn("oi not found, {} for {}", row.getSymbol(), row.getTradeDate());
             }
         });
+    }
+
+    private void fillTheCalcFields() {
+        LOGGER.info("DataManager - fillTheCalcFields");
+        BigDecimal TWO = new BigDecimal(2);
+        BigDecimal FOUR = new BigDecimal(4);
+        BigDecimal HUNDRED = new BigDecimal(100);
+        BigDecimal onePercent = null;
+
+        BigDecimal ohlcSum = null;
+        BigDecimal diff = null;
+        BigDecimal highLowDiffByHalf = null;
+        BigDecimal biggerValue = null;
+        BigDecimal smallerValue = null;
+        for(DeliverySpikeDto row:dbResults) {
+            //ohlc
+            ohlcSum = row.getOpen().add(row.getHigh()).add(row.getLow()).add(row.getClose());
+            row.setOhlc(NumberUtils.divide(ohlcSum, FOUR));
+
+            //hld
+            diff = row.getHigh().subtract(row.getLow());
+            row.setHighLowDiff(diff);
+            //hlm
+            highLowDiffByHalf = NumberUtils.divide(diff, TWO);
+            row.setHighLowMid(row.getLow().add(highLowDiffByHalf));
+
+            //hlp
+            onePercent = NumberUtils.onePercent(row.getOpen());
+            row.setHighLowPct(NumberUtils.divide(diff, onePercent));
+
+            //closeToLastPct
+            if(row.getLast().compareTo(row.getClose()) == 1) {
+                biggerValue = row.getLast();
+                smallerValue = row.getClose();
+                    onePercent = NumberUtils.onePercent(smallerValue);
+                    diff = biggerValue.subtract(smallerValue);
+                    row.setCloseToLastPercent(NumberUtils.divide(diff, onePercent));
+            } else if (row.getClose().compareTo(row.getLast()) == 1) {
+                biggerValue = row.getLast();
+                smallerValue = row.getClose();
+                    onePercent = NumberUtils.onePercent(smallerValue);
+                    diff = biggerValue.subtract(smallerValue);
+                    row.setCloseToLastPercent(NumberUtils.divide(diff, onePercent));
+            } else {
+                row.setCloseToLastPercent(BigDecimal.ZERO);
+            }
+
+            //vdr
+            row.setVdr(NumberUtils.divide(row.getVolume(), row.getDelivery()));
+
+        }
     }
 
     private void fillTheNext() {
@@ -404,7 +412,7 @@ public class DataService implements Manager {
 //                    return true;
 //                }).count();
 //    }
-    private void fillTheIndicators() {
+    private void fillTheIndicatorsChg() {
         LOGGER.info("DataManager - fillTheIndicators");
         LocalDate minDate = minDate(latestDbDate, 21);
         Predicate<DeliverySpikeDto> predicate = dto -> filterDate(dto, minDate, latestDbDate);
@@ -425,28 +433,33 @@ public class DataService implements Manager {
         BigDecimal onePercent = null;
         BigDecimal diff = null;
         BigDecimal chg = null;
-        for(DeliverySpikeDto dto:dbResults) {
-            if(dto.getTradeDate().isAfter(tradeDates_Desc_LinkedList.get(20))) {
+        for(DeliverySpikeDto tdyDto:dbResults) {
+            if(tdyDto.getTradeDate().isAfter(tradeDates_Desc_LinkedList.get(20))) {
                 backDto = null;
-                backDate = backDateMap.get(dto.getTradeDate());
+                backDate = backDateMap.get(tdyDto.getTradeDate());
                 if(tradeDateAndSymbolMap.containsKey(backDate))
-                    backDto = tradeDateAndSymbolMap.get(backDate).get(dto.getSymbol());
+                    backDto = tradeDateAndSymbolMap.get(backDate).get(tdyDto.getSymbol());
                 if (backDto == null) {
-                    LOGGER.warn("{} - backDto is null for: {}", dto.getSymbol(), backDate);
+                    LOGGER.warn("{} - backDto is null for: {}", tdyDto.getSymbol(), backDate);
                 } else if (backDto.getDelAtpMfi() == null) {
-                    LOGGER.warn("{} - DelAtpMfi is null for: {}", dto.getSymbol(), backDate);
+                    LOGGER.warn("{} - DelAtpMfi is null for: {}", tdyDto.getSymbol(), backDate);
                 } else if (backDto.getAtpRsi() == null) {
-                    LOGGER.warn("{} - AtpRsi is null for: {}", dto.getSymbol(), backDate);
+                    LOGGER.warn("{} - AtpRsi is null for: {}", tdyDto.getSymbol(), backDate);
                 } else {
-                    onePercent = backDto.getDelAtpMfi().divide(NumberUtils.HUNDRED, 2, RoundingMode.HALF_UP);
-                    diff = dto.getDelAtpMfi().divide(onePercent, 2, RoundingMode.HALF_UP);
+                    //TODO no need to do percent calc here, it is already in 0 to 100 range
+                    //onePercent = backDto.getDelAtpMfi().divide(NumberUtils.HUNDRED, 2, RoundingMode.HALF_UP);
+                    onePercent = NumberUtils.onePercent(backDto.getDelAtpMfi());
+                    //diff = dto.getDelAtpMfi().divide(onePercent, 2, RoundingMode.HALF_UP);
+                    diff = NumberUtils.divide(tdyDto.getDelAtpMfi(), onePercent);
                     chg = diff.subtract(NumberUtils.HUNDRED);
-                    dto.setDelAtpMfiChg(chg);
+                    tdyDto.setDelAtpMfiChg(chg);
 
-                    onePercent = backDto.getAtpRsi().divide(NumberUtils.HUNDRED, 2, RoundingMode.HALF_UP);
-                    diff = dto.getAtpRsi().divide(onePercent, 2, RoundingMode.HALF_UP);
+                    //onePercent = backDto.getAtpRsi().divide(NumberUtils.HUNDRED, 2, RoundingMode.HALF_UP);
+                    onePercent = NumberUtils.onePercent(backDto.getAtpRsi());
+                    //diff = dto.getAtpRsi().divide(onePercent, 2, RoundingMode.HALF_UP);
+                    diff = NumberUtils.divide(tdyDto.getAtpRsi(), onePercent);
                     chg = diff.subtract(NumberUtils.HUNDRED);
-                    dto.setAtpRsiChg(chg);
+                    tdyDto.setAtpRsiChg(chg);
                 }
             }
         }

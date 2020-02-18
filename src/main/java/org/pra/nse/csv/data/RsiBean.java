@@ -18,6 +18,25 @@ public class RsiBean implements CalcBean {
     @JsonSerialize(using = LocalDateSerializer.class)
     private LocalDate tradeDate;
 
+    private BigDecimal openRsi;
+    private BigDecimal highRsi;
+    private BigDecimal lowRsi;
+    private BigDecimal closeRsi;
+    private BigDecimal lastRsi;
+    private BigDecimal atpRsi;
+    private BigDecimal hlmRsi;
+    private BigDecimal ohlcRsi;
+
+
+    private BigDecimal openRsi03;
+    private BigDecimal highRsi03;
+    private BigDecimal lowRsi03;
+    private BigDecimal closeRsi03;
+    private BigDecimal lastRsi03;
+    private BigDecimal atpRsi03;
+    private BigDecimal hlmRsi03;
+    private BigDecimal ohlcRsi03;
+
     private BigDecimal openRsi05;
     private BigDecimal highRsi05;
     private BigDecimal lowRsi05;
@@ -48,6 +67,15 @@ public class RsiBean implements CalcBean {
     public String toCsvString() {
         return symbol +
                 "," + tradeDate +
+
+                "," + openRsi03 +
+                "," + highRsi03 +
+                "," + lowRsi03 +
+                "," + closeRsi03 +
+                "," + lastRsi03 +
+                "," + atpRsi03 +
+                "," + hlmRsi03 +
+                "," + ohlcRsi03 +
 
                 "," + openRsi05 +
                 "," + highRsi05 +
@@ -284,4 +312,191 @@ public class RsiBean implements CalcBean {
     public void setOhlcRsi20(BigDecimal ohlcRsi20) {
         this.ohlcRsi20 = ohlcRsi20;
     }
+
+    public BigDecimal getOpenRsi03() {
+        return openRsi03;
+    }
+
+    public void setOpenRsi03(BigDecimal openRsi03) {
+        this.openRsi03 = openRsi03;
+    }
+
+    public BigDecimal getHighRsi03() {
+        return highRsi03;
+    }
+
+    public void setHighRsi03(BigDecimal highRsi03) {
+        this.highRsi03 = highRsi03;
+    }
+
+    public BigDecimal getLowRsi03() {
+        return lowRsi03;
+    }
+
+    public void setLowRsi03(BigDecimal lowRsi03) {
+        this.lowRsi03 = lowRsi03;
+    }
+
+    public BigDecimal getCloseRsi03() {
+        return closeRsi03;
+    }
+
+    public void setCloseRsi03(BigDecimal closeRsi03) {
+        this.closeRsi03 = closeRsi03;
+    }
+
+    public BigDecimal getLastRsi03() {
+        return lastRsi03;
+    }
+
+    public void setLastRsi03(BigDecimal lastRsi03) {
+        this.lastRsi03 = lastRsi03;
+    }
+
+    public BigDecimal getAtpRsi03() {
+        return atpRsi03;
+    }
+
+    public void setAtpRsi03(BigDecimal atpRsi03) {
+        this.atpRsi03 = atpRsi03;
+    }
+
+    public BigDecimal getHlmRsi03() {
+        return hlmRsi03;
+    }
+
+    public void setHlmRsi03(BigDecimal hlmRsi03) {
+        this.hlmRsi03 = hlmRsi03;
+    }
+
+    public BigDecimal getOhlcRsi03() {
+        return ohlcRsi03;
+    }
+
+    public void setOhlcRsi03(BigDecimal ohlcRsi03) {
+        this.ohlcRsi03 = ohlcRsi03;
+    }
+
+
+
+    public BigDecimal getOpenRsi(int days) {
+        switch (days) {
+            case 3:  openRsi = openRsi03; break;
+            case 5:  openRsi = openRsi05; break;
+            case 10:  openRsi = openRsi10; break;
+            case 20:  openRsi = openRsi20; break;
+            default: openRsi = null;
+        }
+        return openRsi;
+    }
+
+    public void setOpenRsi(BigDecimal openRsi) {
+        this.openRsi = openRsi;
+    }
+
+    public BigDecimal getHighRsi(int days) {
+        switch (days) {
+            case 3:  highRsi = highRsi03; break;
+            case 5:  highRsi = highRsi05; break;
+            case 10:  highRsi = highRsi10; break;
+            case 20:  highRsi = highRsi20; break;
+            default: highRsi = null;
+        }
+        return highRsi;
+    }
+
+    public void setHighRsi(BigDecimal highRsi) {
+        this.highRsi = highRsi;
+    }
+
+    public BigDecimal getLowRsi(int days) {
+        switch (days) {
+            case 3:  lowRsi = lowRsi03; break;
+            case 5:  lowRsi = lowRsi05; break;
+            case 10:  lowRsi = lowRsi10; break;
+            case 20:  lowRsi = lowRsi20; break;
+            default: lowRsi = null;
+        }
+        return lowRsi;
+    }
+
+    public void setLowRsi(BigDecimal lowRsi) {
+        this.lowRsi = lowRsi;
+    }
+
+    public BigDecimal getCloseRsi(int days) {
+        switch (days) {
+            case 3:  closeRsi = closeRsi03; break;
+            case 5:  closeRsi = closeRsi05; break;
+            case 10:  closeRsi = closeRsi10; break;
+            case 20:  closeRsi = closeRsi20; break;
+            default: closeRsi = null;
+        }
+        return closeRsi;
+    }
+
+    public void setCloseRsi(BigDecimal closeRsi) {
+        this.closeRsi = closeRsi;
+    }
+
+    public BigDecimal getLastRsi(int days) {
+        switch (days) {
+            case 3:  lastRsi = lastRsi03; break;
+            case 5:  lastRsi = lastRsi05; break;
+            case 10:  lastRsi = lastRsi10; break;
+            case 20:  lastRsi = lastRsi20; break;
+            default: lastRsi = null;
+        }
+        return lastRsi;
+    }
+
+    public void setLastRsi(BigDecimal lastRsi) {
+        this.lastRsi = lastRsi;
+    }
+
+    public BigDecimal getAtpRsi(int days) {
+        switch (days) {
+            case 3:  atpRsi = atpRsi03; break;
+            case 5:  atpRsi = atpRsi05; break;
+            case 10:  atpRsi = atpRsi10; break;
+            case 20:  atpRsi = atpRsi20; break;
+            default: atpRsi = null;
+        }
+        return atpRsi;
+    }
+
+    public void setAtpRsi(BigDecimal atpRsi) {
+        this.atpRsi = atpRsi;
+    }
+
+    public BigDecimal getHlmRsi(int days) {
+        switch (days) {
+            case 3:  hlmRsi = hlmRsi03; break;
+            case 5:  hlmRsi = hlmRsi05; break;
+            case 10:  hlmRsi = hlmRsi10; break;
+            case 20:  hlmRsi = hlmRsi20; break;
+            default: hlmRsi = null;
+        }
+        return hlmRsi;
+    }
+
+    public void setHlmRsi(BigDecimal hlmRsi) {
+        this.hlmRsi = hlmRsi;
+    }
+
+    public BigDecimal getOhlcRsi(int days) {
+        switch (days) {
+            case 3:  ohlcRsi = ohlcRsi03; break;
+            case 5:  ohlcRsi = ohlcRsi05; break;
+            case 10:  ohlcRsi = ohlcRsi10; break;
+            case 20:  ohlcRsi = ohlcRsi20; break;
+            default: ohlcRsi = null;
+        }
+        return ohlcRsi;
+    }
+
+    public void setOhlcRsi(BigDecimal ohlcRsi) {
+        this.ohlcRsi = ohlcRsi;
+    }
+
 }

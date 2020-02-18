@@ -9,6 +9,7 @@ public class ReportConstants {
     public static final String PPF_10 = "PPF_10_Report";
     public static final String PPF_20 = "PPF_20_Report";
     public static final String PPF_FULL = "PPF_days_Full_Report";
+    public static final String PPF_NEW = "PPF_days_New_Report";
 
     static final String DSRF_CSV_HEADER =
             "symbol,trade_date," +
@@ -23,7 +24,7 @@ public class ReportConstants {
     static final String PPF_CSV_HEADER =
             "symbol,trade_date,day," +
 //            "open,high,low,hlp,close,last,closingBell,closeToLastPct,atp,hlm,ohlc," +
-            "open,high,low,close,last,atp,ohlc,hlm,hlp,cToL_Pct," +
+            "open,high,low,close,last,atp,ohlc,hlm,hld,hlp,cToL_Pct," +
 
 //            "calcAtpFixGrowth,calcAtpDynGrowth,atpChgPct," +
 //            "calcVolFixGrowth,calcVolDynGrowth,volChgPct," +
@@ -31,13 +32,14 @@ public class ReportConstants {
 //            "calcFoiFixGrowth,calcFoiDynGrowth,foiChgPct," +
                     "calcAtpFixGrowth,atpChgPct," +
                     "calcVolFixGrowth,volChgPct," +
-                    "sumDel,calcDelFixGrowth,delChgPct," +
+                    "vdr,sumDel," +
+                    "calcDelFixGrowth,delChgPct," +
                     "calcFoiFixGrowth,foiChgPct," +
 
             "premium,openingBell," +
             "nxtCloseToOpenPct,nxtOptoHighPct,nxtOptoLowPct,nxtOptoAtpPct," +
             "VolAtpMfi,DelAtpMfi,DelAtpMfiChg," +
-            "AtpRsi,AtpRsiChg,CloseRsi,LastRsi";
+            "AtpRsi,AtpRsiChg,CloseRsi,LastRsi,lotSize";
 
     static final List<String> SHUVI_TICKERS =
             List.of("ASIANPAINTS", "COLPAL", "DABUR", "ICICIPRULI", "JUBLIENTFOOD", "PIDILITE", "RELIANCE", "SBIN", "TITAN", "UBL");

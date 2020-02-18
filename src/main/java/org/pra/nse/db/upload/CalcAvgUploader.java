@@ -73,30 +73,30 @@ public class CalcAvgUploader extends BaseUploader {
         }
     }
 
-    private void upload(List<AvgBean> dtos) {
+    private void upload(List<AvgBean> beans) {
         AtomicInteger recordSucceed = new AtomicInteger();
         AtomicInteger recordFailed = new AtomicInteger();
 
         CalcAvgTab tab = new CalcAvgTab();
-        dtos.forEach(dto -> {
+        beans.forEach(bean -> {
             tab.reset();
-            tab.setSymbol(dto.getSymbol());
-            tab.setTradeDate(dto.getTradeDate());
+            tab.setSymbol(bean.getSymbol());
+            tab.setTradeDate(bean.getTradeDate());
 
-            tab.setAtpAvg05Sma(dto.getAtpAvg05());
-            tab.setVolAvg05Sma(dto.getVolAvg05());
-            tab.setDelAvg05Sma(dto.getDelAvg05());
-            tab.setOiAvg05Sma(dto.getFoiAvg05());
+            tab.setAtpAvg05Sma(bean.getAtpAvg05());
+            tab.setVolAvg05Sma(bean.getVolAvg05());
+            tab.setDelAvg05Sma(bean.getDelAvg05());
+            tab.setOiAvg05Sma(bean.getFoiAvg05());
 
-            tab.setAtpAvg10Sma(dto.getAtpAvg10());
-            tab.setVolAvg10Sma(dto.getVolAvg10());
-            tab.setDelAvg10Sma(dto.getDelAvg10());
-            tab.setOiAvg10Sma(dto.getFoiAvg10());
+            tab.setAtpAvg10Sma(bean.getAtpAvg10());
+            tab.setVolAvg10Sma(bean.getVolAvg10());
+            tab.setDelAvg10Sma(bean.getDelAvg10());
+            tab.setOiAvg10Sma(bean.getFoiAvg10());
 
-            tab.setAtpAvg20Sma(dto.getAtpAvg20());
-            tab.setVolAvg20Sma(dto.getVolAvg20());
-            tab.setDelAvg20Sma(dto.getDelAvg20());
-            tab.setOiAvg20Sma(dto.getFoiAvg20());
+            tab.setAtpAvg20Sma(bean.getAtpAvg20());
+            tab.setVolAvg20Sma(bean.getVolAvg20());
+            tab.setDelAvg20Sma(bean.getDelAvg20());
+            tab.setOiAvg20Sma(bean.getFoiAvg20());
 
             try {
                 repo.save(tab);

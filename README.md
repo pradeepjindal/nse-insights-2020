@@ -55,6 +55,9 @@ buy 2 rs down from open and 5 rs down from open
 sell 3 rs high from open
 
 
+Tech To Do
+make calc csv and db reconcile routine
+
 
 TECH DEBT
 separate DeliverySpikeDto into ppfDto

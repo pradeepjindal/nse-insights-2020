@@ -18,21 +18,31 @@ public class AvgBean implements CalcBean {
     @JsonSerialize(using = LocalDateSerializer.class)
     private LocalDate tradeDate;
 
+    private BigDecimal atpAvg;
+    private BigDecimal volAvg;
+    private BigDecimal delAvg;
+    private BigDecimal foiAvg;
+
+
+    private BigDecimal atpAvg03;
     private BigDecimal atpAvg05;
     private BigDecimal atpAvg10;
     private BigDecimal atpAvg15;
     private BigDecimal atpAvg20;
 
+    private BigDecimal volAvg03;
     private BigDecimal volAvg05;
     private BigDecimal volAvg10;
     private BigDecimal volAvg15;
     private BigDecimal volAvg20;
 
+    private BigDecimal delAvg03;
     private BigDecimal delAvg05;
     private BigDecimal delAvg10;
     private BigDecimal delAvg15;
     private BigDecimal delAvg20;
 
+    private BigDecimal foiAvg03;
     private BigDecimal foiAvg05;
     private BigDecimal foiAvg10;
     private BigDecimal foiAvg15;
@@ -43,21 +53,25 @@ public class AvgBean implements CalcBean {
         return symbol +
                 "," + tradeDate +
 
+                "," + atpAvg03 +
                 "," + atpAvg05 +
                 "," + atpAvg10 +
                 "," + atpAvg15 +
                 "," + atpAvg20 +
 
+                "," + volAvg03 +
                 "," + volAvg05 +
                 "," + volAvg10 +
                 "," + volAvg15 +
                 "," + volAvg20 +
 
+                "," + delAvg03 +
                 "," + delAvg05 +
                 "," + delAvg10 +
                 "," + delAvg15 +
                 "," + delAvg20 +
 
+                "," + foiAvg03 +
                 "," + foiAvg05 +
                 "," + foiAvg10 +
                 "," + foiAvg15 +
@@ -206,6 +220,104 @@ public class AvgBean implements CalcBean {
 
     public void setFoiAvg20(BigDecimal foiAvg20) {
         this.foiAvg20 = foiAvg20;
+    }
+
+    public BigDecimal getAtpAvg() {
+        return atpAvg;
+    }
+
+    public BigDecimal getAtpAvg03() {
+        return atpAvg03;
+    }
+
+    public void setAtpAvg03(BigDecimal atpAvg03) {
+        this.atpAvg03 = atpAvg03;
+    }
+
+    public BigDecimal getVolAvg03() {
+        return volAvg03;
+    }
+
+    public void setVolAvg03(BigDecimal volAvg03) {
+        this.volAvg03 = volAvg03;
+    }
+
+    public BigDecimal getDelAvg03() {
+        return delAvg03;
+    }
+
+    public void setDelAvg03(BigDecimal delAvg03) {
+        this.delAvg03 = delAvg03;
+    }
+
+    public BigDecimal getFoiAvg03() {
+        return foiAvg03;
+    }
+
+    public void setFoiAvg03(BigDecimal foiAvg03) {
+        this.foiAvg03 = foiAvg03;
+    }
+
+
+
+    public BigDecimal getAtpAvg(int days) {
+        switch (days) {
+            case 3:  atpAvg = atpAvg03; break;
+            case 5:  atpAvg = atpAvg05; break;
+            case 10:  atpAvg = atpAvg10; break;
+            case 20:  atpAvg = atpAvg20; break;
+            default: atpAvg = null;
+        }
+        return atpAvg;
+    }
+
+    public void setAtpAvg(BigDecimal atpAvg) {
+        this.atpAvg = atpAvg;
+    }
+
+    public BigDecimal getVolAvg(int days) {
+        switch (days) {
+            case 3:  volAvg = volAvg03; break;
+            case 5:  volAvg = volAvg05; break;
+            case 10:  volAvg = volAvg10; break;
+            case 20:  volAvg = volAvg20; break;
+            default: volAvg = null;
+        }
+        return volAvg;
+    }
+
+    public void setVolAvg(BigDecimal volAvg) {
+        this.volAvg = volAvg;
+    }
+
+    public BigDecimal getDelAvg(int days) {
+        switch (days) {
+            case 3:  delAvg = delAvg03; break;
+            case 5:  delAvg = delAvg05; break;
+            case 10:  delAvg = delAvg10; break;
+            case 20:  delAvg = delAvg20; break;
+            default: delAvg = null;
+        }
+        return delAvg;
+    }
+
+    public void setDelAvg(BigDecimal delAvg) {
+        this.delAvg = delAvg;
+    }
+
+    public BigDecimal getFoiAvg(int days) {
+        switch (days) {
+            case 3:  foiAvg = foiAvg03; break;
+            case 5:  foiAvg = foiAvg05; break;
+            case 10:  foiAvg = foiAvg10; break;
+            case 20:  foiAvg = foiAvg20; break;
+            default: foiAvg = null;
+        }
+        return foiAvg;
+    }
+
+    public void setFoiAvg(BigDecimal foiAvg) {
+        this.foiAvg = foiAvg;
     }
 
 }

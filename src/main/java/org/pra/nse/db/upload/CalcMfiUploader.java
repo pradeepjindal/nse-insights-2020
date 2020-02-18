@@ -6,7 +6,9 @@ import org.pra.nse.calculation.CalcCons;
 import org.pra.nse.csv.data.MfiBean;
 import org.pra.nse.db.dao.calc.MfiCalculationDao;
 import org.pra.nse.db.model.CalcMfiTab;
+import org.pra.nse.db.repository.CalcMfiRepositoryNew;
 import org.pra.nse.db.repository.CalcMfiRepository;
+import org.pra.nse.service.DaoService;
 import org.pra.nse.util.NseFileUtils;
 import org.pra.nse.util.PraFileUtils;
 import org.slf4j.Logger;
@@ -29,19 +31,24 @@ public class CalcMfiUploader extends BaseUploader {
     private final CalcMfiRepository repo;
     private final MfiCalculator calculator;
 
+    private final DaoService daoService;
+    private final CalcMfiRepositoryNew calcMfiRepositoryNew;
+
     private final NseFileUtils nseFileUtils;
     private final PraFileUtils praFileUtils;
 
     public CalcMfiUploader(MfiCalculationDao dao, CalcMfiRepository repo, MfiCalculator calculator,
+                           DaoService daoService, CalcMfiRepositoryNew calcMfiRepositoryNew,
                            NseFileUtils nseFileUtils, PraFileUtils praFileUtils) {
         super(praFileUtils, CalcCons.MFI_DIR_NAME, CalcCons.MFI_FILE_PREFIX);
         this.dao = dao;
         this.repo = repo;
         this.calculator = calculator;
+        this.daoService = daoService;
+        this.calcMfiRepositoryNew = calcMfiRepositoryNew;
         this.nseFileUtils = nseFileUtils;
         this.praFileUtils = praFileUtils;
     }
-
 
     public void uploadForDate(LocalDate forDate) {
         //
@@ -72,24 +79,24 @@ public class CalcMfiUploader extends BaseUploader {
         }
     }
 
-    private void upload(List<MfiBean> dtos) {
+    private void upload(List<MfiBean> beans) {
         AtomicInteger recordSucceed = new AtomicInteger();
         AtomicInteger recordFailed = new AtomicInteger();
 
         CalcMfiTab tab = new CalcMfiTab();
-        dtos.forEach(dto -> {
+        beans.forEach(bean -> {
             tab.reset();
-            tab.setSymbol(dto.getSymbol());
-            tab.setTradeDate(dto.getTradeDate());
+            tab.setSymbol(bean.getSymbol());
+            tab.setTradeDate(bean.getTradeDate());
 
-            tab.setVolAtpMfi05Sma(dto.getVolMfi05());
-            tab.setDelAtpMfi05Sma(dto.getDelMfi05());
+            tab.setVolAtpMfi05Sma(bean.getVolMfi05());
+            tab.setDelAtpMfi05Sma(bean.getDelMfi05());
 
-            tab.setVolAtpMfi10Sma(dto.getVolMfi10());
-            tab.setDelAtpMfi10Sma(dto.getDelMfi10());
+            tab.setVolAtpMfi10Sma(bean.getVolMfi10());
+            tab.setDelAtpMfi10Sma(bean.getDelMfi10());
 
-            tab.setVolAtpMfi20Sma(dto.getVolMfi20());
-            tab.setDelAtpMfi20Sma(dto.getDelMfi20());
+            tab.setVolAtpMfi20Sma(bean.getVolMfi20());
+            tab.setDelAtpMfi20Sma(bean.getDelMfi20());
 
             try {
                 repo.save(tab);
@@ -100,6 +107,35 @@ public class CalcMfiUploader extends BaseUploader {
         });
         LOGGER.info("{} upload | record - uploaded {}, failed: [{}]", calc_name, recordSucceed.get(), recordFailed.get());
     }
+
+//    private void uploadNew(List<MfiBean> beans) {
+//        AtomicInteger recordSucceed = new AtomicInteger();
+//        AtomicInteger recordFailed = new AtomicInteger();
+//
+//        MfiTab tab = new CalcMfiTab();
+//        beans.forEach(bean -> {
+//            tab.reset();
+//            tab.setSymbol(bean.getSymbol());
+//            tab.setTradeDate(bean.getTradeDate());
+//
+//            tab.setVolAtpMfi05Sma(bean.getVolMfi05());
+//            tab.setDelAtpMfi05Sma(bean.getDelMfi05());
+//
+//            tab.setVolAtpMfi10Sma(bean.getVolMfi10());
+//            tab.setDelAtpMfi10Sma(bean.getDelMfi10());
+//
+//            tab.setVolAtpMfi20Sma(bean.getVolMfi20());
+//            tab.setDelAtpMfi20Sma(bean.getDelMfi20());
+//
+//            try {
+//                repo.save(tab);
+//                recordSucceed.incrementAndGet();
+//            } catch(DataIntegrityViolationException dive) {
+//                recordFailed.incrementAndGet();
+//            }
+//        });
+//        LOGGER.info("{} upload | record - uploaded {}, failed: [{}]", calc_name, recordSucceed.get(), recordFailed.get());
+//    }
 
 }
 

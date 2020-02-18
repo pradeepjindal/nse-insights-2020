@@ -9,6 +9,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDate;
+
 import static org.pra.nse.calculation.CalcCons.RSI_FILE_PREFIX;
 import static org.pra.nse.calculation.CalcCons.MFI_FILE_PREFIX;
 import static org.pra.nse.calculation.CalcCons.AVG_FILE_PREFIX;
@@ -26,17 +28,23 @@ public class CalculationManager implements Manager {
     private final RsiCalculator rsiCalculator;
     private final MfiCalculator mfiCalculator;
 
+    private final AvgCalculatorNew avgCalculatorNew;
+    private final MfiCalculatorNew mfiCalculatorNew;
+    private final RsiCalculatorNew rsiCalculatorNew;
 
 
     public CalculationManager(NseFileUtils nseFileUtils, NseReportsDao nseReportsDao,
                               DataService dataService,
-                              AvgCalculator avgCalculator, RsiCalculator rsiCalculator, MfiCalculator mfiCalculator) {
+                              AvgCalculator avgCalculator, RsiCalculator rsiCalculator, MfiCalculator mfiCalculator, AvgCalculatorNew avgCalculatorNew, MfiCalculatorNew mfiCalculatorNew, RsiCalculatorNew rsiCalculatorNew) {
         this.nseFileUtils = nseFileUtils;
         this.nseReportsDao = nseReportsDao;
         this.dataService = dataService;
         this.avgCalculator = avgCalculator;
         this.rsiCalculator = rsiCalculator;
         this.mfiCalculator = mfiCalculator;
+        this.avgCalculatorNew = avgCalculatorNew;
+        this.mfiCalculatorNew = mfiCalculatorNew;
+        this.rsiCalculatorNew = rsiCalculatorNew;
     }
 
     @Override
@@ -84,5 +92,46 @@ public class CalculationManager implements Manager {
         LOGGER.info("======================================== Calculation Manager");
         //rsiCalculator.calculateAndReturn(LocalDate.of(2020,02,10));
         //rsiCalculator.calculateAndReturn(LocalDate.of(2020,02,10), "BAJAJ-AUTO");
+
+        //mfiCalculatorNew.calculateAndReturn(LocalDate.of(2020,02,14));
+        //mfiCalculatorNew.calculateAndSave(LocalDate.of(2020,2,14));
+
+        LOGGER.info("----------");
+        nseFileUtils.getDatesToBeComputed(()-> AVG_FILE_PREFIX, CalcCons.AVG_DIR_NAME_NEW, LocalDate.of(2020,2,15))
+                .forEach( forDate -> {
+                    LOGGER.info(".");
+                    LOGGER.info("calc-{} | for:{}", AVG_FILE_PREFIX, forDate.toString());
+                    try {
+                        avgCalculatorNew.calculateAndSave(forDate);
+                    } catch (Exception e) {
+                        LOGGER.error("ERROR: {}", e);
+                    }
+                });
+
+        LOGGER.info("----------");
+        nseFileUtils.getDatesToBeComputed(()-> MFI_FILE_PREFIX, CalcCons.MFI_DIR_NAME_NEW, LocalDate.of(2020,2,15))
+                .forEach( forDate -> {
+                    LOGGER.info(".");
+                    LOGGER.info("calc-{} | for:{}", MFI_FILE_PREFIX, forDate.toString());
+                    try {
+                        mfiCalculatorNew.calculateAndSave(forDate);
+                    } catch (Exception e) {
+                        LOGGER.error("ERROR: {}", e);
+                    }
+                });
+
+        LOGGER.info("----------");
+        nseFileUtils.getDatesToBeComputed(()-> RSI_FILE_PREFIX, CalcCons.RSI_DIR_NAME_NEW, LocalDate.of(2020,2,15))
+                .forEach( forDate -> {
+                    LOGGER.info(".");
+                    LOGGER.info("calc-{} | for:{}", RSI_FILE_PREFIX, forDate.toString());
+                    try {
+                        rsiCalculatorNew.calculateAndSave(forDate);
+                    } catch (Exception e) {
+                        LOGGER.error("ERROR: {}", e);
+                    }
+                });
+
+
     }
 }

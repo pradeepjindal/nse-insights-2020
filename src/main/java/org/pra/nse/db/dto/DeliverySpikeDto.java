@@ -16,7 +16,9 @@ public class DeliverySpikeDto {
     private BigDecimal close;
     private BigDecimal last;
     private BigDecimal atp;
+    private BigDecimal ohlc;
     private BigDecimal highLowMid;
+    private BigDecimal highLowDiff;
     private BigDecimal highLowPct;
     private String closingBell;
     private BigDecimal closeToLastPercent;
@@ -72,8 +74,9 @@ public class DeliverySpikeDto {
     private BigDecimal nxtOptoLowPrcnt;
     private BigDecimal nxtOptoAtpPrcnt;
 
+    private BigDecimal vdr;
     private BigDecimal delAccumulation;
-    private BigDecimal ohlc;
+    private long lotSize;
 
     public String toCsvString() {
         return  symbol + ","
@@ -175,6 +178,7 @@ public class DeliverySpikeDto {
                 //calculated fields
                 + ohlc + ","
                 + highLowMid + ","
+                + highLowDiff + ","
                 + highLowPct + ","
                 + closeToLastPercent + ","
 
@@ -185,6 +189,7 @@ public class DeliverySpikeDto {
 //                + volDynGrowth + ","
                 + volumeChgPrcnt + ","
 
+                + vdr + ","
                 + delAccumulation + ","
 
                 + delFixGrowth + ","
@@ -209,7 +214,8 @@ public class DeliverySpikeDto {
                 + atpRsi + ","
                 + atpRsiChg + ","
                 + closeRsi + ","
-                + lastRsi;
+                + lastRsi + ","
+                + lotSize;
     }
 
     public String getSymbol() {
@@ -682,5 +688,29 @@ public class DeliverySpikeDto {
 
     public void setAtpRsiChg(BigDecimal atpRsiChg) {
         this.atpRsiChg = atpRsiChg;
+    }
+
+    public BigDecimal getHighLowDiff() {
+        return highLowDiff;
+    }
+
+    public void setHighLowDiff(BigDecimal highLowDiff) {
+        this.highLowDiff = highLowDiff;
+    }
+
+    public BigDecimal getVdr() {
+        return vdr;
+    }
+
+    public void setVdr(BigDecimal vdr) {
+        this.vdr = vdr;
+    }
+
+    public long getLotSize() {
+        return lotSize;
+    }
+
+    public void setLotSize(long lotSize) {
+        this.lotSize = lotSize;
     }
 }

@@ -12,7 +12,7 @@
 
 	<groupId>org.pra</groupId>
 	<artifactId>nse-insights-2020</artifactId>
-	<version>4.1.0-Release</version>
+	<version>4.2.0-Release</version>
 	<name>nse insights four</name>
 	<description>A Spring Boot and Java 11 based Project</description>
 

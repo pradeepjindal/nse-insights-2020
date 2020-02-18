@@ -8,8 +8,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
-import java.time.LocalDate;
-
 /**
  * polymorphism is not letting me share the data in base class
  * inheritance letting me share the common code, constants but not the date from base
@@ -47,16 +45,19 @@ public class ReportManager implements Manager {
     private final DeliverySpikeReporter deliverySpikeReport;
     private final DeliverySpikeReporterFull deliverySpikeReportFull;
     private final PastPresentFutureReporter pastPresentFutureReport;
+    private final PastPresentFutureReporterNew pastPresentFutureReporterNew;
 
     public ReportManager(NseFileUtils nseFileUtils,
                          NseReportsDao nseReportsDao, DeliverySpikeReporter deliverySpikeReport,
                          DeliverySpikeReporterFull deliverySpikeReportFull,
-                         PastPresentFutureReporter pastPresentFutureReport) {
+                         PastPresentFutureReporter pastPresentFutureReport,
+                         PastPresentFutureReporterNew pastPresentFutureReporterNew) {
         this.nseFileUtils = nseFileUtils;
         this.nseReportsDao = nseReportsDao;
         this.deliverySpikeReport = deliverySpikeReport;
         this.deliverySpikeReportFull = deliverySpikeReportFull;
         this.pastPresentFutureReport = pastPresentFutureReport;
+        this.pastPresentFutureReporterNew = pastPresentFutureReporterNew;
     }
 
     @Override
@@ -109,6 +110,11 @@ public class ReportManager implements Manager {
         //pastPresentFutureReport.reportFromLast(15);
         pastPresentFutureReport.reportFromLast(20);
 
+        //pastPresentFutureReporterNew.reportFromLast(2);
+        pastPresentFutureReporterNew.reportFromLast(3);
+        pastPresentFutureReporterNew.reportFromLast(5);
+        pastPresentFutureReporterNew.reportFromLast(10);
+        pastPresentFutureReporterNew.reportFromLast(20);
         LOGGER.info("======================================== Report Manager");
     }
 

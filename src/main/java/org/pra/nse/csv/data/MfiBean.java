@@ -18,11 +18,17 @@ public class MfiBean implements CalcBean {
     @JsonSerialize(using = LocalDateSerializer.class)
     private LocalDate tradeDate;
 
+    private BigDecimal volMfi;
+    private BigDecimal delMfi;
+
+
+    private BigDecimal volMfi03;
     private BigDecimal volMfi05;
     private BigDecimal volMfi10;
     private BigDecimal volMfi15;
     private BigDecimal volMfi20;
 
+    private BigDecimal delMfi03;
     private BigDecimal delMfi05;
     private BigDecimal delMfi10;
     private BigDecimal delMfi15;
@@ -33,11 +39,13 @@ public class MfiBean implements CalcBean {
         return symbol +
                 "," + tradeDate +
 
+                "," + volMfi03 +
                 "," + volMfi05 +
                 "," + volMfi10 +
                 "," + volMfi15 +
                 "," + volMfi20 +
 
+                "," + delMfi03 +
                 "," + delMfi05 +
                 "," + delMfi10 +
                 "," + delMfi15 +
@@ -122,6 +130,55 @@ public class MfiBean implements CalcBean {
 
     public void setDelMfi20(BigDecimal delMfi20) {
         this.delMfi20 = delMfi20;
+    }
+
+
+    public BigDecimal getDelMfi03() {
+        return delMfi03;
+    }
+
+    public void setDelMfi03(BigDecimal delMfi03) {
+        this.delMfi03 = delMfi03;
+    }
+
+    public BigDecimal getVolMfi03() {
+        return volMfi03;
+    }
+
+    public void setVolMfi03(BigDecimal volMfi03) {
+        this.volMfi03 = volMfi03;
+    }
+
+
+
+    public BigDecimal getDelMfi(int days) {
+        switch (days) {
+            case 3:  delMfi = delMfi03; break;
+            case 5:  delMfi = delMfi05; break;
+            case 10:  delMfi = delMfi10; break;
+            case 20:  delMfi = delMfi20; break;
+            default: delMfi = null;
+        }
+        return delMfi;
+    }
+
+    public void setDelMfi(BigDecimal delMfi) {
+        this.delMfi = delMfi;
+    }
+
+    public BigDecimal getVolMfi(int days) {
+        switch (days) {
+            case 3:  volMfi = volMfi03; break;
+            case 5:  volMfi = volMfi05; break;
+            case 10:  volMfi = volMfi10; break;
+            case 20:  volMfi = volMfi20; break;
+            default: volMfi = null;
+        }
+        return volMfi;
+    }
+
+    public void setVolMfi(BigDecimal volMfi) {
+        this.volMfi = volMfi;
     }
 
 }
