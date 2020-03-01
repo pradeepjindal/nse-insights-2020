@@ -20,12 +20,15 @@ public class ReportHelperNew {
         Map.Entry<String, LocalDate> previousDate = new AbstractMap.SimpleEntry<>("tradeDate", LocalDate.now());
         Map.Entry<String, BigDecimal> sumDelivery = new AbstractMap.SimpleEntry<>("sumDelivery", BigDecimal.ZERO);
 
-        symbolMap.entrySet().forEach( entry -> {
-
+        for(Map.Entry<String, List<DeliverySpikeDto>> entry : symbolMap.entrySet()) {
             previousDate.setValue(null);
             //DeliverySpikeDto firstDto = entry.getValue().get(0);
             String symbol = entry.getKey();
             CalcAvgTabNew tab = calcAvgMap.get(symbol);
+            if(tab == null) {
+                LOGGER.error("symbol not found: {} | probably new entry in FnO", symbol);
+                continue;
+            }
             BigDecimal atpFixOnePercent = NumberUtils.onePercent(tab.getAtpSma());
             BigDecimal volFixOnePercent = NumberUtils.onePercent(tab.getVolSma());
             BigDecimal delFixOnePercent = NumberUtils.onePercent(tab.getDelSma());
@@ -35,43 +38,43 @@ public class ReportHelperNew {
             BigDecimal totalExpectedDeliveryForDuration = tab.getDelSma().multiply(new BigDecimal(entry.getValue().size()));
             BigDecimal onePercentOfExpectedDelivery = NumberUtils.onePercent(totalExpectedDeliveryForDuration);
 
-                entry.getValue().forEach( dto -> {
-                    if(!symbol.equals(dto.getSymbol())) LOGGER.error("symbol mismatch");
-                    //CalcAvgTab tab = calcAvgMap.get(dto.getSymbol();
-                    BigDecimal atpDynOnePercent = NumberUtils.onePercent(tab.getAtpSma());
-                    BigDecimal volDynOnePercent = NumberUtils.onePercent(tab.getVolSma());
-                    BigDecimal delDynOnePercent = NumberUtils.onePercent(tab.getDelSma());
-                    BigDecimal foiDynOnePercent = NumberUtils.onePercent(tab.getFoiSma());
-                    //
-                    sumDelivery.setValue(sumDelivery.getValue().add(dto.getDelivery()));
-                    //TODO refactor it
-                    if(previousDate.getValue() == null || previousDate.getValue().isBefore(dto.getTradeDate())) {
-                        // sum
-                        previousDate.setValue(dto.getTradeDate());
-                        dto.setDelAccumulation(NumberUtils.divide(sumDelivery.getValue(), onePercentOfExpectedDelivery));
-                        // fix
-                        BigDecimal atpFixGrowth = NumberUtils.divide(dto.getAtp(), atpFixOnePercent);
-                        dto.setAtpFixGrowth(atpFixGrowth);
-                        BigDecimal volFixGrowth = NumberUtils.divide(dto.getVolume(), volFixOnePercent);
-                        dto.setVolFixGrowth(volFixGrowth);
-                        BigDecimal delFixGrowth = NumberUtils.divide(dto.getDelivery(), delFixOnePercent);
-                        dto.setDelFixGrowth(delFixGrowth);
-                        BigDecimal foiFixGrowth = NumberUtils.divide(dto.getOi(), foiFixOnePercent);
-                        dto.setFoiFixGrowth(foiFixGrowth);
-                        // dyn
-                        BigDecimal atpDynGrowth = NumberUtils.divide(dto.getAtp(), atpDynOnePercent);
-                        dto.setAtpDynGrowth(atpDynGrowth);
-                        BigDecimal volDynGrowth = NumberUtils.divide(dto.getVolume(), volDynOnePercent);
-                        dto.setVolDynGrowth(volDynGrowth);
-                        BigDecimal delDynGrowth = NumberUtils.divide(dto.getDelivery(), delDynOnePercent);
-                        dto.setDelDynGrowth(delDynGrowth);
-                        BigDecimal foiDynGrowth = NumberUtils.divide(dto.getOi(), foiDynOnePercent);
-                        dto.setFoiDynGrowth(foiDynGrowth);
-                    } else {
-                        LOGGER.error("enrichCalc | unknown condition - previousDate:{}, currentDate:{}", previousDate.getValue(), dto.getTradeDate());
-                    }
+            entry.getValue().forEach( dto -> {
+                if(!symbol.equals(dto.getSymbol())) LOGGER.error("symbol mismatch");
+                //CalcAvgTab tab = calcAvgMap.get(dto.getSymbol();
+                BigDecimal atpDynOnePercent = NumberUtils.onePercent(tab.getAtpSma());
+                BigDecimal volDynOnePercent = NumberUtils.onePercent(tab.getVolSma());
+                BigDecimal delDynOnePercent = NumberUtils.onePercent(tab.getDelSma());
+                BigDecimal foiDynOnePercent = NumberUtils.onePercent(tab.getFoiSma());
+                //
+                sumDelivery.setValue(sumDelivery.getValue().add(dto.getDelivery()));
+                //TODO refactor it
+                if(previousDate.getValue() == null || previousDate.getValue().isBefore(dto.getTradeDate())) {
+                    // sum
+                    previousDate.setValue(dto.getTradeDate());
+                    dto.setDelAccumulation(NumberUtils.divide(sumDelivery.getValue(), onePercentOfExpectedDelivery));
+                    // fix
+                    BigDecimal atpFixGrowth = NumberUtils.divide(dto.getAtp(), atpFixOnePercent);
+                    dto.setAtpFixGrowth(atpFixGrowth);
+                    BigDecimal volFixGrowth = NumberUtils.divide(dto.getVolume(), volFixOnePercent);
+                    dto.setVolFixGrowth(volFixGrowth);
+                    BigDecimal delFixGrowth = NumberUtils.divide(dto.getDelivery(), delFixOnePercent);
+                    dto.setDelFixGrowth(delFixGrowth);
+                    BigDecimal foiFixGrowth = NumberUtils.divide(dto.getOi(), foiFixOnePercent);
+                    dto.setFoiFixGrowth(foiFixGrowth);
+                    // dyn
+                    BigDecimal atpDynGrowth = NumberUtils.divide(dto.getAtp(), atpDynOnePercent);
+                    dto.setAtpDynGrowth(atpDynGrowth);
+                    BigDecimal volDynGrowth = NumberUtils.divide(dto.getVolume(), volDynOnePercent);
+                    dto.setVolDynGrowth(volDynGrowth);
+                    BigDecimal delDynGrowth = NumberUtils.divide(dto.getDelivery(), delDynOnePercent);
+                    dto.setDelDynGrowth(delDynGrowth);
+                    BigDecimal foiDynGrowth = NumberUtils.divide(dto.getOi(), foiDynOnePercent);
+                    dto.setFoiDynGrowth(foiDynGrowth);
+                } else {
+                    LOGGER.error("enrichCalc | unknown condition - previousDate:{}, currentDate:{}", previousDate.getValue(), dto.getTradeDate());
+                }
             });
-        });
+        }
     }
 
 //    public static void fillTheIndicatorsChg(LocalDate forDate, int forMinusDays) {

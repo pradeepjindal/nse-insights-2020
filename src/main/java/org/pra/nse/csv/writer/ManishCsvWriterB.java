@@ -115,7 +115,8 @@ public class ManishCsvWriterB {
                 manishBean.setCmClose(praBean.getCmTdyClose());
                 manishBean.setTdyTraded(praBean.getCmTdyTraded());
                 manishBean.setTdyDelivery(praBean.getTdyDelivery());
-                double deliveryToTradeRatio = praBean.getTdyDelivery() / (praBean.getCmTdyTraded()/100);
+                double onePct = praBean.getCmTdyTraded() == 0 ? 1 : praBean.getCmTdyTraded()/100;
+                double deliveryToTradeRatio = praBean.getTdyDelivery() / onePct;
                 manishBean.setDeliveryToTradeRatio(deliveryToTradeRatio);
                 manishBean.setTdyOI(praBean.getTdyOI());
                 manishBeanMap.put(manishBean.getSymbol(),manishBean);

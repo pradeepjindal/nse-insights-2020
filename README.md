@@ -37,6 +37,8 @@ pick only above rsi 60
 filter only postitve mfi and positive chg by at least 1
 consult the chart
 
+Del-RSI, AtpDel-MFI, Atp-RSI, 
+
 find when mfi rise more then rsi, means scrip is going to rise
 
 find scrip which drops for 50p daily or rise by 50p daily

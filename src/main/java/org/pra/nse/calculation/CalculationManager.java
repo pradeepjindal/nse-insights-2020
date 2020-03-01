@@ -11,9 +11,9 @@ import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
 
-import static org.pra.nse.calculation.CalcCons.RSI_FILE_PREFIX;
-import static org.pra.nse.calculation.CalcCons.MFI_FILE_PREFIX;
 import static org.pra.nse.calculation.CalcCons.AVG_FILE_PREFIX;
+import static org.pra.nse.calculation.CalcCons.MFI_FILE_PREFIX;
+import static org.pra.nse.calculation.CalcCons.RSI_FILE_PREFIX;
 
 @Component
 public class CalculationManager implements Manager {
@@ -21,7 +21,6 @@ public class CalculationManager implements Manager {
 
     private final NseFileUtils nseFileUtils;
     private final NseReportsDao nseReportsDao;
-
     private final DataService dataService;
 
     private final AvgCalculator avgCalculator;
@@ -54,6 +53,7 @@ public class CalculationManager implements Manager {
 
         //Map<String, List<DeliverySpikeDto>> symbolMap = dataManager.getLatest10DataBySymbol();
 
+        LOGGER.info("----------");
         nseFileUtils.getDatesToBeComputed(()-> AVG_FILE_PREFIX, ApCo.AVG_DIR_NAME, ApCo.CALC_FROM_DATE)
                 .forEach( forDate -> {
                     LOGGER.info(".");
@@ -97,7 +97,7 @@ public class CalculationManager implements Manager {
         //mfiCalculatorNew.calculateAndSave(LocalDate.of(2020,2,14));
 
         LOGGER.info("----------");
-        nseFileUtils.getDatesToBeComputed(()-> AVG_FILE_PREFIX, CalcCons.AVG_DIR_NAME_NEW, LocalDate.of(2020,2,15))
+        nseFileUtils.getDatesToBeComputed(()-> AVG_FILE_PREFIX, CalcCons.AVG_DIR_NAME_NEW, LocalDate.of(2020,2,25))
                 .forEach( forDate -> {
                     LOGGER.info(".");
                     LOGGER.info("calc-{} | for:{}", AVG_FILE_PREFIX, forDate.toString());
@@ -109,7 +109,7 @@ public class CalculationManager implements Manager {
                 });
 
         LOGGER.info("----------");
-        nseFileUtils.getDatesToBeComputed(()-> MFI_FILE_PREFIX, CalcCons.MFI_DIR_NAME_NEW, LocalDate.of(2020,2,15))
+        nseFileUtils.getDatesToBeComputed(()-> MFI_FILE_PREFIX, CalcCons.MFI_DIR_NAME_NEW, LocalDate.of(2020,2,25))
                 .forEach( forDate -> {
                     LOGGER.info(".");
                     LOGGER.info("calc-{} | for:{}", MFI_FILE_PREFIX, forDate.toString());
@@ -121,7 +121,7 @@ public class CalculationManager implements Manager {
                 });
 
         LOGGER.info("----------");
-        nseFileUtils.getDatesToBeComputed(()-> RSI_FILE_PREFIX, CalcCons.RSI_DIR_NAME_NEW, LocalDate.of(2020,2,15))
+        nseFileUtils.getDatesToBeComputed(()-> RSI_FILE_PREFIX, CalcCons.RSI_DIR_NAME_NEW, LocalDate.of(2020,2,25))
                 .forEach( forDate -> {
                     LOGGER.info(".");
                     LOGGER.info("calc-{} | for:{}", RSI_FILE_PREFIX, forDate.toString());
@@ -131,7 +131,6 @@ public class CalculationManager implements Manager {
                         LOGGER.error("ERROR: {}", e);
                     }
                 });
-
 
     }
 }

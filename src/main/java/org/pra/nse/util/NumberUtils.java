@@ -7,7 +7,7 @@ public class NumberUtils {
     public static final BigDecimal HUNDRED = new BigDecimal(100);
 
     public static BigDecimal onePercent(BigDecimal figure) {
-        return divide(figure, HUNDRED);
+        return figure == null ? BigDecimal.ZERO : divide(figure, HUNDRED);
     }
 
     public static BigDecimal divide(BigDecimal to, BigDecimal by) {
