@@ -26,6 +26,7 @@ public class RsiBeanNew implements CalcBeanNew {
     private BigDecimal atpRsiSma;
     private BigDecimal hlmRsiSma;
     private BigDecimal ohlcRsiSma;
+    private BigDecimal delRsiSma;
 
     public String toCsvString() {
         return symbol +
@@ -39,7 +40,8 @@ public class RsiBeanNew implements CalcBeanNew {
                 "," + lastRsiSma +
                 "," + atpRsiSma +
                 "," + hlmRsiSma +
-                "," + ohlcRsiSma;
+                "," + ohlcRsiSma +
+                "," + delRsiSma;
     }
 
     public String getSymbol() {
@@ -129,4 +131,13 @@ public class RsiBeanNew implements CalcBeanNew {
     public void setOhlcRsiSma(BigDecimal ohlcRsiSma) {
         this.ohlcRsiSma = ohlcRsiSma;
     }
+
+    public BigDecimal getDelRsiSma() {
+        return delRsiSma;
+    }
+
+    public void setDelRsiSma(BigDecimal delRsiSma) {
+        this.delRsiSma = delRsiSma;
+    }
+
 }

@@ -28,7 +28,7 @@ import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static org.pra.nse.report.ReportConstants.PPF_CSV_HEADER;
+import static org.pra.nse.report.ReportConstants.PPF_CSV_HEADER_NEW;
 import static org.pra.nse.report.ReportConstants.PPF_NEW;
 
 @Component
@@ -141,7 +141,7 @@ public class PastPresentFutureReporterNew {
 
         DeliverySpikeDto tdyDto = null;
         DeliverySpikeDto bckDto = null;
-        BigDecimal chgInAtpRsi = null;
+        BigDecimal chg = null;
         for(CalcRsiTabNew oldRsi:oldRsiListOrdered) {
             if(tradeDateAndSymbolWise_DoubleMap.containsKey(oldRsi.getTradeDate())) {
                 if(tradeDateAndSymbolWise_DoubleMap.get(oldRsi.getTradeDate()).containsKey(oldRsi.getSymbol())) {
@@ -149,10 +149,13 @@ public class PastPresentFutureReporterNew {
                     tdyDto.setCloseRsi(oldRsi.getCloseRsiSma());
                     tdyDto.setLastRsi(oldRsi.getLastRsiSma());
                     tdyDto.setAtpRsi(oldRsi.getAtpRsiSma());
+                    tdyDto.setDelRsi(oldRsi.getDelRsiSma());
                     // skipt the first as it is to fetch back data only
                     if (bckDto != null) {
-                        chgInAtpRsi = tdyDto.getAtpRsi().subtract(bckDto.getAtpRsi());
-                        tdyDto.setAtpRsiChg(chgInAtpRsi);
+                        chg = tdyDto.getAtpRsi().subtract(bckDto.getAtpRsi());
+                        tdyDto.setAtpRsiChg(chg);
+                        chg = tdyDto.getDelRsi().subtract(bckDto.getDelRsi());
+                        tdyDto.setDelRsiChg(chg);
                     }
                     bckDto = tdyDto;
                 } else {
@@ -176,7 +179,7 @@ public class PastPresentFutureReporterNew {
 
         DeliverySpikeDto tdyDto = null;
         DeliverySpikeDto bckDto = null;
-        BigDecimal chgInAtpMfi = null;
+        BigDecimal chg = null;
         for(CalcMfiTabNew oldMfi:oldMfiListOrdered) {
             if(tradeDateAndSymbolWise_DoubleMap.containsKey(oldMfi.getTradeDate())) {
                 if(tradeDateAndSymbolWise_DoubleMap.get(oldMfi.getTradeDate()).containsKey(oldMfi.getSymbol())) {
@@ -185,8 +188,8 @@ public class PastPresentFutureReporterNew {
                     tdyDto.setDelAtpMfi(oldMfi.getDelAtpMfiSma());
                     // skipt the first as it is to fetch back data only
                     if (bckDto != null) {
-                        chgInAtpMfi = tdyDto.getDelAtpMfi().subtract(bckDto.getDelAtpMfi());
-                        tdyDto.setDelAtpMfiChg(chgInAtpMfi);
+                        chg = tdyDto.getDelAtpMfi().subtract(bckDto.getDelAtpMfi());
+                        tdyDto.setDelAtpMfiChg(chg);
                     }
                     bckDto = tdyDto;
                 } else {
@@ -222,7 +225,7 @@ public class PastPresentFutureReporterNew {
         // print csv lines
         File csvOutputFile = new File(toPath);
         try (PrintWriter pw = new PrintWriter(csvOutputFile)) {
-            pw.println(PPF_CSV_HEADER);
+            pw.println(PPF_CSV_HEADER_NEW);
             csvLines.stream()
                     //.map(this::convertToCSV)
                     .forEach(pw::println);

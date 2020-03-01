@@ -55,6 +55,7 @@ public class DeliverySpikeDto {
     private BigDecimal tdycloseMinusYesclose;
     private BigDecimal tdylastMinusYeslast;
     private BigDecimal tdyatpMinusYesatp;
+    private BigDecimal tdydelMinusYesdel;
 
     private BigDecimal volume;
     private BigDecimal delivery;
@@ -63,6 +64,9 @@ public class DeliverySpikeDto {
     private BigDecimal volAtpMfi;
     private BigDecimal delAtpMfi;
     private BigDecimal delAtpMfiChg;
+
+    private BigDecimal delRsi;
+    private BigDecimal delRsiChg;
 
     private BigDecimal atpRsi;
     private BigDecimal atpRsiChg;
@@ -211,10 +215,13 @@ public class DeliverySpikeDto {
                 + delAtpMfi + ","
                 + delAtpMfiChg + ","
 
+                + delRsi + ","
+                + delRsiChg + ","
+
                 + atpRsi + ","
                 + atpRsiChg + ","
-                + closeRsi + ","
-                + lastRsi + ","
+//                + closeRsi + ","
+//                + lastRsi + ","
                 + lotSize;
     }
 
@@ -514,6 +521,14 @@ public class DeliverySpikeDto {
         this.tdyatpMinusYesatp = tdyatpMinusYesatp;
     }
 
+    public BigDecimal getTdydelMinusYesdel() {
+        return tdydelMinusYesdel;
+    }
+
+    public void setTdydelMinusYesdel(BigDecimal tdydelMinusYesdel) {
+        this.tdydelMinusYesdel = tdydelMinusYesdel;
+    }
+
     public BigDecimal getVolume() {
         return volume;
     }
@@ -552,6 +567,22 @@ public class DeliverySpikeDto {
 
     public void setDelAtpMfi(BigDecimal delAtpMfi) {
         this.delAtpMfi = delAtpMfi;
+    }
+
+    public BigDecimal getDelRsi() {
+        return delRsi;
+    }
+
+    public void setDelRsi(BigDecimal delRsi) {
+        this.delRsi = delRsi;
+    }
+
+    public BigDecimal getDelRsiChg() {
+        return delRsiChg;
+    }
+
+    public void setDelRsiChg(BigDecimal delRsiChg) {
+        this.delRsiChg = delRsiChg;
     }
 
     public BigDecimal getCloseRsi() {

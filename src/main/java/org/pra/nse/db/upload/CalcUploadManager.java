@@ -1,5 +1,6 @@
 package org.pra.nse.db.upload;
 
+import org.pra.nse.ApCo;
 import org.pra.nse.Manager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,9 +48,9 @@ public class CalcUploadManager implements Manager {
 //        calcMfiUploader.uploadFromDefaultDate();
 
         LOGGER.info("----------");
-        calcAvgUploaderNew.uploadFromDate(LocalDate.of(2020,2,15));
-        calcMfiUploaderNew.uploadFromDate(LocalDate.of(2020,2,15));
-        calcRsiUploaderNew.uploadFromDate(LocalDate.of(2020,2,15));
+        calcAvgUploaderNew.uploadFromDate(ApCo.UPLOAD_CALC_FROM_DATE);
+        calcMfiUploaderNew.uploadFromDate(ApCo.UPLOAD_CALC_FROM_DATE);
+        calcRsiUploaderNew.uploadFromDate(ApCo.UPLOAD_CALC_FROM_DATE);
 
         LOGGER.info("======================================== CALC - Upload Manager");
     }

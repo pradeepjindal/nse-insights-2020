@@ -32,6 +32,7 @@ sqlDeliverySpike: >
     tdy.cmclose - yes.cmclose AS tdyclose_minus_yesclose,
     tdy.cmlast - yes.cmlast AS tdylast_minus_yeslast,
     tdy.cmatp - yes.cmatp AS tdyatp_minus_yesatp,
+    tdy.delivered_qty - yes.delivered_qty AS tdydel_minus_yesdel,
 
     tdy.traded_qty volume,
     tdy.delivered_qty delivery

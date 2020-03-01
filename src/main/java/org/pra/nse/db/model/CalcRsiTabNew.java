@@ -44,6 +44,9 @@ public class CalcRsiTabNew implements Serializable {
     @Column(name = "ohlc_rsi_Sma")
     private BigDecimal ohlcRsiSma;
 
+    @Column(name = "del_rsi_Sma")
+    private BigDecimal delRsiSma;
+
     public void reset() {
         id = null;
         symbol = null;
@@ -59,7 +62,7 @@ public class CalcRsiTabNew implements Serializable {
         atpRsiSma = null;
         hlmRsiSma = null;
         ohlcRsiSma = null;
-
+        delRsiSma = null;
     }
 
 
@@ -170,4 +173,13 @@ public class CalcRsiTabNew implements Serializable {
     public void setOhlcRsiSma(BigDecimal ohlcRsiSma) {
         this.ohlcRsiSma = ohlcRsiSma;
     }
+
+    public BigDecimal getDelRsiSma() {
+        return delRsiSma;
+    }
+
+    public void setDelRsiSma(BigDecimal delRsiSma) {
+        this.delRsiSma = delRsiSma;
+    }
+
 }

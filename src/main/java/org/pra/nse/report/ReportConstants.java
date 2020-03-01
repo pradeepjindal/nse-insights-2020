@@ -41,6 +41,27 @@ public class ReportConstants {
             "VolAtpMfi,DelAtpMfi,DelAtpMfiChg," +
             "AtpRsi,AtpRsiChg,CloseRsi,LastRsi,lotSize";
 
+    static final String PPF_CSV_HEADER_NEW =
+            "symbol,trade_date,day," +
+//            "open,high,low,hlp,close,last,closingBell,closeToLastPct,atp,hlm,ohlc," +
+                    "open,high,low,close,last,atp,ohlc,hlm,hld,hlp,cToL_Pct," +
+
+//            "calcAtpFixGrowth,calcAtpDynGrowth,atpChgPct," +
+//            "calcVolFixGrowth,calcVolDynGrowth,volChgPct," +
+//            "delTally,calcDelFixGrowth,calcDelDynGrowth,delChgPct," +
+//            "calcFoiFixGrowth,calcFoiDynGrowth,foiChgPct," +
+                    "calcAtpFixGrowth,atpChgPct," +
+                    "calcVolFixGrowth,volChgPct," +
+                    "vdr,sumDel," +
+                    "calcDelFixGrowth,delChgPct," +
+                    "calcFoiFixGrowth,foiChgPct," +
+
+                    "premium,openingBell," +
+                    "nxtCloseToOpenPct,nxtOptoHighPct,nxtOptoLowPct,nxtOptoAtpPct," +
+                    "VolAtpMfi,DelAtpMfi,DelAtpMfiChg," +
+                    "DelRsi,DelRsiChg," +
+                    "AtpRsi,AtpRsiChg,lotSize";
+
     static final List<String> SHUVI_TICKERS =
             List.of("ASIANPAINTS", "COLPAL", "DABUR", "ICICIPRULI", "JUBLIENTFOOD", "PIDILITE", "RELIANCE", "SBIN", "TITAN", "UBL");
 

@@ -88,6 +88,7 @@ public class CalcRsiUploaderNew extends BaseUploader {
             tab.setCloseRsiSma(bean.getCloseRsiSma());
             tab.setLastRsiSma(bean.getLastRsiSma());
             tab.setAtpRsiSma(bean.getAtpRsiSma());
+            tab.setDelRsiSma(bean.getDelRsiSma());
 
             try {
                 repo.save(tab);

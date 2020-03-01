@@ -59,5 +59,5 @@ public class CalcCons {
             "volAtp_MfiSma,delAtp_MfiSma";
     public static final String RSI_CSV_HEADER_NEW
             = "symbol,tradeDate,forDays," +
-            "OpenRsiSma,HighRsiSma,LowRsiSma,CloseRsiSma,LastRsiSma,AtpRsiSma,HlmRsiSma,ohlcRsiSma";
+            "OpenRsiSma,HighRsiSma,LowRsiSma,CloseRsiSma,LastRsiSma,AtpRsiSma,HlmRsiSma,ohlcRsiSma,delRsiSma";
 }

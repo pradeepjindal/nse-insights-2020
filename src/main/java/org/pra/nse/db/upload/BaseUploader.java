@@ -25,7 +25,7 @@ public abstract class BaseUploader {
 
 
     public void uploadFromDefaultDate() {
-        uploadFromDate(ApCo.UPLOAD_FROM_DATE);
+        uploadFromDate(ApCo.UPLOAD_NSE_FROM_DATE);
     }
     public void uploadFromDate(LocalDate fromDate) {
         looper(fromDate);

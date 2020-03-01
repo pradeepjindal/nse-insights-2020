@@ -8,7 +8,6 @@ import org.pra.nse.db.dao.calc.MfiCalculationDao;
 import org.pra.nse.db.model.CalcMfiTab;
 import org.pra.nse.db.repository.CalcMfiRepositoryNew;
 import org.pra.nse.db.repository.CalcMfiRepository;
-import org.pra.nse.service.DaoService;
 import org.pra.nse.util.NseFileUtils;
 import org.pra.nse.util.PraFileUtils;
 import org.slf4j.Logger;
@@ -31,20 +30,18 @@ public class CalcMfiUploader extends BaseUploader {
     private final CalcMfiRepository repo;
     private final MfiCalculator calculator;
 
-    private final DaoService daoService;
     private final CalcMfiRepositoryNew calcMfiRepositoryNew;
 
     private final NseFileUtils nseFileUtils;
     private final PraFileUtils praFileUtils;
 
     public CalcMfiUploader(MfiCalculationDao dao, CalcMfiRepository repo, MfiCalculator calculator,
-                           DaoService daoService, CalcMfiRepositoryNew calcMfiRepositoryNew,
+                           CalcMfiRepositoryNew calcMfiRepositoryNew,
                            NseFileUtils nseFileUtils, PraFileUtils praFileUtils) {
         super(praFileUtils, CalcCons.MFI_DIR_NAME, CalcCons.MFI_FILE_PREFIX);
         this.dao = dao;
         this.repo = repo;
         this.calculator = calculator;
-        this.daoService = daoService;
         this.calcMfiRepositoryNew = calcMfiRepositoryNew;
         this.nseFileUtils = nseFileUtils;
         this.praFileUtils = praFileUtils;

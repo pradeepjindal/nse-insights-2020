@@ -123,6 +123,12 @@ public class RsiCalculatorNew {
                     },
                     (dto, calculatedValue) -> bean.setLastRsiSma(calculatedValue)
             );
+            calculate(forDate, symbol, list,
+                    dto -> {
+                        return dto.getTdydelMinusYesdel();
+                    },
+                    (dto, calculatedValue) -> bean.setDelRsiSma(calculatedValue)
+            );
             //
             if(bean.getAtpRsiSma() != null) beans.add(bean);
         });
