@@ -106,28 +106,58 @@ public class PraFileUtils {
         return dates.get(0);
     }
 
-    public String validateDownload() {
-        String cmDate = getLatestFileNameFor(NseCons.CM_FILES_PATH, ApCo.PRA_CM_FILE_PREFIX, ApCo.REPORTS_FILE_EXT, 1);
-        cmDate = ProCo.extractDate(cmDate);
+    public String validateDownloadCDF() {
+        String cmDate = getLatestCmDate();
+        String mtDate = getLatestDmDate();
+        String foDate = getLatestFmDate();
 
-        String foDate = getLatestFileNameFor(NseCons.FM_FILES_PATH, ApCo.PRA_FM_FILE_PREFIX, ApCo.REPORTS_FILE_EXT, 1);
-        foDate = ProCo.extractDate(foDate);
-
-        String mtDate = getLatestFileNameFor(NseCons.DM_FILES_PATH, ApCo.PRA_DM_FILE_PREFIX, ApCo.REPORTS_FILE_EXT, 1);
-        mtDate = ProCo.extractDate(mtDate);
-
-        if (cmDate == null || foDate == null || mtDate == null) {
+        if (cmDate == null || mtDate == null || foDate == null) {
             return null;
-        } else if (cmDate.equals(foDate) && foDate.equals(mtDate)) {
+        } else if (cmDate.equals(mtDate) && mtDate.equals(foDate)) {
             return cmDate;
         } else {
-            LOGGER.warn("Not All files are available: fo=[fo-{}], cm=[cm-{}], mt=[mt-{}]", foDate, cmDate, mtDate);
+            LOGGER.warn("Not All files are available: cm=[cm-{}], mt=[mt-{}], fo=[fo-{}]", cmDate, mtDate, foDate);
             LOGGER.info("fo=[fo-{}]", foDate);
+            LOGGER.info("mt=[mt-{}]", mtDate);
+            LOGGER.info("cm=[cm-{}]", cmDate);
+            //throw new RuntimeException("All Files Does Not Exist: ABORTING");
+            return null;
+        }
+    }
+
+    public String validateDownloadCD() {
+        String cmDate = getLatestCmDate();
+        String mtDate = getLatestDmDate();
+
+        if (cmDate == null || mtDate == null) {
+            return null;
+        } else if (cmDate.equals(mtDate)) {
+            return cmDate;
+        } else {
+            LOGGER.warn("Not All files are available: cm=[cm-{}], mt=[mt-{}]", cmDate, mtDate);
             LOGGER.info("cm=[cm-{}]", cmDate);
             LOGGER.info("mt=[mt-{}]", mtDate);
             //throw new RuntimeException("All Files Does Not Exist: ABORTING");
             return null;
         }
+    }
+
+    private String getLatestCmDate() {
+        String cmDate = getLatestFileNameFor(NseCons.CM_FILES_PATH, ApCo.PRA_CM_FILE_PREFIX, ApCo.REPORTS_FILE_EXT, 1);
+        cmDate = ProCo.extractDate(cmDate);
+        return cmDate;
+    }
+
+    private String getLatestDmDate() {
+        String mtDate = getLatestFileNameFor(NseCons.DM_FILES_PATH, ApCo.PRA_DM_FILE_PREFIX, ApCo.REPORTS_FILE_EXT, 1);
+        mtDate = ProCo.extractDate(mtDate);
+        return mtDate;
+    }
+
+    private String getLatestFmDate() {
+        String foDate = getLatestFileNameFor(NseCons.FM_FILES_PATH, ApCo.PRA_FM_FILE_PREFIX, ApCo.REPORTS_FILE_EXT, 1);
+        foDate = ProCo.extractDate(foDate);
+        return foDate;
     }
 
 }

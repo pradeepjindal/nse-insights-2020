@@ -59,8 +59,8 @@ public class ReportHelperNew {
                     dto.setVolFixGrowth(volFixGrowth);
                     BigDecimal delFixGrowth = NumberUtils.divide(dto.getDelivery(), delFixOnePercent);
                     dto.setDelFixGrowth(delFixGrowth);
-                    BigDecimal foiFixGrowth = NumberUtils.divide(dto.getOi(), foiFixOnePercent);
-                    dto.setFoiFixGrowth(foiFixGrowth);
+//                    BigDecimal foiFixGrowth = NumberUtils.divide(dto.getOi(), foiFixOnePercent);
+//                    dto.setFoiFixGrowth(foiFixGrowth);
                     // dyn
                     BigDecimal atpDynGrowth = NumberUtils.divide(dto.getAtp(), atpDynOnePercent);
                     dto.setAtpDynGrowth(atpDynGrowth);
@@ -68,8 +68,8 @@ public class ReportHelperNew {
                     dto.setVolDynGrowth(volDynGrowth);
                     BigDecimal delDynGrowth = NumberUtils.divide(dto.getDelivery(), delDynOnePercent);
                     dto.setDelDynGrowth(delDynGrowth);
-                    BigDecimal foiDynGrowth = NumberUtils.divide(dto.getOi(), foiDynOnePercent);
-                    dto.setFoiDynGrowth(foiDynGrowth);
+//                    BigDecimal foiDynGrowth = NumberUtils.divide(dto.getOi(), foiDynOnePercent);
+//                    dto.setFoiDynGrowth(foiDynGrowth);
                 } else {
                     LOGGER.error("enrichCalc | unknown condition - previousDate:{}, currentDate:{}", previousDate.getValue(), dto.getTradeDate());
                 }

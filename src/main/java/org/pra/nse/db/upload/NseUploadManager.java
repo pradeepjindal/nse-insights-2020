@@ -1,6 +1,9 @@
 package org.pra.nse.db.upload;
 
 import org.pra.nse.Manager;
+import org.pra.nse.db.upload.nse.NseCmUploader;
+import org.pra.nse.db.upload.nse.NseDmUploader;
+import org.pra.nse.db.upload.nse.NseFmUploader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -9,16 +12,16 @@ import org.springframework.stereotype.Component;
 public class NseUploadManager implements Manager {
     private static final Logger LOGGER = LoggerFactory.getLogger(NseUploadManager.class);
 
-    private final CashMarketUploader cashMarketUploader;
-    private final FutureMarketUploader futureMarketUploader;
-    private final DeliveryMarketUploader deliveryMarketUploader;
+    private final NseCmUploader nseCmUploader;
+    private final NseFmUploader nseFmUploader;
+    private final NseDmUploader nseDmUploader;
 
-    public NseUploadManager(CashMarketUploader cashMarketUploader,
-                            FutureMarketUploader futureMarketUploader,
-                            DeliveryMarketUploader deliveryMarketUploader) {
-        this.cashMarketUploader = cashMarketUploader;
-        this.futureMarketUploader = futureMarketUploader;
-        this.deliveryMarketUploader = deliveryMarketUploader;
+    public NseUploadManager(NseCmUploader nseCmUploader,
+                            NseFmUploader nseFmUploader,
+                            NseDmUploader nseDmUploader) {
+        this.nseCmUploader = nseCmUploader;
+        this.nseFmUploader = nseFmUploader;
+        this.nseDmUploader = nseDmUploader;
     }
 
     @Override
@@ -26,11 +29,11 @@ public class NseUploadManager implements Manager {
         LOGGER.info(".");
         LOGGER.info("____________________ NSE - Upload Manager");
 
-        cashMarketUploader.uploadFromLastDate();
+        nseCmUploader.uploadFromLastDate();
         LOGGER.info("----------");
-        futureMarketUploader.uploadFromLastDate();
+        nseFmUploader.uploadFromLastDate();
         LOGGER.info("----------");
-        deliveryMarketUploader.uploadFromLastDate();
+        nseDmUploader.uploadFromLastDate();
 
 //        cashMarketUploader.uploadFromDefaultDate();
 //        LOGGER.info("----------");
@@ -38,8 +41,11 @@ public class NseUploadManager implements Manager {
 //        LOGGER.info("----------");
 //        deliveryMarketUploader.uploadFromDefaultDate();
 
+//        cashMarketUploader.uploadFromDate(LocalDate.of(2017,1,1));
+//        LOGGER.info("----------");
+//        deliveryMarketUploader.uploadFromDate(LocalDate.of(2017,1,1));
+
         LOGGER.info("======================================== NSE - Upload Manager");
     }
-
 
 }

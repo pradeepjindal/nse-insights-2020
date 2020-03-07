@@ -128,12 +128,12 @@ public class AvgCalculatorNew {
                     },
                     (dto, calculatedValue) -> bean.setDelSma(calculatedValue)
             );
-            calculate(forDate, symbol, list,
-                    dto -> {
-                        return dto.getOi();
-                    },
-                    (dto, calculatedValue) -> bean.setFoiSma(calculatedValue)
-            );
+//            calculate(forDate, symbol, list,
+//                    dto -> {
+//                        return dto.getOi();
+//                    },
+//                    (dto, calculatedValue) -> bean.setFoiSma(calculatedValue)
+//            );
             //
             if(bean.getAtpSma() != null) beans.add(bean);
         });

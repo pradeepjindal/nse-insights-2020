@@ -54,9 +54,9 @@ public class ReportConstants {
                     "calcVolFixGrowth,volChgPct," +
                     "vdr,sumDel," +
                     "calcDelFixGrowth,delChgPct," +
-                    "calcFoiFixGrowth,foiChgPct," +
-
-                    "premium,openingBell," +
+//                    "calcFoiFixGrowth,foiChgPct," +
+//
+//                    "premium," +
                     "nxtCloseToOpenPct,nxtOptoHighPct,nxtOptoLowPct,nxtOptoAtpPct," +
                     "VolAtpMfi,DelAtpMfi,DelAtpMfiChg," +
                     "DelRsi,DelRsiChg," +

@@ -75,7 +75,7 @@ public class PastPresentFutureReporterNew {
         reportFromLast(10);
     }
     public void reportFromLast(int forMinusDays) {
-        String str = praFileUtils.validateDownload();
+        String str = praFileUtils.validateDownloadCDF();
         if(str == null) return;
 
         LocalDate forDate = DateUtils.toLocalDate(str);

@@ -1,18 +1,15 @@
 package org.pra.nse.statistics;
 
-import org.pra.nse.ApCo;
 import org.pra.nse.Manager;
-import org.pra.nse.db.dao.NseReportsDao;
-import org.pra.nse.report.DeliverySpikeReporter;
-import org.pra.nse.report.DeliverySpikeReporterFull;
-import org.pra.nse.report.PastPresentFutureReporter;
-import org.pra.nse.report.ReportConstants;
-import org.pra.nse.util.NseFileUtils;
+import org.pra.nse.db.dto.DeliverySpikeDto;
+import org.pra.nse.service.DataService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
+import java.util.List;
+import java.util.Map;
 
 /**
  * polymorphism is not letting me share the data in base class
@@ -44,25 +41,11 @@ import java.time.LocalDate;
 public class StatisticsManager implements Manager {
     private static final Logger LOGGER = LoggerFactory.getLogger(StatisticsManager.class);
 
-    private final NseFileUtils nseFileUtils;
-
-    private final NseReportsDao nseReportsDao;
-
-    private final DeliverySpikeReporter deliverySpikeReport;
-    private final DeliverySpikeReporterFull deliverySpikeReportFull;
-    private final PastPresentFutureReporter pastPresentFutureReport;
-
+    private final DataService dataService;
     private final Statisian statisian;
 
-    public StatisticsManager(NseFileUtils nseFileUtils,
-                             NseReportsDao nseReportsDao, DeliverySpikeReporter deliverySpikeReport,
-                             DeliverySpikeReporterFull deliverySpikeReportFull,
-                             PastPresentFutureReporter pastPresentFutureReport, Statisian statisian) {
-        this.nseFileUtils = nseFileUtils;
-        this.nseReportsDao = nseReportsDao;
-        this.deliverySpikeReport = deliverySpikeReport;
-        this.deliverySpikeReportFull = deliverySpikeReportFull;
-        this.pastPresentFutureReport = pastPresentFutureReport;
+    public StatisticsManager(DataService dataService, Statisian statisian) {
+        this.dataService = dataService;
         this.statisian = statisian;
     }
 
@@ -71,7 +54,35 @@ public class StatisticsManager implements Manager {
         LOGGER.info(".");
         LOGGER.info("____________________ Statistics Manager");
 
-        statisian.stats(LocalDate.of(2020, 2, 5), 10);
+        //statisian.stats(LocalDate.of(2020, 2, 5), 10);
+
+        LocalDate tdy = LocalDate.of(2020, 3, 5);
+        Map<String, List<DeliverySpikeDto>> sbiMap;
+
+        //3yr
+        LOGGER.info("SBIN (3yr) - ");
+        sbiMap = dataService.getRawDataBySymbol(tdy, 750, "SBIN");
+        StatisticsSbi.summarizeBucket(sbiMap);
+
+        //2yr
+        LOGGER.info("SBIN (2yr) - ");
+        sbiMap = dataService.getRawDataBySymbol(tdy, 500, "SBIN");
+        StatisticsSbi.summarizeBucket(sbiMap);
+
+        //1yr
+        LOGGER.info("SBIN (1yr) - ");
+        sbiMap = dataService.getRawDataBySymbol(tdy, 250, "SBIN");
+        StatisticsSbi.summarizeBucket(sbiMap);
+
+        //6mo
+        LOGGER.info("SBIN (6mo) - ");
+        sbiMap = dataService.getRawDataBySymbol(tdy, 123, "SBIN");
+        StatisticsSbi.summarizeBucket(sbiMap);
+
+        //3mo
+        LOGGER.info("SBIN (3mo) - ");
+        sbiMap = dataService.getRawDataBySymbol(tdy, 66, "SBIN");
+        StatisticsSbi.summarizeBucket(sbiMap);
 
         LOGGER.info("======================================== Statistics Manager");
     }

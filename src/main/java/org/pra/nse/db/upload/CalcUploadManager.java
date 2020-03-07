@@ -1,30 +1,24 @@
 package org.pra.nse.db.upload;
 
-import org.pra.nse.ApCo;
 import org.pra.nse.Manager;
+import org.pra.nse.db.upload.calc.CalcAvgUploaderNew;
+import org.pra.nse.db.upload.calc.CalcMfiUploaderNew;
+import org.pra.nse.db.upload.calc.CalcRsiUploaderNew;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
-
-import java.time.LocalDate;
 
 @Component
 public class CalcUploadManager implements Manager {
     private static final Logger LOGGER = LoggerFactory.getLogger(CalcUploadManager.class);
 
-    private final CalcAvgUploader calcAvgUploader;
-    private final CalcRsiUploader calcRsiUploader;
-    private final CalcMfiUploader calcMfiUploader;
-
     private final CalcAvgUploaderNew calcAvgUploaderNew;
     private final CalcMfiUploaderNew calcMfiUploaderNew;
     private final CalcRsiUploaderNew calcRsiUploaderNew;
 
-    public CalcUploadManager(CalcAvgUploader calcAvgUploader, CalcRsiUploader calcRsiUploader, CalcMfiUploader calcMfiUploader,
-                             CalcAvgUploaderNew calcAvgUploaderNew, CalcMfiUploaderNew calcMfiUploaderNew, CalcRsiUploaderNew calcRsiUploaderNew) {
-        this.calcAvgUploader = calcAvgUploader;
-        this.calcRsiUploader = calcRsiUploader;
-        this.calcMfiUploader = calcMfiUploader;
+    public CalcUploadManager(CalcAvgUploaderNew calcAvgUploaderNew,
+                             CalcMfiUploaderNew calcMfiUploaderNew,
+                             CalcRsiUploaderNew calcRsiUploaderNew) {
         this.calcAvgUploaderNew = calcAvgUploaderNew;
         this.calcMfiUploaderNew = calcMfiUploaderNew;
         this.calcRsiUploaderNew = calcRsiUploaderNew;
@@ -35,22 +29,19 @@ public class CalcUploadManager implements Manager {
         LOGGER.info(".");
         LOGGER.info("____________________ CALC - Upload Manager");
 
-        calcAvgUploader.uploadFromLastDate();
         LOGGER.info("----------");
-        calcRsiUploader.uploadFromLastDate();
+        calcAvgUploaderNew.uploadFromLastDate();
         LOGGER.info("----------");
-        calcMfiUploader.uploadFromLastDate();
+        calcMfiUploaderNew.uploadFromLastDate();
+        LOGGER.info("----------");
+        calcRsiUploaderNew.uploadFromLastDate();
 
-//        calcAvgUploader.uploadFromDefaultDate();
 //        LOGGER.info("----------");
-//        calcRsiUploader.uploadFromDefaultDate();
+//        calcAvgUploaderNew.uploadFromDate(ApCo.UPLOAD_CALC_FROM_DATE);
 //        LOGGER.info("----------");
-//        calcMfiUploader.uploadFromDefaultDate();
-
-        LOGGER.info("----------");
-        calcAvgUploaderNew.uploadFromDate(ApCo.UPLOAD_CALC_FROM_DATE);
-        calcMfiUploaderNew.uploadFromDate(ApCo.UPLOAD_CALC_FROM_DATE);
-        calcRsiUploaderNew.uploadFromDate(ApCo.UPLOAD_CALC_FROM_DATE);
+//        calcMfiUploaderNew.uploadFromDate(ApCo.UPLOAD_CALC_FROM_DATE);
+//        LOGGER.info("----------");
+//        calcRsiUploaderNew.uploadFromDate(ApCo.UPLOAD_CALC_FROM_DATE);
 
         LOGGER.info("======================================== CALC - Upload Manager");
     }

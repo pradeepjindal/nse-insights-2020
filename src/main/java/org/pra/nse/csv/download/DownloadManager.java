@@ -5,6 +5,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDate;
+
 @Component
 public class DownloadManager implements Manager {
     private static final Logger LOGGER = LoggerFactory.getLogger(DownloadManager.class);
@@ -51,6 +53,10 @@ public class DownloadManager implements Manager {
 //        bpDownloader.downloadFromDefaultDate();
 //        LOGGER.info("----------");
 //        dbcDownloader.downloadFromDefaultDate();
+
+//        cmDownloader.downloadFromDate(LocalDate.of(2017,1,1));
+//        LOGGER.info("----------");
+//        dmDownloader.downloadFromDate(LocalDate.of(2017,1,1));
 
         LOGGER.info("======================================== Download Manager");
     }

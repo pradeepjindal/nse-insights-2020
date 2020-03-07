@@ -1,12 +1,13 @@
-package org.pra.nse.db.upload;
+package org.pra.nse.db.upload.nse;
 
 import org.pra.nse.ApCo;
 import org.pra.nse.NseCons;
 import org.pra.nse.csv.bean.in.CmBean;
 import org.pra.nse.csv.read.CmCsvReader;
-import org.pra.nse.db.dao.nse.CashMarketDao;
+import org.pra.nse.db.dao.nse.CmDao;
 import org.pra.nse.db.model.NseCashMarketTab;
-import org.pra.nse.db.repository.NseCashMarketRepository;
+import org.pra.nse.db.repository.NseCmRepo;
+import org.pra.nse.db.upload.BaseUploader;
 import org.pra.nse.util.DateUtils;
 
 import org.pra.nse.util.NseFileUtils;
@@ -22,23 +23,23 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
 @Component
-public class CashMarketUploader extends BaseUploader {
-    private static final Logger LOGGER = LoggerFactory.getLogger(CashMarketUploader.class);
+public class NseCmUploader extends BaseUploader {
+    private static final Logger LOGGER = LoggerFactory.getLogger(NseCmUploader.class);
 
-    private final NseCashMarketRepository repository;
-    private final CashMarketDao dao;
+    private final NseCmRepo repository;
+    private final CmDao dao;
     private final NseFileUtils nseFileUtils;
     private final PraFileUtils praFileUtils;
     private final CmCsvReader csvReader;
 
-    public CashMarketUploader(NseCashMarketRepository nseCashMarketRepository,
-                              CashMarketDao cashMarketDao,
-                              NseFileUtils nseFileUtils,
-                              PraFileUtils praFileUtils,
-                              CmCsvReader cmCsvReader ) {
+    public NseCmUploader(NseCmRepo nseCmRepo,
+                         CmDao cmDao,
+                         NseFileUtils nseFileUtils,
+                         PraFileUtils praFileUtils,
+                         CmCsvReader cmCsvReader ) {
         super(praFileUtils, NseCons.CM_DIR_NAME, ApCo.PRA_CM_FILE_PREFIX);
-        this.repository = nseCashMarketRepository;
-        this.dao = cashMarketDao;
+        this.repository = nseCmRepo;
+        this.dao = cmDao;
         this.nseFileUtils = nseFileUtils;
         this.praFileUtils = praFileUtils;
         this.csvReader = cmCsvReader;

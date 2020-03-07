@@ -19,6 +19,8 @@ public class NseReportsDao {
 
     @Value("${sqlDeliverySpike}")
     private String deliverySpikeSql;
+    @Value("${sqlDeliverySpikeTwo}")
+    private String deliverySpikeTwoSql;
     @Value("${sqlPastPresentFuture}")
     private String pastPresentFutureSql;
 
@@ -30,6 +32,10 @@ public class NseReportsDao {
 
     public List<DeliverySpikeDto> getDeliverySpike() {
         List<DeliverySpikeDto> result = jdbcTemplate.query(deliverySpikeSql, new BeanPropertyRowMapper<DeliverySpikeDto>(DeliverySpikeDto.class));
+        return result;
+    }
+    public List<DeliverySpikeDto> getDeliverySpikeTwo() {
+        List<DeliverySpikeDto> result = jdbcTemplate.query(deliverySpikeTwoSql, new BeanPropertyRowMapper<DeliverySpikeDto>(DeliverySpikeDto.class));
         return result;
     }
 //    public List<DeliverySpikeDto> getDeliverySpike(LocalDate forDate) {

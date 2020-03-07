@@ -50,6 +50,57 @@ sqlDeliverySpike: >
   WHERE tdy.one_trade_date = yes.one_trade_Date and tdy.symbol = yes.symbol
   order by tdy.symbol, tdy.trade_date
 
+sqlDeliverySpikeTwo: >
+  SELECT
+    tdy.symbol AS symbol,
+    tdy.one_trade_date AS trade_date,
+
+    tdy.cmclose_prev AS previous_close,
+    tdy.cmopen AS open,
+    tdy.cmhigh AS high,
+    tdy.cmlow AS low,
+    tdy.cmclose AS close,
+    tdy.cmlast AS last,
+    tdy.cmatp AS atp,
+
+    round(tdy.cmopen / (yes.cmopen/100),2) - 100 AS open_chg_prcnt,
+    round(tdy.cmhigh / (yes.cmhigh/100),2) - 100 AS high_chg_prcnt,
+    round(tdy.cmlow / (yes.cmlow/100),2) - 100 AS low_chg_prcnt,
+    round(tdy.cmclose / (yes.cmclose/100),2) - 100 AS close_chg_prcnt,
+    round(tdy.cmlast / (yes.cmlast/100),2) - 100 AS last_chg_prcnt,
+    round(tdy.cmatp / (yes.cmatp/100),2) - 100 AS atp_chg_prcnt,
+
+    round(tdy.traded_qty / (yes.traded_qty/100),2) - 100 AS volume_chg_prcnt,
+    round(tdy.delivered_qty / (yes.delivered_qty/100),2) - 100 AS delivery_chg_prcnt,
+
+    round(tdy.cmopen / (tdy.cmclose_prev/100), 2) - 100 AS close_to_open_percent,
+    round(tdy.cmhigh / (tdy.cmopen/100), 2) - 100 AS othigh_prcnt,
+    round(tdy.cmlow / (tdy.cmopen/100), 2) - 100 AS otlow_prcnt,
+    round(tdy.cmclose / (tdy.cmopen/100), 2) - 100 AS otclose_prcnt,
+    round(tdy.cmlast / (tdy.cmopen/100), 2) - 100 AS otlast_prcnt,
+    round(tdy.cmatp / (tdy.cmopen/100), 2) - 100 AS otatp_prcnt,
+
+    tdy.cmclose - yes.cmclose AS tdyclose_minus_yesclose,
+    tdy.cmlast - yes.cmlast AS tdylast_minus_yeslast,
+    tdy.cmatp - yes.cmatp AS tdyatp_minus_yesatp,
+    tdy.delivered_qty - yes.delivered_qty AS tdydel_minus_yesdel,
+
+    tdy.traded_qty volume,
+    tdy.delivered_qty delivery
+  FROM
+    (
+      select *
+      from cm_date_linking_view1 v1, cd_data_view_a1 d1
+      where v1.One_trade_date = d1.trade_Date
+    ) tdy,
+    (
+      select *
+      from cm_date_linking_view1 v2, cd_data_view_a1 d2
+      where v2.two_trade_date = d2.trade_Date
+    ) yes
+  WHERE tdy.one_trade_date = yes.one_trade_Date and tdy.symbol = yes.symbol
+  order by tdy.symbol, tdy.trade_date
+
 sqlPastPresentFuture: >
   SELECT
       tdy.symbol symbol,

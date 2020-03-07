@@ -9,13 +9,13 @@ public class ApCo {
 
     public static final LocalTime DAILY_DOWNLOAD_TIME = LocalTime.of(18,0,0,0);
     //
-    public static final LocalDate DOWNLOAD_FROM_DATE    = LocalDate.of(2020,3,1);
-    public static final LocalDate CALC_FROM_DATE        = LocalDate.of(2020,3,1);
-    public static final LocalDate CALC_FROM_DATE_NEW        = LocalDate.of(2020,3,1);
-    public static final LocalDate UPLOAD_NSE_FROM_DATE      = LocalDate.of(2020,3,1);
-    public static final LocalDate UPLOAD_CALC_FROM_DATE      = LocalDate.of(2020,1,1);
-    public static final LocalDate REPORTS_FROM_DATE     = LocalDate.of(2020,3,1);
-    public static final LocalDate EMAIL_FROM_DATE       = LocalDate.of(2020,3,1);
+    public static final LocalDate DOWNLOAD_FROM_DATE    = LocalDate.of(2020,3,7);
+    public static final LocalDate CALC_FROM_DATE        = LocalDate.of(2020,3,7);
+    public static final LocalDate CALC_FROM_DATE_NEW        = LocalDate.of(2020,3,7);
+    public static final LocalDate UPLOAD_NSE_FROM_DATE      = LocalDate.of(2020,3,7);
+    public static final LocalDate UPLOAD_CALC_FROM_DATE      = LocalDate.of(2020,3,7);
+    public static final LocalDate REPORTS_FROM_DATE     = LocalDate.of(2020,3,7);
+    public static final LocalDate EMAIL_FROM_DATE       = LocalDate.of(2020,3,7);
 
 
     public static final boolean EMAIL_ENABLED = true;

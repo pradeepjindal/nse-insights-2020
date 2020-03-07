@@ -12,15 +12,15 @@ import java.time.LocalDate;
 
 @Component
 @PropertySource(value = "classpath:upload-queries.yaml", factory = YamlPropertyLoaderFactory.class)
-public class CashMarketDao {
-    private static final Logger LOGGER = LoggerFactory.getLogger(CashMarketDao.class);
+public class CmDao {
+    private static final Logger LOGGER = LoggerFactory.getLogger(CmDao.class);
 
     private final JdbcTemplate jdbcTemplate;
 
     @Value("${cmDataCountForDateSql}")
     private String cmDataCountForDateSql;
 
-    CashMarketDao(JdbcTemplate jdbcTemplate) {
+    CmDao(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
 

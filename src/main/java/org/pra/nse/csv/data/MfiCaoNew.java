@@ -38,7 +38,7 @@ public class MfiCaoNew {
         }
     }
 
-    public static void saveAppend(List<MfiBean> dtos) {
+    public static void saveAppend(List<MfiBeanNew> dtos) {
 
         //List<RsiEntity> rsiBeans0 = RsiData.load();
         String toPath = ApCo.ROOT_DIR + File.separator + ApCo.COMPUTE_DIR_NAME + File.separator + "mfi.csv";

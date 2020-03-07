@@ -38,7 +38,7 @@ public class RsiCaoNew {
         }
     }
 
-    public static void saveAppend(List<RsiBean> dtos) {
+    public static void saveAppend(List<RsiBeanNew> dtos) {
 
         //List<RsiEntity> rsiBeans0 = RsiData.load();
         String toPath = ApCo.ROOT_DIR + File.separator + ApCo.COMPUTE_DIR_NAME + File.separator + "rsi.csv";

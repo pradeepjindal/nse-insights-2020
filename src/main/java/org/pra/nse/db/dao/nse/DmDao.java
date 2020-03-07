@@ -10,13 +10,13 @@ import java.time.LocalDate;
 
 @Component
 @PropertySource(value = "classpath:upload-queries.yaml", factory = YamlPropertyLoaderFactory.class)
-public class DeliveryMarketDao {
+public class DmDao {
     private final JdbcTemplate jdbcTemplate;
 
     @Value("${dmDataCountForDateSql}")
     private String dmDataCountForDateSql;
 
-    DeliveryMarketDao(JdbcTemplate jdbcTemplate) {
+    DmDao(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
 

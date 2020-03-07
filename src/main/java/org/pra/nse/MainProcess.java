@@ -6,7 +6,7 @@ import org.pra.nse.csv.transformation.TransformationManager;
 import org.pra.nse.db.upload.CalcUploadManager;
 import org.pra.nse.db.upload.NseUploadManager;
 import org.pra.nse.processor.*;
-import org.pra.nse.report.ReportManager;
+import org.pra.nse.report.ReportManagerNew;
 import org.pra.nse.statistics.StatisticsManager;
 import org.pra.nse.util.DirUtils;
 import org.pra.nse.util.PraFileUtils;
@@ -28,7 +28,7 @@ public class MainProcess implements ApplicationRunner {
     private final CalculationManager calculationManager;
     private final CalcUploadManager calcUploadManager;
     private final ProcessManager processManager;
-    private final ReportManager reportManager;
+    private final ReportManagerNew reportManagerNew;
     private final StatisticsManager statisticsManager;
 
     public MainProcess(PraFileUtils praFileUtils,
@@ -37,7 +37,7 @@ public class MainProcess implements ApplicationRunner {
                        NseUploadManager nseUploadManager,
                        CalculationManager calculationManager,
                        CalcUploadManager calcUploadManager, ProcessManager processManager,
-                       ReportManager reportManager, StatisticsManager statisticsManager) {
+                       ReportManagerNew reportManagerNew, StatisticsManager statisticsManager) {
         this.praFileUtils = praFileUtils;
         this.downloadManager = downloadManager;
         this.transformationManager = transformationManager;
@@ -45,7 +45,7 @@ public class MainProcess implements ApplicationRunner {
         this.calculationManager = calculationManager;
         this.calcUploadManager = calcUploadManager;
         this.processManager = processManager;
-        this.reportManager = reportManager;
+        this.reportManagerNew = reportManagerNew;
         this.statisticsManager = statisticsManager;
     }
 
@@ -54,16 +54,23 @@ public class MainProcess implements ApplicationRunner {
         LOGGER.info("");
         LOGGER.info("Main Process | ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ | commencing");
         LOGGER.info("");
+
         try {
+            //statisticsManager.execute();
+
             DirUtils.createRootFolder();
             downloadManager.execute();
             transformationManager.execute();
             nseUploadManager.execute();
-            if(praFileUtils.validateDownload() != null) {
+
+            if(praFileUtils.validateDownloadCD() != null) {
                 calculationManager.execute();
                 calcUploadManager.execute();
+                reportManagerNew.execute();
+            }
+
+            if(praFileUtils.validateDownloadCDF() != null) {
                 processManager.execute();
-                reportManager.execute();
                 //statisticsManager.execute();
             }
         } catch(Exception e) {

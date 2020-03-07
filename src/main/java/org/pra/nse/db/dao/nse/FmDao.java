@@ -12,7 +12,7 @@ import java.util.List;
 @Component
 @PropertySource(value = "classpath:upload-queries.yaml", factory = YamlPropertyLoaderFactory.class)
 @PropertySource(value = "classpath:future-queries.yaml", factory = YamlPropertyLoaderFactory.class)
-public class FutureMarketDao {
+public class FmDao {
     private final JdbcTemplate jdbcTemplate;
 
     @Value("${fmDataCountForDateSql}")
@@ -21,7 +21,7 @@ public class FutureMarketDao {
     @Value("${activeFutureScriptsForGivenDateSql}")
     private String activeFutureScriptsForGivenDateSql;
 
-    FutureMarketDao(JdbcTemplate jdbcTemplate) {
+    FmDao(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
 

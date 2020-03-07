@@ -2,15 +2,7 @@ package org.pra.nse.service;
 
 import org.pra.nse.Manager;
 import org.pra.nse.db.dao.NseReportsDao;
-import org.pra.nse.db.dao.nse.OiDao;
 import org.pra.nse.db.dto.DeliverySpikeDto;
-import org.pra.nse.db.dto.OiDto;
-import org.pra.nse.db.model.CalcMfiTab;
-import org.pra.nse.db.model.CalcRsiTab;
-import org.pra.nse.db.repository.CalcAvgRepository;
-import org.pra.nse.db.repository.CalcMfiRepository;
-import org.pra.nse.db.repository.CalcRsiRepository;
-import org.pra.nse.report.ReportHelper;
 import org.pra.nse.util.NumberUtils;
 import org.pra.nse.util.PraFileUtils;
 import org.slf4j.Logger;
@@ -18,7 +10,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -31,12 +22,7 @@ public class DataService implements Manager {
 
     private final PraFileUtils praFileUtils;
     private final NseReportsDao nseReportsDao;
-    private final OiDao oiDao;
     private final DateService dateService;
-
-    private final CalcRsiRepository calcRsiRepository;
-    private final CalcMfiRepository calcMfiRepository;
-    private final CalcAvgRepository calcAvgRepository;
 
     private final NavigableMap<Integer, LocalDate>  tradeDates_NavigableMap = new TreeMap<>();
     private final List<LocalDate>                   tradeDates_Desc_LinkedList = new LinkedList<>();
@@ -50,16 +36,12 @@ public class DataService implements Manager {
     private List<LocalDate> latest20Dates = null;
     private boolean isDataInRawState = true;
 
-    public DataService(PraFileUtils praFileUtils, NseReportsDao nseReportsDao, OiDao oiDao,
-                       DateService dateService,
-                       CalcRsiRepository calcRsiRepository, CalcMfiRepository calcMfiRepository, CalcAvgRepository calcAvgRepository) {
+    public DataService(PraFileUtils praFileUtils,
+                       NseReportsDao nseReportsDao,
+                       DateService dateService) {
         this.praFileUtils = praFileUtils;
         this.nseReportsDao = nseReportsDao;
-        this.oiDao = oiDao;
         this.dateService = dateService;
-        this.calcRsiRepository = calcRsiRepository;
-        this.calcMfiRepository = calcMfiRepository;
-        this.calcAvgRepository = calcAvgRepository;
     }
 
 
@@ -156,7 +138,7 @@ public class DataService implements Manager {
 
 
     private void bootUpData() {
-        dbResults = nseReportsDao.getDeliverySpike();
+        dbResults = nseReportsDao.getDeliverySpikeTwo();
 
         NavigableMap<LocalDate, LocalDate> map = new TreeMap<>();
         dbResults.forEach( row-> {
@@ -182,7 +164,7 @@ public class DataService implements Manager {
         });
 
         //
-        fillTheOi();
+        //fillTheOi();
     }
 
     private void initializeTradeDates() {
@@ -231,42 +213,6 @@ public class DataService implements Manager {
     }
     private boolean filterSymbol(DeliverySpikeDto dto, String symbol) {
         return symbol.toUpperCase().equals(dto.getSymbol());
-    }
-
-
-    private void fillTheOi() {
-        LOGGER.info("DataManager - fillTheOi");
-        //LocalDate minDate = minDate(latestDbDate, 20);
-        Predicate<DeliverySpikeDto> predicate = dto -> true;
-        Map<LocalDate, Map<String, DeliverySpikeDto>> tradeDateAndSymbolMap = prepareDataByTradeDateAndSymbol(predicate);
-
-        List<OiDto> dbResults = oiDao.getOiAll();
-        Map<String, Map<LocalDate, OiDto>> oiMap = new HashMap<>();
-
-//        Map<String, Map<LocalDate, OiDto>> localMap = new HashMap<>();
-//        dbResults.forEach( filteredRow-> {
-//            if(localMap.containsKey(filteredRow.getSymbol())) {
-//                if(localMap.get(filteredRow.getSymbol()).containsKey(filteredRow.getTradeDate())) {
-//                    LOGGER.warn("tradeDate-symbol | matched symbol {} tradeDate {}", filteredRow.getSymbol(), filteredRow.getTradeDate());
-//                } else {
-//                    localMap.get(filteredRow.getSymbol()).put(filteredRow.getTradeDate(), filteredRow);
-//                }
-//            } else {
-//                LOGGER.warn("oi | new entry. symbol {} tradeDate {}", filteredRow.getSymbol(), filteredRow.getTradeDate());
-//                Map<LocalDate, OiDto> map = new HashMap<>();
-//                map.put(filteredRow.getTradeDate(), filteredRow);
-//                localMap.put(filteredRow.getSymbol(), map);
-//                //LOGGER.info("tradeDate-symbol | tradeDate {}", filteredRow.getTradeDate());
-//            }
-//        });
-
-        dbResults.forEach( row -> {
-            try {
-                tradeDateAndSymbolMap.get(row.getTradeDate()).get(row.getSymbol()).setOi(row.getSumOi());
-            } catch (Exception e) {
-                //LOGGER.warn("oi not found, {} for {}", row.getSymbol(), row.getTradeDate());
-            }
-        });
     }
 
     private void fillTheCalcFields() {
@@ -412,58 +358,6 @@ public class DataService implements Manager {
 //                    return true;
 //                }).count();
 //    }
-    private void fillTheIndicatorsChg() {
-        LOGGER.info("DataManager - fillTheIndicators");
-        LocalDate minDate = minDate(latestDbDate, 21);
-        Predicate<DeliverySpikeDto> predicate = dto -> filterDate(dto, minDate, latestDbDate);
-        Map<LocalDate, Map<String, DeliverySpikeDto>> tradeDateAndSymbolMap = prepareDataByTradeDateAndSymbol(predicate);
-
-        //load old Rsi
-        //TODO fix this
-        List<CalcRsiTab> oldRsiList = calcRsiRepository.findAll();
-        ReportHelper.enrichRsi(oldRsiList, tradeDateAndSymbolMap);
-
-        //load old Mfi
-        //TODO fix this
-        List<CalcMfiTab> oldMfiList = calcMfiRepository.findAll();
-        ReportHelper.enrichMfi(oldMfiList, tradeDateAndSymbolMap);
-
-        LocalDate backDate = null;
-        DeliverySpikeDto backDto = null;
-        BigDecimal onePercent = null;
-        BigDecimal diff = null;
-        BigDecimal chg = null;
-        for(DeliverySpikeDto tdyDto:dbResults) {
-            if(tdyDto.getTradeDate().isAfter(tradeDates_Desc_LinkedList.get(20))) {
-                backDto = null;
-                backDate = backDateMap.get(tdyDto.getTradeDate());
-                if(tradeDateAndSymbolMap.containsKey(backDate))
-                    backDto = tradeDateAndSymbolMap.get(backDate).get(tdyDto.getSymbol());
-                if (backDto == null) {
-                    LOGGER.warn("{} - backDto is null for: {}", tdyDto.getSymbol(), backDate);
-                } else if (backDto.getDelAtpMfi() == null) {
-                    LOGGER.warn("{} - DelAtpMfi is null for: {}", tdyDto.getSymbol(), backDate);
-                } else if (backDto.getAtpRsi() == null) {
-                    LOGGER.warn("{} - AtpRsi is null for: {}", tdyDto.getSymbol(), backDate);
-                } else {
-                    //TODO no need to do percent calc here, it is already in 0 to 100 range
-                    //onePercent = backDto.getDelAtpMfi().divide(NumberUtils.HUNDRED, 2, RoundingMode.HALF_UP);
-                    onePercent = NumberUtils.onePercent(backDto.getDelAtpMfi());
-                    //diff = dto.getDelAtpMfi().divide(onePercent, 2, RoundingMode.HALF_UP);
-                    diff = NumberUtils.divide(tdyDto.getDelAtpMfi(), onePercent);
-                    chg = diff.subtract(NumberUtils.HUNDRED);
-                    tdyDto.setDelAtpMfiChg(chg);
-
-                    //onePercent = backDto.getAtpRsi().divide(NumberUtils.HUNDRED, 2, RoundingMode.HALF_UP);
-                    onePercent = NumberUtils.onePercent(backDto.getAtpRsi());
-                    //diff = dto.getAtpRsi().divide(onePercent, 2, RoundingMode.HALF_UP);
-                    diff = NumberUtils.divide(tdyDto.getAtpRsi(), onePercent);
-                    chg = diff.subtract(NumberUtils.HUNDRED);
-                    tdyDto.setAtpRsiChg(chg);
-                }
-            }
-        }
-    }
 
     private Map<String, List<DeliverySpikeDto>> prepareDataBySymbol(Predicate<DeliverySpikeDto> filterPredicate) {
         // aggregate trade by symbols

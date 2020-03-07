@@ -178,12 +178,12 @@ public class RsiCalculatorNew {
 //        if(upCtr == 0 || dnCtr == 0) {
 //            LOGGER.warn("rsi | forSymbol = {}, forDate = {}, upCtr = {}, dnCtr = {}", symbol, forDate, upCtr, dnCtr);
 //        }
-        if(upCtr == 3 && dnCtr == 0) {
-            LOGGER.info("rsi+ | forSymbol = {}, forDate = {}, upCtr = {}, dnCtr = {}", symbol, forDate, upCtr, dnCtr);
-        }
-        if(upCtr == 0 && dnCtr == 3) {
-            LOGGER.info("rsi- | forSymbol = {}, forDate = {}, upCtr = {}, dnCtr = {}", symbol, forDate, upCtr, dnCtr);
-        }
+//        if(upCtr == 3 && dnCtr == 0) {
+//            LOGGER.info("rsi+ | forSymbol = {}, forDate = {}, upCtr = {}, dnCtr = {}", symbol, forDate, upCtr, dnCtr);
+//        }
+//        if(upCtr == 0 && dnCtr == 3) {
+//            LOGGER.info("rsi- | forSymbol = {}, forDate = {}, upCtr = {}, dnCtr = {}", symbol, forDate, upCtr, dnCtr);
+//        }
 
         //LOGGER.info("latestDto = {}", latestDto.toFullCsvString());
         //up = up.divide(upCtr == 0 ? BigDecimal.ONE : new BigDecimal(upCtr), 2, RoundingMode.HALF_UP);

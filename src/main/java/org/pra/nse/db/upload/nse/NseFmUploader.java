@@ -1,14 +1,15 @@
-package org.pra.nse.db.upload;
+package org.pra.nse.db.upload.nse;
 
 import org.pra.nse.ApCo;
 import org.pra.nse.NseCons;
 import org.pra.nse.csv.bean.in.FmBean;
 import org.pra.nse.csv.read.FmCsvReader;
-import org.pra.nse.db.dao.nse.FutureMarketDao;
+import org.pra.nse.db.dao.nse.FmDao;
 import org.pra.nse.db.model.NseFutureMarketTab;
 import org.pra.nse.db.model.NseOptionMarketTab;
-import org.pra.nse.db.repository.NseFutureMarketRepository;
-import org.pra.nse.db.repository.NseOptionMarketRepository;
+import org.pra.nse.db.repository.NseFmRepo;
+import org.pra.nse.db.repository.NseOmRepo;
+import org.pra.nse.db.upload.BaseUploader;
 import org.pra.nse.util.DateUtils;
 import org.pra.nse.util.NseFileUtils;
 import org.pra.nse.util.PraFileUtils;
@@ -24,26 +25,26 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
 @Component
-public class FutureMarketUploader extends BaseUploader {
-    private static final Logger LOGGER = LoggerFactory.getLogger(FutureMarketUploader.class);
+public class NseFmUploader extends BaseUploader {
+    private static final Logger LOGGER = LoggerFactory.getLogger(NseFmUploader.class);
 
-    private final NseFutureMarketRepository futureMarketRepository;
-    private final NseOptionMarketRepository optionMarketRepository;
-    private final FutureMarketDao dao;
+    private final NseFmRepo futureMarketRepository;
+    private final NseOmRepo optionMarketRepository;
+    private final FmDao dao;
     private final NseFileUtils nseFileUtils;
     private final PraFileUtils praFileUtils;
     private final FmCsvReader csvReader;
 
-    public FutureMarketUploader(NseFutureMarketRepository nseFutureMarketRepository,
-                                NseOptionMarketRepository nseOptionMarketRepository,
-                                FutureMarketDao futureMarketDao,
-                                NseFileUtils nseFileUtils,
-                                PraFileUtils praFileUtils,
-                                FmCsvReader fmCsvReader) {
+    public NseFmUploader(NseFmRepo nseFmRepo,
+                         NseOmRepo nseOmRepo,
+                         FmDao fmDao,
+                         NseFileUtils nseFileUtils,
+                         PraFileUtils praFileUtils,
+                         FmCsvReader fmCsvReader) {
         super(praFileUtils, NseCons.FM_DIR_NAME, ApCo.PRA_FM_FILE_PREFIX);
-        this.futureMarketRepository = nseFutureMarketRepository;
-        this.optionMarketRepository = nseOptionMarketRepository;
-        this.dao = futureMarketDao;
+        this.futureMarketRepository = nseFmRepo;
+        this.optionMarketRepository = nseOmRepo;
+        this.dao = fmDao;
         this.nseFileUtils = nseFileUtils;
         this.praFileUtils = praFileUtils;
         this.csvReader = fmCsvReader;

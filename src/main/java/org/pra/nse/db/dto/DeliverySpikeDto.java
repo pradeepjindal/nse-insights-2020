@@ -135,37 +135,6 @@ public class DeliverySpikeDto {
                 + atpRsi;
     }
 
-    public String toPpfString() {
-        return  symbol + ","
-                + tradeDate + ","
-
-                + open + ","
-                + high + ","
-                + low + ","
-                + close + ","
-                + last + ","
-                + closingBell + ","
-                + closeToLastPercent + ","
-                + atp + ","
-                + highLowMid + ","
-
-                + volumeChgPrcnt + ","
-                + deliveryChgPrcnt + ","
-                + oiChgPrcnt + ","
-                + premium + ","
-                + openingBell + ","
-                + closeToOpenPercent + ","
-                + othighPrcnt + ","
-                + otlowPrcnt + ","
-                + otatpPrcnt + ","
-
-                + volAtpMfi + ","
-                + delAtpMfi + ","
-                + closeRsi + ","
-                + lastRsi + ","
-                + atpRsi;
-    }
-
     public String toPpfString2() {
         return  symbol + ","
                 + tradeDate + ","
@@ -199,12 +168,12 @@ public class DeliverySpikeDto {
                 + delFixGrowth + ","
 //                + delDynGrowth + ","
                 + deliveryChgPrcnt + ","
-                + foiFixGrowth + ","
+//                + foiFixGrowth + ","
 //                + foiDynGrowth + ","
-                + oiChgPrcnt + ","
-
-                + premium + ","
-                + openingBell + ","
+//                + oiChgPrcnt + ","
+//
+//                + premium + ","
+//                + openingBell + ","
 
                 + nxtCloseToOpenPercent + ","
                 + nxtOptoHighPrcnt + ","

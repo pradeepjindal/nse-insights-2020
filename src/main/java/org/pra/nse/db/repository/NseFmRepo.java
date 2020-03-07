@@ -5,7 +5,7 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface NseFutureMarketRepository extends CrudRepository<NseFutureMarketTab, Long> {
+public interface NseFmRepo extends CrudRepository<NseFutureMarketTab, Long> {
 //    @Query("SELECT count(*) FROM nse_future_market_tab t WHERE t.trade_date = ?1")
 //    Integer dataCount(LocalDate tradeDate);
 }

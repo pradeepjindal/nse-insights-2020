@@ -1,12 +1,13 @@
-package org.pra.nse.db.upload;
+package org.pra.nse.db.upload.nse;
 
 import org.pra.nse.ApCo;
 import org.pra.nse.NseCons;
 import org.pra.nse.csv.bean.in.DmBean;
 import org.pra.nse.csv.read.DmCsvReader;
-import org.pra.nse.db.dao.nse.DeliveryMarketDao;
+import org.pra.nse.db.dao.nse.DmDao;
 import org.pra.nse.db.model.NseDeliveryMarketTab;
-import org.pra.nse.db.repository.NseDeliveryMarketRepository;
+import org.pra.nse.db.repository.NseDmRepo;
+import org.pra.nse.db.upload.BaseUploader;
 import org.pra.nse.util.DateUtils;
 import org.pra.nse.util.NseFileUtils;
 import org.pra.nse.util.PraFileUtils;
@@ -21,23 +22,23 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
 @Component
-public class DeliveryMarketUploader extends BaseUploader {
-    private static final Logger LOGGER = LoggerFactory.getLogger(DeliveryMarketUploader.class);
+public class NseDmUploader extends BaseUploader {
+    private static final Logger LOGGER = LoggerFactory.getLogger(NseDmUploader.class);
 
-    private final NseDeliveryMarketRepository repository;
-    private final DeliveryMarketDao dao;
+    private final NseDmRepo repository;
+    private final DmDao dao;
     private final NseFileUtils nseFileUtils;
     private final PraFileUtils praFileUtils;
     private final DmCsvReader csvReader;
 
-    public DeliveryMarketUploader(NseDeliveryMarketRepository nseDeliveryMarketRepository,
-                                  DeliveryMarketDao deliveryMarketDao,
-                                  NseFileUtils nseFileUtils,
-                                  PraFileUtils praFileUtils,
-                                  DmCsvReader csvReader) {
+    public NseDmUploader(NseDmRepo nseDmRepo,
+                         DmDao dmDao,
+                         NseFileUtils nseFileUtils,
+                         PraFileUtils praFileUtils,
+                         DmCsvReader csvReader) {
         super(praFileUtils, NseCons.DM_DIR_NAME, ApCo.PRA_DM_FILE_PREFIX);
-        this.repository = nseDeliveryMarketRepository;
-        this.dao = deliveryMarketDao;
+        this.repository = nseDmRepo;
+        this.dao = dmDao;
         this.nseFileUtils = nseFileUtils;
         this.praFileUtils = praFileUtils;
         this.csvReader = csvReader;

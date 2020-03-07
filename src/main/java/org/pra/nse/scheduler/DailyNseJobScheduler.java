@@ -6,7 +6,7 @@ import org.pra.nse.csv.transformation.TransformationManager;
 import org.pra.nse.db.upload.CalcUploadManager;
 import org.pra.nse.db.upload.NseUploadManager;
 import org.pra.nse.processor.ProcessManager;
-import org.pra.nse.report.ReportManager;
+import org.pra.nse.report.ReportManagerNew;
 import org.pra.nse.util.PraFileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,7 +43,7 @@ public class DailyNseJobScheduler implements SchedulingConfigurer {
     private final CalculationManager calculationManager;
     private final CalcUploadManager calcUploadManager;
     private final ProcessManager processManager;
-    private final ReportManager reportManager;
+    private final ReportManagerNew reportManagerNew;
 
     public DailyNseJobScheduler(PraFileUtils praFileUtils,
                                 DownloadManager downloadManager,
@@ -51,7 +51,7 @@ public class DailyNseJobScheduler implements SchedulingConfigurer {
                                 NseUploadManager nseUploadManager,
                                 CalculationManager calculationManager,
                                 CalcUploadManager calcUploadManager, ProcessManager processManager,
-                                ReportManager reportManager) {
+                                ReportManagerNew reportManagerNew) {
         this.praFileUtils = praFileUtils;
         this.downloadManager = downloadManager;
         this.transformationManager = transformationManager;
@@ -59,7 +59,7 @@ public class DailyNseJobScheduler implements SchedulingConfigurer {
         this.calculationManager = calculationManager;
         this.calcUploadManager = calcUploadManager;
         this.processManager = processManager;
-        this.reportManager = reportManager;
+        this.reportManagerNew = reportManagerNew;
     }
 
 
@@ -89,11 +89,14 @@ public class DailyNseJobScheduler implements SchedulingConfigurer {
                             downloadManager.execute();
                             transformationManager.execute();
                             nseUploadManager.execute();
-                            if(praFileUtils.validateDownload() != null) {
+                            if(praFileUtils.validateDownloadCD() != null) {
                                 calculationManager.execute();
                                 calcUploadManager.execute();
+                                reportManagerNew.execute();
+                            }
+                            if(praFileUtils.validateDownloadCDF() != null) {
                                 processManager.execute();
-                                reportManager.execute();
+                                //reportManager.execute();
                             }
                         } catch(Exception e) {
                             LOGGER.error("ERROR: {}", e);

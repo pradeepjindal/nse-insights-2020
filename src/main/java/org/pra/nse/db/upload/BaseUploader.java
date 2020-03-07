@@ -39,7 +39,7 @@ public abstract class BaseUploader {
     }
 
 
-    abstract void uploadForDate(LocalDate forDate);
+    protected abstract void uploadForDate(LocalDate forDate);
 
 
     private void looper(LocalDate fromDate) {
