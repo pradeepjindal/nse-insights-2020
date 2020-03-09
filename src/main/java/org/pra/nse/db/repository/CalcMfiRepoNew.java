@@ -8,7 +8,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 @Repository
-public interface CalcMfiRepositoryNew extends JpaRepository<CalcMfiTabNew, Long> {
+public interface CalcMfiRepoNew extends JpaRepository<CalcMfiTabNew, Long> {
     Integer countByTradeDate(LocalDate tradeDate);
     List<CalcMfiTabNew> findByTradeDateAndForDays(LocalDate tradeDate, Integer forDays);
     List<CalcMfiTabNew> findByForDaysAndTradeDateIsBetween(Integer forDays, LocalDate tradeDateFrom, LocalDate tradeDateTo);

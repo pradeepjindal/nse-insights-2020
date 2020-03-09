@@ -5,7 +5,7 @@ import org.pra.nse.calculation.AvgCalculatorNew;
 import org.pra.nse.calculation.CalcCons;
 import org.pra.nse.csv.data.AvgBeanNew;
 import org.pra.nse.db.model.CalcAvgTabNew;
-import org.pra.nse.db.repository.CalcAvgRepositoryNew;
+import org.pra.nse.db.repository.CalcAvgRepoNew;
 import org.pra.nse.db.upload.BaseUploader;
 import org.pra.nse.util.NseFileUtils;
 import org.pra.nse.util.PraFileUtils;
@@ -27,13 +27,13 @@ public class CalcAvgUploaderNew extends BaseUploader {
 
     private final String calc_name = CalcCons.AVG_DATA_NAME;
 
-    private final CalcAvgRepositoryNew repo;
+    private final CalcAvgRepoNew repo;
     private final AvgCalculatorNew calculator;
 
     private final NseFileUtils nseFileUtils;
     private final PraFileUtils praFileUtils;
 
-    public CalcAvgUploaderNew(CalcAvgRepositoryNew repo, AvgCalculatorNew calculator,
+    public CalcAvgUploaderNew(CalcAvgRepoNew repo, AvgCalculatorNew calculator,
                               NseFileUtils nseFileUtils, PraFileUtils praFileUtils) {
         super(praFileUtils, CalcCons.AVG_DIR_NAME_NEW, AVG_FILE_PREFIX);
         this.repo = repo;

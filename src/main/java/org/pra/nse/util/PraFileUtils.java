@@ -85,31 +85,34 @@ public class PraFileUtils {
         return LocalDate.parse(localDate.toString(), dtf).toString();
     }
 
-    public LocalDate getLatestNseDate() {
-        String cmFileName = getLatestFileNameFor(NseCons.CM_FILES_PATH, ApCo.PRA_CM_FILE_PREFIX, ApCo.DATA_FILE_EXT, 1);
-        String cmDateStr = ProCo.extractDate(cmFileName);
-        LocalDate cmDate = DateUtils.toLocalDate(cmDateStr);
-
-        String fmFileName = getLatestFileNameFor(NseCons.FM_FILES_PATH, ApCo.PRA_FM_FILE_PREFIX, ApCo.DATA_FILE_EXT, 1);
-        String fmDateStr = ProCo.extractDate(fmFileName);
-        LocalDate fmDate = DateUtils.toLocalDate(fmDateStr);
-
-        String dmFileName = getLatestFileNameFor(NseCons.DM_FILES_PATH, ApCo.PRA_DM_FILE_PREFIX, ApCo.DATA_FILE_EXT, 1);
-        String dmDateStr = ProCo.extractDate(dmFileName);
-        LocalDate dmDate = DateUtils.toLocalDate(dmDateStr);
+    public LocalDate getLatestNseDateCDF() {
+        LocalDate cmDate = getLatestCmLocalDate();
+        LocalDate dmDate = getLatestDmLocalDate();
+        LocalDate fmDate = getLatestFmLocalDate();
 
         List<LocalDate> dates = new ArrayList<>();
         dates.add(cmDate);
+        dates.add(dmDate);
         dates.add(fmDate);
+        Collections.sort(dates);
+        return dates.get(0);
+    }
+
+    public LocalDate getLatestNseDateCD() {
+        LocalDate cmDate = getLatestCmLocalDate();
+        LocalDate dmDate = getLatestDmLocalDate();
+
+        List<LocalDate> dates = new ArrayList<>();
+        dates.add(cmDate);
         dates.add(dmDate);
         Collections.sort(dates);
         return dates.get(0);
     }
 
     public String validateDownloadCDF() {
-        String cmDate = getLatestCmDate();
-        String mtDate = getLatestDmDate();
-        String foDate = getLatestFmDate();
+        String cmDate = getLatestCmStringDate();
+        String mtDate = getLatestDmStringDate();
+        String foDate = getLatestFmStringDate();
 
         if (cmDate == null || mtDate == null || foDate == null) {
             return null;
@@ -126,8 +129,8 @@ public class PraFileUtils {
     }
 
     public String validateDownloadCD() {
-        String cmDate = getLatestCmDate();
-        String mtDate = getLatestDmDate();
+        String cmDate = getLatestCmStringDate();
+        String mtDate = getLatestDmStringDate();
 
         if (cmDate == null || mtDate == null) {
             return null;
@@ -142,19 +145,28 @@ public class PraFileUtils {
         }
     }
 
-    private String getLatestCmDate() {
+    private LocalDate getLatestCmLocalDate() {
+        return DateUtils.toLocalDate(getLatestCmStringDate());
+    }
+    private String getLatestCmStringDate() {
         String cmDate = getLatestFileNameFor(NseCons.CM_FILES_PATH, ApCo.PRA_CM_FILE_PREFIX, ApCo.REPORTS_FILE_EXT, 1);
         cmDate = ProCo.extractDate(cmDate);
         return cmDate;
     }
 
-    private String getLatestDmDate() {
+    private LocalDate getLatestDmLocalDate() {
+        return DateUtils.toLocalDate(getLatestDmStringDate());
+    }
+    private String getLatestDmStringDate() {
         String mtDate = getLatestFileNameFor(NseCons.DM_FILES_PATH, ApCo.PRA_DM_FILE_PREFIX, ApCo.REPORTS_FILE_EXT, 1);
         mtDate = ProCo.extractDate(mtDate);
         return mtDate;
     }
 
-    private String getLatestFmDate() {
+    private LocalDate getLatestFmLocalDate() {
+        return DateUtils.toLocalDate(getLatestFmStringDate());
+    }
+    private String getLatestFmStringDate() {
         String foDate = getLatestFileNameFor(NseCons.FM_FILES_PATH, ApCo.PRA_FM_FILE_PREFIX, ApCo.REPORTS_FILE_EXT, 1);
         foDate = ProCo.extractDate(foDate);
         return foDate;

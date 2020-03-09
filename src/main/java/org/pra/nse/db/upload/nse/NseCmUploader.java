@@ -4,7 +4,7 @@ import org.pra.nse.ApCo;
 import org.pra.nse.NseCons;
 import org.pra.nse.csv.bean.in.CmBean;
 import org.pra.nse.csv.read.CmCsvReader;
-import org.pra.nse.db.dao.nse.CmDao;
+import org.pra.nse.db.dao.CmDao;
 import org.pra.nse.db.model.NseCashMarketTab;
 import org.pra.nse.db.repository.NseCmRepo;
 import org.pra.nse.db.upload.BaseUploader;

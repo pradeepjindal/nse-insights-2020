@@ -82,7 +82,7 @@ public class MfiCalculatorNew {
         return prepareData(forDate, forDaysArray);
     }
     private List<MfiBeanNew> prepareData(LocalDate forDate, int[] forDaysArray) {
-        LocalDate latestNseDate = praFileUtils.getLatestNseDate();
+        LocalDate latestNseDate = praFileUtils.getLatestNseDateCD();
         if(forDate.isAfter(latestNseDate)) return Collections.emptyList();
 
         Map<String, List<DeliverySpikeDto>> symbolMap;

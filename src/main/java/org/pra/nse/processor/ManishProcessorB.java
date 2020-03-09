@@ -50,7 +50,7 @@ public class ManishProcessorB {
     }
 
     public void process(String outputFileName, LocalDate forDate) throws IOException {
-        LocalDate latestNseDate = praFileUtils.getLatestNseDate();
+        LocalDate latestNseDate = praFileUtils.getLatestNseDateCDF();
         if(forDate.isAfter(latestNseDate)) return;
 
         String outputPathAndFileNameForFixFile = ProCo.outputPathAndFileNameForFixFile(outputFileName);

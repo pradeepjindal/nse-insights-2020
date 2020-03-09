@@ -4,7 +4,7 @@ import org.pra.nse.ApCo;
 import org.pra.nse.NseCons;
 import org.pra.nse.csv.bean.in.FmBean;
 import org.pra.nse.csv.read.FmCsvReader;
-import org.pra.nse.db.dao.nse.FmDao;
+import org.pra.nse.db.dao.FmDao;
 import org.pra.nse.db.model.NseFutureMarketTab;
 import org.pra.nse.db.model.NseOptionMarketTab;
 import org.pra.nse.db.repository.NseFmRepo;

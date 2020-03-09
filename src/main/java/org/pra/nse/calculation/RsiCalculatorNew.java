@@ -77,7 +77,7 @@ public class RsiCalculatorNew {
         return prepareData(forDate, forDaysArray);
     }
     private List<RsiBeanNew> prepareData(LocalDate forDate, int[] forDaysArray) {
-        LocalDate latestNseDate = praFileUtils.getLatestNseDate();
+        LocalDate latestNseDate = praFileUtils.getLatestNseDateCD();
         if(forDate.isAfter(latestNseDate)) return Collections.emptyList();
 
         Map<String, List<DeliverySpikeDto>> symbolMap;

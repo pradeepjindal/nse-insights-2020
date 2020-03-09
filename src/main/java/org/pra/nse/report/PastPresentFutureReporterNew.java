@@ -5,9 +5,9 @@ import org.pra.nse.db.dto.DeliverySpikeDto;
 import org.pra.nse.db.model.CalcAvgTabNew;
 import org.pra.nse.db.model.CalcMfiTabNew;
 import org.pra.nse.db.model.CalcRsiTabNew;
-import org.pra.nse.db.repository.CalcAvgRepositoryNew;
-import org.pra.nse.db.repository.CalcMfiRepositoryNew;
-import org.pra.nse.db.repository.CalcRsiRepositoryNew;
+import org.pra.nse.db.repository.CalcAvgRepoNew;
+import org.pra.nse.db.repository.CalcMfiRepoNew;
+import org.pra.nse.db.repository.CalcRsiRepoNew;
 import org.pra.nse.email.EmailService;
 import org.pra.nse.refdata.RefData;
 import org.pra.nse.service.DataService;
@@ -37,9 +37,9 @@ public class PastPresentFutureReporterNew {
 
     private final String outputDirName = ApCo.REPORTS_DIR_NAME_PPF_NEW;
 
-    private final CalcRsiRepositoryNew calcRsiRepository;
-    private final CalcMfiRepositoryNew calcMfiRepository;
-    private final CalcAvgRepositoryNew calcAvgRepository;
+    private final CalcRsiRepoNew calcRsiRepository;
+    private final CalcMfiRepoNew calcMfiRepository;
+    private final CalcAvgRepoNew calcAvgRepository;
     private final EmailService emailService;
     private final NseFileUtils nseFileUtils;
     private final PraFileUtils praFileUtils;
@@ -47,9 +47,9 @@ public class PastPresentFutureReporterNew {
     private final DataService dataService;
     private final DateService dateService;
 
-    PastPresentFutureReporterNew(CalcRsiRepositoryNew calcRsiRepository,
-                                 CalcMfiRepositoryNew calcMfiRepository,
-                                 CalcAvgRepositoryNew calcAvgRepository,
+    PastPresentFutureReporterNew(CalcRsiRepoNew calcRsiRepository,
+                                 CalcMfiRepoNew calcMfiRepository,
+                                 CalcAvgRepoNew calcAvgRepository,
                                  EmailService emailService,
                                  NseFileUtils nseFileUtils,
                                  PraFileUtils praFileUtils,
@@ -75,7 +75,7 @@ public class PastPresentFutureReporterNew {
         reportFromLast(10);
     }
     public void reportFromLast(int forMinusDays) {
-        String str = praFileUtils.validateDownloadCDF();
+        String str = praFileUtils.validateDownloadCD();
         if(str == null) return;
 
         LocalDate forDate = DateUtils.toLocalDate(str);
@@ -83,7 +83,7 @@ public class PastPresentFutureReporterNew {
         reportForDate(forDate, forMinusDays);
     }
     public void reportForDate(LocalDate forDate, Integer forMinusDays) {
-        LocalDate latestNseDate = praFileUtils.getLatestNseDate();
+        LocalDate latestNseDate = praFileUtils.getLatestNseDateCD();
         if(forDate.isAfter(latestNseDate)) return;
 
         String fixed_width_days_str = "_".concat(forMinusDays.toString());

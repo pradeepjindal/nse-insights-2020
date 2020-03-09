@@ -5,7 +5,7 @@ import org.pra.nse.calculation.CalcCons;
 import org.pra.nse.calculation.RsiCalculatorNew;
 import org.pra.nse.csv.data.RsiBeanNew;
 import org.pra.nse.db.model.CalcRsiTabNew;
-import org.pra.nse.db.repository.CalcRsiRepositoryNew;
+import org.pra.nse.db.repository.CalcRsiRepoNew;
 import org.pra.nse.db.upload.BaseUploader;
 import org.pra.nse.util.NseFileUtils;
 import org.pra.nse.util.PraFileUtils;
@@ -27,13 +27,13 @@ public class CalcRsiUploaderNew extends BaseUploader {
 
     private final String calc_name = CalcCons.RSI_DATA_NAME;
 
-    private final CalcRsiRepositoryNew repo;
+    private final CalcRsiRepoNew repo;
     private final RsiCalculatorNew calculator;
 
     private final NseFileUtils nseFileUtils;
     private final PraFileUtils praFileUtils;
 
-    public CalcRsiUploaderNew(CalcRsiRepositoryNew repo, RsiCalculatorNew calculator,
+    public CalcRsiUploaderNew(CalcRsiRepoNew repo, RsiCalculatorNew calculator,
                               NseFileUtils nseFileUtils, PraFileUtils praFileUtils) {
         super(praFileUtils, CalcCons.RSI_DIR_NAME_NEW, RSI_FILE_PREFIX);
         this.repo = repo;

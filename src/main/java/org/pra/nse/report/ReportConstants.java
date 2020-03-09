@@ -64,5 +64,7 @@ public class ReportConstants {
 
     static final List<String> SHUVI_TICKERS =
             List.of("ASIANPAINTS", "COLPAL", "DABUR", "ICICIPRULI", "JUBLIENTFOOD", "PIDILITE", "RELIANCE", "SBIN", "TITAN", "UBL");
+    static final List<String> PRA_TICKERS =
+            List.of("BAJAJFINSRV", "HDFCBANK", "HUL", "TITAN", "LT");
 
 }

@@ -5,7 +5,7 @@ import org.pra.nse.calculation.CalcCons;
 import org.pra.nse.calculation.MfiCalculatorNew;
 import org.pra.nse.csv.data.MfiBeanNew;
 import org.pra.nse.db.model.CalcMfiTabNew;
-import org.pra.nse.db.repository.CalcMfiRepositoryNew;
+import org.pra.nse.db.repository.CalcMfiRepoNew;
 import org.pra.nse.db.upload.BaseUploader;
 import org.pra.nse.util.NseFileUtils;
 import org.pra.nse.util.PraFileUtils;
@@ -26,18 +26,17 @@ public class CalcMfiUploaderNew extends BaseUploader {
     private final String calc_name = CalcCons.MFI_DATA_NAME;
 
     private final MfiCalculatorNew calculator;
-
-    private final CalcMfiRepositoryNew repo;
+    private final CalcMfiRepoNew repo;
 
     private final NseFileUtils nseFileUtils;
     private final PraFileUtils praFileUtils;
 
     public CalcMfiUploaderNew(MfiCalculatorNew calculator,
-                              CalcMfiRepositoryNew calcMfiRepositoryNew,
+                              CalcMfiRepoNew calcMfiRepoNew,
                               NseFileUtils nseFileUtils, PraFileUtils praFileUtils) {
         super(praFileUtils, CalcCons.MFI_DIR_NAME_NEW, CalcCons.MFI_FILE_PREFIX);
         this.calculator = calculator;
-        this.repo = calcMfiRepositoryNew;
+        this.repo = calcMfiRepoNew;
         this.nseFileUtils = nseFileUtils;
         this.praFileUtils = praFileUtils;
     }

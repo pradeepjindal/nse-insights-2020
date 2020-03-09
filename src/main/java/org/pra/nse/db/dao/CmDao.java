@@ -1,4 +1,4 @@
-package org.pra.nse.db.dao.nse;
+package org.pra.nse.db.dao;
 
 import org.pra.nse.config.YamlPropertyLoaderFactory;
 import org.slf4j.Logger;

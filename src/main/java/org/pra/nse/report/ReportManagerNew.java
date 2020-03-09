@@ -44,14 +44,14 @@ public class ReportManagerNew implements Manager {
     @Override
     public void execute() {
         LOGGER.info(".");
-        LOGGER.info("____________________ Report Manager");
+        LOGGER.info("____________________ Report Manager New");
 
         //pastPresentFutureReporterNew.reportFromLast(2);
         pastPresentFutureReporterNew.reportFromLast(3);
         pastPresentFutureReporterNew.reportFromLast(5);
         pastPresentFutureReporterNew.reportFromLast(10);
         pastPresentFutureReporterNew.reportFromLast(20);
-        LOGGER.info("======================================== Report Manager");
+        LOGGER.info("======================================== Report Manager New");
     }
 
 }

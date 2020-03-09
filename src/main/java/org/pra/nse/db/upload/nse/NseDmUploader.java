@@ -4,7 +4,7 @@ import org.pra.nse.ApCo;
 import org.pra.nse.NseCons;
 import org.pra.nse.csv.bean.in.DmBean;
 import org.pra.nse.csv.read.DmCsvReader;
-import org.pra.nse.db.dao.nse.DmDao;
+import org.pra.nse.db.dao.DmDao;
 import org.pra.nse.db.model.NseDeliveryMarketTab;
 import org.pra.nse.db.repository.NseDmRepo;
 import org.pra.nse.db.upload.BaseUploader;

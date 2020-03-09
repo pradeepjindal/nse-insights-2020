@@ -33,19 +33,19 @@ public class DateService {
 
     public LocalDate getLatestDbDate() {
         if (latestDbDate == null) prepareData();
-        if (latestDbDate.isBefore(praFileUtils.getLatestNseDate())) prepareData();
+        if (latestDbDate.isBefore(praFileUtils.getLatestNseDateCDF())) prepareData();
         return latestDbDate;
     }
 
     public boolean validateTradeDate(LocalDate forDate) {
         if (latestDbDate == null) prepareData();
-        if (latestDbDate.isBefore(praFileUtils.getLatestNseDate())) prepareData();
+        if (latestDbDate.isBefore(praFileUtils.getLatestNseDateCDF())) prepareData();
         return dbDatesMap.containsKey(forDate);
     }
 
     public List<LocalDate> getTradeDatesListDesc(LocalDate forDate, int forMinusDays) {
         if (latestDbDate == null) prepareData();
-        if (latestDbDate.isBefore(praFileUtils.getLatestNseDate())) prepareData();
+        if (latestDbDate.isBefore(praFileUtils.getLatestNseDateCDF())) prepareData();
 
         int fromIndex = dbDatesListDesc.indexOf(forDate);
         int toIndexDesc = fromIndex + forMinusDays -1;
@@ -60,7 +60,7 @@ public class DateService {
 
     public LocalDate getMinTradeDate(LocalDate forDate, int forMinusDays) {
         if (latestDbDate == null) prepareData();
-        if (latestDbDate.isBefore(praFileUtils.getLatestNseDate())) prepareData();
+        if (latestDbDate.isBefore(praFileUtils.getLatestNseDateCDF())) prepareData();
 
         int fromIndex = dbDatesListDesc.indexOf(forDate);
         int toIndexDesc = fromIndex + forMinusDays -1;

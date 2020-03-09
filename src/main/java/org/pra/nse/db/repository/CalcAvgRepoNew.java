@@ -8,7 +8,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 @Repository
-public interface CalcAvgRepositoryNew extends JpaRepository<CalcAvgTabNew, Long> {
+public interface CalcAvgRepoNew extends JpaRepository<CalcAvgTabNew, Long> {
     Integer countByTradeDate(LocalDate tradeDate);
     List<CalcAvgTabNew> findByTradeDateAndForDays(LocalDate tradeDate, Integer forDays);
     List<CalcAvgTabNew> findByForDaysAndTradeDateIsBetween(Integer forDays, LocalDate tradeDateFrom, LocalDate tradeDateTo);

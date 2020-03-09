@@ -1,9 +1,0 @@
-avgDataCountForDateSql: >
-  SELECT count(*)
-  FROM calc_avg_tab t
-  WHERE t.trade_date = to_date(?,'yyyy-mm-dd')
-
-avgSql: >
-  SELECT *
-  FROM calc_avg_tab
-

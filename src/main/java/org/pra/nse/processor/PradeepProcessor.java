@@ -46,7 +46,7 @@ public class PradeepProcessor {
     }
 
     public void process(LocalDate forDate) throws IOException {
-        LocalDate latestNseDate = praFileUtils.getLatestNseDate();
+        LocalDate latestNseDate = praFileUtils.getLatestNseDateCDF();
         if(forDate.isAfter(latestNseDate)) return;
 
         String outputPathAndFileNameForFixFile = ProCo.outputPathAndFileNameForFixFile(ApCo.PRADEEP_FILE_NAME);

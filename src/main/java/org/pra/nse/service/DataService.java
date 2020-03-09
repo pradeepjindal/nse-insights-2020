@@ -91,7 +91,7 @@ public class DataService implements Manager {
 
     private Predicate<DeliverySpikeDto> initializeRawData(LocalDate forDate, int forMinusDays, String forSymbol) {
         if(!dateService.validateTradeDate(forDate)) return null;
-        LocalDate latestNseDate = praFileUtils.getLatestNseDate();
+        LocalDate latestNseDate = praFileUtils.getLatestNseDateCDF();
         if(dbResults == null || latestNseDate.isAfter(latestDbDate)) {
             bootUpData();
         }
@@ -103,7 +103,7 @@ public class DataService implements Manager {
 
     private Predicate<DeliverySpikeDto> initializeData(LocalDate forDate, int forMinusDays, String forSymbol) {
         if(!dateService.validateTradeDate(forDate)) return null;
-        LocalDate latestNseDate = praFileUtils.getLatestNseDate();
+        LocalDate latestNseDate = praFileUtils.getLatestNseDateCDF();
         if(dbResults == null || latestNseDate.isAfter(latestDbDate)) {
             bootUpData();
             isDataInRawState = true;
