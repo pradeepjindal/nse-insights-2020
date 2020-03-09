@@ -59,30 +59,55 @@ public class StatisticsManager implements Manager {
         LocalDate tdy = LocalDate.of(2020, 3, 5);
         Map<String, List<DeliverySpikeDto>> sbiMap;
 
-        //3yr
-        LOGGER.info("SBIN (3yr) - ");
-        sbiMap = dataService.getRawDataBySymbol(tdy, 750, "SBIN");
-        StatisticsSbi.summarizeBucket(sbiMap);
+//        //delivery
+//        LOGGER.info("SBIN (delivery-FALL) - ");
+//        sbiMap = dataService.getRawDataBySymbol(LocalDate.of(2019,10,9), LocalDate.of(2019,7, 17),"SBIN");
+//        StatisticsSbi.summarizeDelivery(sbiMap);
+//        //delivery
+//        LOGGER.info("SBIN (delivery-RISE) - ");
+//        sbiMap = dataService.getRawDataBySymbol(LocalDate.of(2019,11,28), LocalDate.of(2019,10,9),"SBIN");
+//        StatisticsSbi.summarizeDelivery(sbiMap);
 
-        //2yr
-        LOGGER.info("SBIN (2yr) - ");
-        sbiMap = dataService.getRawDataBySymbol(tdy, 500, "SBIN");
-        StatisticsSbi.summarizeBucket(sbiMap);
+        //delivery
+        LOGGER.info("SBIN (delivery-FALL) - ");
+        sbiMap = dataService.getRawDataBySymbol(LocalDate.of(2020,2,3), LocalDate.of(2020,1, 24),"SBIN");
+        StatisticsSbi.summarizeDelivery(sbiMap);
+        //delivery
+        LOGGER.info("SBIN (delivery-RISE) - ");
+        sbiMap = dataService.getRawDataBySymbol(LocalDate.of(2020,2, 12), LocalDate.of(2020,2,3),"SBIN");
+        StatisticsSbi.summarizeDelivery(sbiMap);
 
-        //1yr
-        LOGGER.info("SBIN (1yr) - ");
-        sbiMap = dataService.getRawDataBySymbol(tdy, 250, "SBIN");
-        StatisticsSbi.summarizeBucket(sbiMap);
 
-        //6mo
-        LOGGER.info("SBIN (6mo) - ");
-        sbiMap = dataService.getRawDataBySymbol(tdy, 123, "SBIN");
-        StatisticsSbi.summarizeBucket(sbiMap);
+        //delivery
+        LOGGER.info("SBIN (delivery-FALL) - ");
+        sbiMap = dataService.getRawDataBySymbol(LocalDate.of(2020,3, 9), LocalDate.of(2020,2,27),"SBIN");
+        StatisticsSbi.summarizeDelivery(sbiMap);
 
-        //3mo
-        LOGGER.info("SBIN (3mo) - ");
-        sbiMap = dataService.getRawDataBySymbol(tdy, 66, "SBIN");
-        StatisticsSbi.summarizeBucket(sbiMap);
+
+//        //3yr
+//        LOGGER.info("SBIN (3yr) - ");
+//        sbiMap = dataService.getRawDataBySymbol(tdy, 750, "SBIN");
+//        StatisticsSbi.summarizeBucket(sbiMap);
+//
+//        //2yr
+//        LOGGER.info("SBIN (2yr) - ");
+//        sbiMap = dataService.getRawDataBySymbol(tdy, 500, "SBIN");
+//        StatisticsSbi.summarizeBucket(sbiMap);
+//
+//        //1yr
+//        LOGGER.info("SBIN (1yr) - ");
+//        sbiMap = dataService.getRawDataBySymbol(tdy, 250, "SBIN");
+//        StatisticsSbi.summarizeBucket(sbiMap);
+//
+//        //6mo
+//        LOGGER.info("SBIN (6mo) - ");
+//        sbiMap = dataService.getRawDataBySymbol(tdy, 123, "SBIN");
+//        StatisticsSbi.summarizeBucket(sbiMap);
+//
+//        //3mo
+//        LOGGER.info("SBIN (3mo) - ");
+//        sbiMap = dataService.getRawDataBySymbol(tdy, 66, "SBIN");
+//        StatisticsSbi.summarizeBucket(sbiMap);
 
         LOGGER.info("======================================== Statistics Manager");
     }

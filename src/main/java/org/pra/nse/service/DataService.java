@@ -65,6 +65,14 @@ public class DataService implements Manager {
 //            return minDate(forDate, forMinusDays);
 //    }
 
+    public Map<String, List<DeliverySpikeDto>> getRawDataBySymbol(LocalDate forDate, LocalDate minDate) {
+        return getRawDataBySymbol(forDate, minDate, null);
+    }
+    public Map<String, List<DeliverySpikeDto>> getRawDataBySymbol(LocalDate forDate, LocalDate minDate, String forSymbol) {
+        Predicate<DeliverySpikeDto> predicate = initializeRawData(forDate, minDate, forSymbol);
+        return predicate == null ? Collections.EMPTY_MAP : prepareDataBySymbol(predicate);
+    }
+
     public Map<String, List<DeliverySpikeDto>> getRawDataBySymbol(LocalDate forDate, int forMinusDays) {
         return getRawDataBySymbol(forDate, forMinusDays, null);
     }
@@ -91,14 +99,25 @@ public class DataService implements Manager {
 
     private Predicate<DeliverySpikeDto> initializeRawData(LocalDate forDate, int forMinusDays, String forSymbol) {
         if(!dateService.validateTradeDate(forDate)) return null;
-        LocalDate latestNseDate = praFileUtils.getLatestNseDateCDF();
+        LocalDate latestNseDate = praFileUtils.getLatestNseDateCD();
         if(dbResults == null || latestNseDate.isAfter(latestDbDate)) {
             bootUpData();
         }
         if(forDate.isAfter(latestDbDate))
             return null;
         else
-            return predicateIt(forDate, forMinusDays, forSymbol);
+            return predicateByDays(forDate, forMinusDays, forSymbol);
+    }
+    private Predicate<DeliverySpikeDto> initializeRawData(LocalDate forDate, LocalDate minDate, String forSymbol) {
+        if(!dateService.validateTradeDate(forDate)) return null;
+        LocalDate latestNseDate = praFileUtils.getLatestNseDateCD();
+        if(dbResults == null || latestNseDate.isAfter(latestDbDate)) {
+            bootUpData();
+        }
+        if(forDate.isAfter(latestDbDate))
+            return null;
+        else
+            return predicateByDate(forDate, minDate, forSymbol);
     }
 
     private Predicate<DeliverySpikeDto> initializeData(LocalDate forDate, int forMinusDays, String forSymbol) {
@@ -115,7 +134,7 @@ public class DataService implements Manager {
         if(forDate.isAfter(latestDbDate))
             return null;
         else
-            return predicateIt(forDate, forMinusDays, forSymbol);
+            return predicateByDays(forDate, forMinusDays, forSymbol);
     }
 
     private void backFill() {
@@ -124,9 +143,13 @@ public class DataService implements Manager {
         //fillTheIndicators();
     }
 
-    private Predicate<DeliverySpikeDto> predicateIt(LocalDate forDate, int forMinusDays, String forSymbol) {
+    private Predicate<DeliverySpikeDto> predicateByDays(LocalDate forDate, int forMinusDays, String forSymbol) {
         //TODO what if minDate is null
         LocalDate minDate = minDate(forDate, forMinusDays);
+        return predicateByDate(forDate, minDate, forSymbol);
+    }
+    private Predicate<DeliverySpikeDto> predicateByDate(LocalDate forDate, LocalDate minDate, String forSymbol) {
+        //TODO what if minDate is null
         Predicate<DeliverySpikeDto> predicate = null;
         if (forSymbol == null) {
             predicate = dto -> filterDate(dto, minDate, forDate);

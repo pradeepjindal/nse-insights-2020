@@ -14,7 +14,6 @@ public class StatisticsSbi {
     private static final Logger LOGGER = LoggerFactory.getLogger(StatisticsSbi.class);
 
     public static void summarizeBucket(Map<String, List<DeliverySpikeDto>> symbolMap) {
-
         Map<String, Integer> bucket = new TreeMap<>();
         List<DeliverySpikeDto> sbiDtos = symbolMap.get("SBIN");
         BigDecimal intermediate;
@@ -31,7 +30,23 @@ public class StatisticsSbi {
 
         LOGGER.info("SBIN : buckets - {}", bucket.keySet());
         LOGGER.info("SBIN : entries - {}", bucket);
+    }
 
+    public static void summarizeDelivery(Map<String, List<DeliverySpikeDto>> symbolMap) {
+        Map<String, Integer> bucket = new TreeMap<>();
+        List<DeliverySpikeDto> sbiDtos = symbolMap.get("SBIN");
+        BigDecimal intermediate = BigDecimal.ZERO;
+        int ctr;
+        BigDecimal lakh = new BigDecimal(100000);
+        for(DeliverySpikeDto dto:sbiDtos) {
+            intermediate = intermediate.add(dto.getDelivery());
+            LOGGER.info("SBIN : td {}, atp {}, delivery {}, total {}",
+                    dto.getTradeDate(),
+                    dto.getAtp(),
+                    dto.getDelivery().divide(lakh, 2, RoundingMode.HALF_UP),
+                    intermediate.divide(lakh, 2, RoundingMode.HALF_UP));
+        }
+        LOGGER.info("SBIN : total delivery - {}", intermediate);
     }
 
 }
